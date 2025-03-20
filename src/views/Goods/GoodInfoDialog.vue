@@ -1,34 +1,56 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
+import { historyList, type IHistoryList } from './data'
+import HistoryVersion from './HistoryVersion.vue'
 import type { IParams } from './TableDataShop/components/TabPane.vue'
+import { downLoadFileById } from '@/utils/download'
 
 const { params } = defineProps<{
   params: IParams
 }>()
-console.log('params--->', params)
+const isShowHistory = ref(false)
 const dialogVisible = computed(() => params.visible)
 
 const handleClose = () => {
   params.cancel?.()
 }
-const submit = () => {
-  params.submit?.()
-}
+
 const dataInfo = computed(() => params.info || {})
+
+const historyData = ref<{
+  list: IHistoryList[]
+  goBack: () => void
+}>({
+  list: [],
+  goBack: () => {
+    isShowHistory.value = false
+  },
+})
+
+const showHistoryVersion = () => {
+  // 请求
+  historyData.value.list = historyList
+  isShowHistory.value = true
+}
+
+const download = () => {
+  console.log('ssssss--->', params.info)
+  downLoadFileById(params.info.ID)
+}
 </script>
 
 <template>
   <k-dialog v-model="dialogVisible" title="" width="900" class="info-dialog" :before-close="handleClose">
-    <div class="content-box">
+    <div v-if="!isShowHistory" class="content-box">
       <div class="top">
-        <div class="icon-box">1111</div>
+        <div class="icon-box">头像</div>
         <div class="right-box">
           <div class="title overHide">{{ dataInfo.Name }}</div>
           <div class="desc overHide">
             {{ dataInfo.FuncDes }}
           </div>
-          <k-button main type="primary" class="button">下载</k-button>
+          <k-button main type="primary" class="button" @click="download">下载</k-button>
         </div>
       </div>
       <div class="main-box">
@@ -43,10 +65,10 @@ const dataInfo = computed(() => params.info || {})
               <div class="update-desc">{{ dataInfo.UpdateInfo }}</div>
             </div>
             <div class="right-update">
-              <div class="history">版本历史记录</div>
+              <div class="history" @click="showHistoryVersion">版本历史记录</div>
               <div class="desc-info">
                 <div class="time">{{ dataInfo.CreateTime }}</div>
-                <div class="version">V1.0.1</div>
+                <div class="version">{{ dataInfo.Ver }}</div>
               </div>
             </div>
           </div>
@@ -58,7 +80,8 @@ const dataInfo = computed(() => params.info || {})
               <div class="img">
                 <el-image style="width: 100%; height: 100%" src="/images/RPA.png" fit="fill" />
               </div>
-              <div class="team">K-RPA Lite 团队</div>
+              <!-- <div class="team">K-RPA Lite 团队</div> -->
+              <div class="team">{{ dataInfo.Developer }}</div>
             </div>
           </div>
           <div class="tag-box">
@@ -79,12 +102,7 @@ const dataInfo = computed(() => params.info || {})
         </div>
       </div>
     </div>
-    <template #footer>
-      <div class="dialog-footer">
-        <k-button @click="handleClose">取消</k-button>
-        <k-button type="primary" @click="submit">确定</k-button>
-      </div>
-    </template>
+    <HistoryVersion v-if="isShowHistory" :historyData="historyData" />
   </k-dialog>
 </template>
 
@@ -197,6 +215,7 @@ const dataInfo = computed(() => params.info || {})
               font-size: 14px;
               font-weight: normal;
               color: #2882ff;
+              cursor: pointer;
             }
             .desc-info {
               display: flex;

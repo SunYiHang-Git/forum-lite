@@ -61,7 +61,7 @@ export default typescriptEslint.config(
     },
     rules: {
       'no-var': 'error',
-      'no-console': 'warn',
+      'no-console': 'none',
       'jsdoc/require-jsdoc': ['warn', { require: { ClassDeclaration: true }, enableFixer: false }],
       'jsdoc/require-description': 'warn',
       'jsdoc/require-param': ['warn', { checkDestructured: false }],

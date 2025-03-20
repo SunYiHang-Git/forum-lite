@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 
 import type { IData } from '../../data'
 import GoodInfoDialog from '../../GoodInfoDialog.vue'
+import { downLoadFileById } from '@/utils/download'
 
 export type IParams = {
   visible: boolean
@@ -23,40 +24,33 @@ const shopInfoParams = ref<IParams>({
 })
 
 const handleInfo = (item: any) => {
-  console.log('item--->', item)
   shopInfoParams.value.visible = true
   shopInfoParams.value.info = item
   shopInfoParams.value.cancel = () => {
     shopInfoParams.value.visible = false
   }
-  shopInfoParams.value.submit = (data?: any) => {
-    console.log('data--->', data)
-    shopInfoParams.value.visible = false
-  }
 }
 const download = (item: any) => {
-  console.log('下载--->', item)
+  downLoadFileById(item.ID)
 }
 </script>
 
 <template>
   <div class="tab-pane">
-    <el-scrollbar height="70%">
-      <div class="gird-box">
-        <div v-for="(item, index) in tableData" :key="index" class="gird-item" @click="handleInfo(item)">
-          <div class="img">
-            <IconSitemap />
+    <div class="gird-box">
+      <div v-for="(item, index) in tableData" :key="index" class="gird-item" @click="handleInfo(item)">
+        <div class="img">
+          <IconSitemap />
+        </div>
+        <div class="content">
+          <div class="box">
+            <div class="title overHide">{{ item.Name }}</div>
+            <div class="desc overHide">{{ item.FuncDes }}</div>
           </div>
-          <div class="content">
-            <div class="box">
-              <div class="title overHide">{{ item.Name }}</div>
-              <div class="desc overHide">{{ item.FuncDes }}</div>
-            </div>
-            <div class="download" @click.stop="download(item)">下载</div>
-          </div>
+          <div class="download" @click.stop="download(item)">下载</div>
         </div>
       </div>
-    </el-scrollbar>
+    </div>
   </div>
   <GoodInfoDialog v-if="shopInfoParams.visible" :params="shopInfoParams" />
 </template>
@@ -64,18 +58,15 @@ const download = (item: any) => {
 <style lang="scss" scoped>
 .tab-pane {
   width: 100%;
-  height: 100%;
   padding-bottom: 30px;
   font-family: Alibaba PuHuiTi 3;
+  overflow: hidden;
   .gird-box {
     display: grid;
-    // grid-template-columns: repeat(3, 1fr); /* 固定三列 */
     grid-template-columns: repeat(auto-fill, minmax(384px, 1fr)); /* 子元素宽度自适应，最小宽度是384px */
-    grid-template-rows: 82 px;
+    grid-template-rows: 82px;
     gap: 16px;
     width: 100%;
-    // height: 100%;
-    background-color: rgb(179, 179, 174);
   }
   .gird-item {
     display: flex;

@@ -3,16 +3,14 @@ import MainRight from './MainRight/index.vue'
 </script>
 
 <template>
-  <AppContainer>
-    <div class="goods-box">
-      <div class="aside">
-        <div class="menu">金智维市场</div>
-      </div>
-      <div class="main-box">
-        <MainRight />
-      </div>
+  <div class="goods-box">
+    <div class="aside">
+      <div class="menu">金智维市场</div>
     </div>
-  </AppContainer>
+    <div class="main-box">
+      <MainRight />
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -45,7 +43,9 @@ import MainRight from './MainRight/index.vue'
   }
   .main-box {
     flex: 1;
-    height: 100%;
+    // min-height: 100px;
+    height: 100vh;
+    overflow-y: scroll;
   }
 }
 </style>
