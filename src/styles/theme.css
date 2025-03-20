@@ -1,0 +1,60 @@
+/* themes.scss */
+
+:root.light-theme {
+  --k-bg-1: #ffffff;
+  --k-bg-2: #fafafa; /* 最浅 */
+  --k-bg-3: #dee2e6;
+  --k-bg-4: #ced4da;
+  --k-text-color: #000000;
+  --k-text-title: #0f0b1c;
+  --k-text-desc: #736f78;
+  --k-border-color: #adb5bd;
+  --k-link-color: #007bff;
+  --k-button-bg-1: #f8f9fa;
+  --k-button-bg-2: #e9ecef;
+  --k-button-text-color: #000000;
+  --k-modal-bg-color: rgba(0, 0, 0, 0.5);
+  --k-modal-content-bg-color: #ffffff;
+  --k-hover-bg-color-1: #e2e6ea;
+  --k-hover-bg-color-2: #d1d7db;
+  --k-active-bg-color-1: #eae8eb;
+  --k-active-bg-color-2: #b4bac0;
+}
+
+:root.dark-theme {
+  --k-bg-1: #343a40; /* 最浅 */
+  --k-bg-2: #2f343a;
+  --k-bg-3: #262a30;
+  --k-bg-4: #1f2227;
+  --k-text-color: #ffffff;
+  --k-border-color: #495057;
+  --k-link-color: #86b7fe;
+  --k-button-bg-1: #495057;
+  --k-button-bg-2: #343a40;
+  --k-button-text-color: #ffffff;
+  --k-modal-bg-color: rgba(255, 255, 255, 0.1);
+  --k-modal-content-bg-color: #212529;
+  --k-hover-bg-color-1: #444e56;
+  --k-hover-bg-color-2: #3e474e;
+  --k-active-bg-color-1: #3a4149;
+  --k-active-bg-color-2: #353c43;
+}
+
+:root.orange-theme {
+  --k-bg-1: #fff3e0; /* 最浅 */
+  --k-bg-2: #ffe0b2;
+  --k-bg-3: #ffcc80;
+  --k-bg-4: #ffb74d;
+  --k-text-color: #795548;
+  --k-border-color: #ffa726;
+  --k-link-color: #fb8c00;
+  --k-button-bg-1: #ff9800;
+  --k-button-bg-2: #fb8c00;
+  --k-button-text-color: #ffffff;
+  --k-modal-bg-color: rgba(0, 0, 0, 0.5);
+  --k-modal-content-bg-color: #fff3e0;
+  --k-hover-bg-color-1: #ffab40;
+  --k-hover-bg-color-2: #f57c00;
+  --k-active-bg-color-1: #e65100;
+  --k-active-bg-color-2: #bf360c;
+}

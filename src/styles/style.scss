@@ -1,0 +1,212 @@
+@import './theme.css';
+
+/* 阿里巴巴标准CSS初始化 */
+html {
+  line-height: 1.15; /* 正文行高 */
+  -webkit-text-size-adjust: 100%; /* 禁止iPhone字体大小调整 */
+}
+
+body {
+  margin: 0; /* 移除默认边距 */
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol'; /* 设置全局字体 */
+  background-color: var(--k-bg-1);
+  color: var(--k-text-color);
+  border-color: var(--k-border-color);
+}
+
+main {
+  display: block; /* 让<main>元素表现为块级元素 */
+}
+
+h1 {
+  font-size: 2em;
+  margin: 0.67em 0; /* 重置标题间距 */
+}
+
+hr {
+  box-sizing: content-box; /* 统一box-sizing */
+  height: 0; /* 移除默认高度 */
+  overflow: visible; /* 改善跨浏览器兼容性 */
+}
+
+pre {
+  font-family: monospace, monospace; /* 使用等宽字体 */
+  font-size: 1em; /* 保持代码块字体大小一致 */
+}
+
+a {
+  background-color: transparent; /* 移除链接背景色 */
+  -webkit-text-decoration-skip: objects; /* 改善链接内文本装饰 */
+}
+
+abbr[title] {
+  border-bottom: none; /* 移除默认下划线 */
+  text-decoration: underline dotted; /* 添加点状下划线 */
+}
+
+b,
+strong {
+  font-weight: bolder; /* 强调文字加粗 */
+}
+
+code,
+kbd,
+samp {
+  font-family: monospace, monospace; /* 确保代码等使用等宽字体 */
+  font-size: 1em; /* 保持字体大小一致 */
+}
+
+small {
+  font-size: 80%; /* 小字体尺寸 */
+}
+
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+sup {
+  top: -0.5em;
+}
+
+img {
+  border-style: none; /* 移除图片边框 */
+}
+
+button,
+input[type='submit'],
+input[type='reset'] {
+  background-color: var(--k-button-bg-1);
+  color: var(--k-button-text-color);
+  border: 1px solid var(--k-border-color);
+}
+
+button:hover,
+input[type='submit']:hover,
+input[type='reset']:hover {
+  background-color: var(--k-hover-bg-color-1);
+}
+
+button:active,
+input[type='submit']:active,
+input[type='reset']:active {
+  background-color: var(--k-active-bg-color-1);
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit; /* 从父元素继承字体 */
+  font-size: 100%; /* 继承字体大小 */
+  line-height: 1.15; /* 继承行高 */
+  margin: 0; /* 移除默认外边距 */
+}
+
+button,
+input {
+  overflow: visible; /* 改善表单控件的溢出处理 */
+}
+
+button,
+select {
+  text-transform: none; /* 移除按钮和选择框的文本转换 */
+}
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button; /* 改善表单按钮的外观 */
+}
+
+button::-moz-focus-inner,
+[type='button']::-moz-focus-inner,
+[type='reset']::-moz-focus-inner,
+[type='submit']::-moz-focus-inner {
+  border-style: none;
+  padding: 0;
+}
+
+button:-moz-focusring,
+[type='button']:-moz-focusring,
+[type='reset']:-moz-focusring,
+[type='submit']:-moz-focusring {
+  outline: 1px dotted ButtonText;
+}
+
+fieldset {
+  padding: 0.35em 0.75em 0.625em;
+}
+
+legend {
+  box-sizing: border-box;
+  color: inherit;
+  display: table;
+  max-width: 100%;
+  padding: 0;
+  white-space: normal;
+}
+
+progress {
+  vertical-align: baseline;
+}
+
+textarea {
+  overflow: auto; /* 改善<textarea>的滚动行为 */
+}
+
+[type='checkbox'],
+[type='radio'] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+[type='number']::-webkit-inner-spin-button,
+[type='number']::-webkit-outer-spin-button {
+  height: auto;
+}
+
+[type='search'] {
+  -webkit-appearance: textfield; /* 改善搜索输入框的外观 */
+  outline-offset: -2px;
+}
+
+[type='search']::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+
+details {
+  display: block;
+}
+
+summary {
+  display: list-item;
+}
+
+template {
+  display: none;
+}
+
+[hidden] {
+  display: none;
+}
+
+.vxe-table--empty-content {
+  transform: translateY(-30px);
+}
