@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-
+import TextTip from '@/component/TextTip/index.vue'
 import { historyList, type IHistoryList } from './data'
 import HistoryVersion from './HistoryVersion.vue'
 import type { IParams } from './TableDataShop/components/TabPane.vue'
@@ -35,7 +35,6 @@ const showHistoryVersion = () => {
 }
 
 const download = () => {
-  console.log('ssssss--->', params.info)
   downLoadFileById(params.info.ID)
 }
 </script>
@@ -57,12 +56,16 @@ const download = () => {
         <div class="func-content">
           <div class="func-box">
             <div class="func-title">功能描述</div>
-            <div class="func-desc">{{ dataInfo.FuncDes }}</div>
+            <!-- <div class="func-desc">{{ dataInfo.FuncDes }}</div> -->
+            <div class="func-desc">
+              <TextTip :text="dataInfo.FuncDes" :lineNumber="3" />
+            </div>
           </div>
           <div class="update-box">
             <div class="left-update">
               <div class="update-title">变更内容</div>
-              <div class="update-desc">{{ dataInfo.UpdateInfo }}</div>
+              <!-- <div class="update-desc">{{ dataInfo.UpdateInfo }}</div> -->
+              <div class="update-desc"><TextTip :text="dataInfo.UpdateInfo" :lineNumber="3" /></div>
             </div>
             <div class="right-update">
               <div class="history" @click="showHistoryVersion">版本历史记录</div>

@@ -39,12 +39,6 @@ const tableData = ref<IData[]>([])
 /** 处理滚动事件 */
 const handleScroll = () => {
   console.log('111--->')
-  if (!searchRef.value) return
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-  console.log('scrollTop--->', scrollTop)
-  console.log('searchRef.value--->', searchRef.value)
-  const offsetTop = searchRef.value?.top + scrollTop
-  console.log('offsetTop--->', offsetTop)
 }
 
 /** 获取数据 */
@@ -53,8 +47,9 @@ const getTableData = async () => {
 }
 
 onMounted(() => {
-  console.log('window--->', window)
-  window.addEventListener('scroll', handleScroll)
+  window.addEventListener('scroll', () => {
+    console.log('2222--->')
+  })
   getTableData()
 })
 
