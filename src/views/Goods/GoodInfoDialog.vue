@@ -54,27 +54,27 @@ const download = () => {
       </div>
       <div class="main-box">
         <div class="func-content">
-          <div class="func-box">
-            <div class="func-title">功能描述</div>
-            <!-- <div class="func-desc">{{ dataInfo.FuncDes }}</div> -->
-            <div class="func-desc">
-              <TextTip :text="dataInfo.FuncDes" :lineNumber="3" />
-            </div>
-          </div>
-          <div class="update-box">
-            <div class="left-update">
-              <div class="update-title">变更内容</div>
-              <!-- <div class="update-desc">{{ dataInfo.UpdateInfo }}</div> -->
-              <div class="update-desc"><TextTip :text="dataInfo.UpdateInfo" :lineNumber="3" /></div>
-            </div>
-            <div class="right-update">
-              <div class="history" @click="showHistoryVersion">版本历史记录</div>
-              <div class="desc-info">
-                <div class="time">{{ dataInfo.CreateTime }}</div>
-                <div class="version">{{ dataInfo.Ver }}</div>
+          <k-scrollbar max-height="90%">
+            <div class="func-box">
+              <div class="func-title">功能描述</div>
+              <div class="func-desc">
+                <TextTip :text="dataInfo.FuncDes" :lineNumber="3" />
               </div>
             </div>
-          </div>
+            <div class="update-box">
+              <div class="left-update">
+                <div class="update-title">变更内容</div>
+                <div class="update-desc"><TextTip :text="dataInfo.UpdateInfo" :lineNumber="3" /></div>
+              </div>
+              <div class="right-update">
+                <div class="history" @click="showHistoryVersion">版本历史记录</div>
+                <div class="desc-info">
+                  <div class="time">{{ dataInfo.CreateTime }}</div>
+                  <div class="version">{{ dataInfo.Ver }}</div>
+                </div>
+              </div>
+            </div>
+          </k-scrollbar>
         </div>
         <div class="develop-box">
           <div class="dev">
@@ -120,8 +120,11 @@ const download = () => {
 }
 .info-dialog {
   .content-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
     width: 100%;
-    min-height: 300px;
+    height: 600px;
     .top {
       display: flex;
       align-items: start;
@@ -172,14 +175,18 @@ const download = () => {
       }
     }
     .main-box {
+      flex: 1;
+      min-height: 300px;
       display: flex;
       justify-content: space-between;
       gap: 40px;
       margin-top: 32px;
       width: 100%;
+      overflow: hidden;
       .func-content {
         flex: 1;
         min-width: 100px;
+        height: 100%;
         .func-box {
           .func-title {
             font-size: 16px;

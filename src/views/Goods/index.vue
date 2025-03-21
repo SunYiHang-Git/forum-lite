@@ -19,9 +19,11 @@ import MainRight from './MainRight/index.vue'
   justify-content: start;
   align-items: start;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   overflow: hidden;
   .aside {
+    top: 0;
+    left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -43,9 +45,8 @@ import MainRight from './MainRight/index.vue'
   }
   .main-box {
     flex: 1;
-    // min-height: 100px;
     height: 100vh;
-    overflow-y: scroll;
+    overflow: hidden;
   }
 }
 </style>

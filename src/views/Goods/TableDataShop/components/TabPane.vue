@@ -60,7 +60,6 @@ const download = (item: any) => {
   width: 100%;
   padding-bottom: 30px;
   font-family: Alibaba PuHuiTi 3;
-  overflow: hidden;
   .gird-box {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(384px, 1fr)); /* 子元素宽度自适应，最小宽度是384px */

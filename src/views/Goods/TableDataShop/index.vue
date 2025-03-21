@@ -1,25 +1,37 @@
 <script setup lang="ts">
 import type { TabsPaneContext } from 'element-plus'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 import type { IData } from '../data'
 import TabPane from './components/TabPane.vue'
 
-const { topTitleList, tableData } = defineProps<{
+const { topTitleList, tableData, activeNameTab } = defineProps<{
   topTitleList: any[]
   tableData: IData[]
+  activeNameTab: string
 }>()
 
 const activeName = ref('all')
 
-const handleClick = (tab: TabsPaneContext, event: Event) => {
-  console.log(tab, event)
+const handleClick = (tabName: string) => {
+  console.log('tab--->', tabName)
 }
+
+watch(
+  () => activeNameTab,
+  (val) => {
+    if (!val) return
+    activeName.value = val
+  },
+  {
+    immediate: true,
+  },
+)
 </script>
 
 <template>
   <div class="table-shop">
-    <k-tabs v-model="activeName" class="shop-tabs" @tab-click="handleClick">
+    <k-tabs v-model="activeName" class="shop-tabs" @tab-change="handleClick">
       <k-tab-pane v-for="(item, index) in topTitleList" :key="index" :label="item.label" :name="item.name">
         <template #default>
           <div class="tab-pane-box">
@@ -34,13 +46,11 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 <style lang="scss" scoped>
 .table-shop {
   width: 100%;
-  min-height: 100px;
   box-sizing: border-box;
   padding: 50px;
+  padding-top: 80px;
   .tab-pane-box {
     display: flex;
-    min-height: 200px;
-    height: 100%;
   }
 }
 </style>
