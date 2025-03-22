@@ -2,6 +2,7 @@ import './styles/style.scss'
 import 'element-plus/dist/index.css'
 import 'vxe-table/lib/style.css'
 import 'ksw-vue-icon/styles/icon.css'
+import '@ksware/ksw-ux/kingsware-ui/style.css'
 
 import KswUx from '@ksware/ksw-ux'
 // 封装统一请求方法

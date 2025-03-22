@@ -109,7 +109,7 @@ const handleSearch = async () => {
       </div>
     </div>
     <div class="table-box">
-      <TableDataShop :table-data="tableData" :top-title-list="topTitleList" :activeNameTab="activeNameTab" />
+      <TableDataShop :table-data="tableData" :tabsList="topTitleList" :activeNameTab="activeNameTab" />
     </div>
   </div>
 </template>

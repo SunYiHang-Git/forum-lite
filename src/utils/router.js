@@ -16,11 +16,23 @@ export const routeList = [
     component: () => import('@/views/login/loginIndex.vue'),
   },
   {
-    // 路由地址，同主框架里面增加菜单的路由地址
     path: '/shop',
     name: '金智维市场',
     // 单个路由组件，即，要显示的网页内容
     component: () => import('@/views/Goods/index.vue'),
+  },
+  {
+    path: '/application',
+    name: '应用管理',
+    // 单个路由组件，即，要显示的网页内容
+    component: () => import('@/views/ApplicationManage/index.vue'),
+    children: [
+      {
+        path: '',
+        name: 'app-manage',
+        component: () => import('@/views/ApplicationManage/Application/index.vue'),
+      },
+    ],
   },
   // 模版页面,用户管理页面
   {

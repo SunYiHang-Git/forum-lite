@@ -5,8 +5,8 @@ import { ref, watch } from 'vue'
 import type { IData } from '../data'
 import TabPane from './components/TabPane.vue'
 
-const { topTitleList, tableData, activeNameTab } = defineProps<{
-  topTitleList: any[]
+const { tabsList, tableData, activeNameTab } = defineProps<{
+  tabsList: any[]
   tableData: IData[]
   activeNameTab: string
 }>()
@@ -32,7 +32,7 @@ watch(
 <template>
   <div class="table-shop">
     <k-tabs v-model="activeName" class="shop-tabs" @tab-change="handleClick">
-      <k-tab-pane v-for="(item, index) in topTitleList" :key="index" :label="item.label" :name="item.name">
+      <k-tab-pane v-for="(item, index) in tabsList" :key="index" :label="item.label" :name="item.name">
         <template #default>
           <div class="tab-pane-box">
             <TabPane :table-data="tableData" />
