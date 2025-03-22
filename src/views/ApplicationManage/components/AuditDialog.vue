@@ -10,7 +10,7 @@ interface RuleForm {
 }
 const dialogVisible = computed(() => params.visible)
 const ruleFormRef = ref<FormInstance>()
-const form = reactive({
+const form = reactive<RuleForm>({
   auditType: true,
   desc: '',
 })
@@ -27,9 +27,9 @@ const rules = reactive<FormRules<RuleForm>>({
 
 /** 取消 */
 const handleCancel = (ruleFormRef: FormInstance | undefined) => {
-  params.cancel()
   if (!ruleFormRef) return
   ruleFormRef.resetFields()
+  params.cancel()
 }
 
 /** 确定 */
@@ -46,7 +46,7 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
     width="500"
     title="审核应用"
     class="audit-dialog"
-    @close="handleCancel"
+    @close="handleCancel(ruleFormRef)"
     :close-on-click-modal="false"
   >
     <div class="content-box">

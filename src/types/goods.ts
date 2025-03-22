@@ -1,3 +1,4 @@
+/** 应用基础数据类型 */
 export type IGoodDataType = {
   id?: string
   /** 父级id */
@@ -45,9 +46,27 @@ export type IGoodDataType = {
   /** 分类 */
   classify?: any
   /** 标签 */
-  tag?: any
+  tags?: any
   /** 简介 */
   blurb?: string
+}
+
+/** 分类数据类型 */
+export type IClassify = {
+  /** ID */
+  id?: string
+  /** 名称 */
+  name?: string
+  /** PID */
+  pid?: string
+  /** 级别(分组层级) */
+  level?: string
+  /** 排序 */
+  sort?: string
+  /** 商品类型 0=分组; 1=分类 */
+  shopType?: '0' | '1'
+  /** 分类下应用数量 */
+  appNumber?: string
 }
 
 export type IColumn<T> = {
@@ -61,5 +80,7 @@ export type IColumn<T> = {
   width?: string
   /** 类型 */
   dataType?: string
+  /** 列头文本对齐 */
+  align?: 'center' | 'left' | 'right'
   [key: string]: any
 }

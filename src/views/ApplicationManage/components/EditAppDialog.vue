@@ -50,9 +50,9 @@ const httpRequest = async ({ file }: { file: File }) => {
 
 /** 取消 */
 const handleCancel = (ruleFormRef: FormInstance | undefined) => {
+  if (!ruleFormRef) return
+  ruleFormRef.resetFields()
   params.cancel()
-  // if (!ruleFormRef) return
-  // ruleFormRef.resetFields()
 }
 
 /** 确定 */
@@ -69,7 +69,7 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
     width="600"
     title="审核应用"
     class="edit-app-dialog"
-    @close="handleCancel"
+    @close="handleCancel(ruleFormRef)"
     :close-on-click-modal="false"
   >
     <div class="content-box">
