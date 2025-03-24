@@ -2,7 +2,7 @@
 import { nextTick, onMounted, reactive, ref, watch } from 'vue'
 
 import TabPane from './components/TabPane.vue'
-import type { IGoodDataType } from '@/types/goods'
+import type { IGoodDataType, ITagType } from '@/types/goods'
 import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 export interface ITabDataList {
   id?: string
@@ -39,6 +39,9 @@ const allOption = ref<ITabDataList>({
   total: 0,
 })
 
+/** 标签列表 */
+const tagsList = ref<ITagType[]>([])
+
 /** 获取分类数据 */
 const getClassifyData = async () => {
   const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsGroupList', {})
@@ -73,7 +76,8 @@ const getClassifyData = async () => {
   tabDataList.value = arr
 }
 /** 获取标签数据 */
-const getTagsData = async (data: any) => {
+const getTagsData = async () => {
+  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', {})
   const table = new SQLTable(data.k_tag)
   const rows = []
   while (!table.eof()) {
@@ -90,10 +94,8 @@ const getTagsData = async (data: any) => {
     rows.push(row)
     table.next()
   }
-  return rows
+  tagsList.value = rows
 }
-/** 数据 */
-const tableData = reactive<IGoodDataType[]>([])
 /**
  * 获取应用数据
  *
@@ -103,19 +105,26 @@ const tableData = reactive<IGoodDataType[]>([])
  * @param pageSize 页面尺寸
  */
 const getAppList = async (name: string = '', id: string = '', pageNum: number = 1, pageSize: number = 20) => {
-  const params = { isAudit: false, Name: name, ClassifyID: id === 'all' ? '' : id, pageNumber: pageNum, pageSize }
-  console.log('params--->', params)
-  // const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', { isAudit: false, Name: '' })
+  const params = {
+    isAudit: false,
+    Name: name,
+    ClassifyID: id === 'all' ? '' : id,
+    pageNumber: pageNum,
+    pageSize,
+    IsLimit: true,
+  }
   const { data, pageNumber, page, total }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params)
-  console.log('data--->', data)
   const table = new SQLTable(data.k_lite_application)
   const rows = []
   while (!table.eof()) {
+    const pid = table.s('PID')
+    const id = table.s('ID')
     const row = {
-      id: table.s('ID'),
-      pid: table.s('PID'),
+      id,
+      pid,
       name: table.s('Name'),
       icon: table.s('Icon'),
+      blurb: table.s('Blurb'),
       createTime: table.s('CreateTime'),
       sort: table.s('Sort'),
       developer: table.s('Developer'),
@@ -131,24 +140,18 @@ const getAppList = async (name: string = '', id: string = '', pageNum: number = 
       devUserName: table.s('DevUserName'),
       modifyUserName: table.s('ModifyUserName'),
       auditUserName: table.s('AuditUserName'),
+      tags: tagsList.value.filter((item) => item.appId === id),
     }
     rows.push(row)
     table.next()
   }
-  // tableData.length = 0
-  // await nextTick()
-  // tableData.push(...rows)
-  // const allFindItem = tabDataList.value.find((item) => item.name === 'all')
-  // if (allFindItem) {
-  //   allFindItem.tableData = tableData as any
-  // }
-  console.log('rows--->', rows)
   return { list: rows, pageNumber, page, total }
 }
 
 /** 初始化数据 */
 async function initWindow() {
   await getClassifyData()
+  await getTagsData()
   handleClick('all')
 }
 

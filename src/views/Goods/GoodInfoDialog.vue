@@ -17,21 +17,24 @@ const handleClose = () => {
 }
 
 const dataInfo = computed(() => params.info || {})
+setTimeout(() => {
+  console.log('dataInfo--->', dataInfo)
+}, 1500)
 
-const historyData = ref<{
-  list: IHistoryList[]
+const historyDataParams = ref<{
+  id: string
   goBack: () => void
 }>({
-  list: [],
+  id: dataInfo.value.id as string,
   goBack: () => {
     isShowHistory.value = false
   },
 })
 
 const showHistoryVersion = () => {
-  // 请求
-  historyData.value.list = historyList
+  // 请求 GetShopsAppInfo
   isShowHistory.value = true
+  console.log('historyDataParams.value--->', historyDataParams.value)
 }
 
 const download = () => {
@@ -89,22 +92,13 @@ const download = () => {
           <div class="tag-box">
             <div class="title">标签</div>
             <div class="tags">
-              <div class="tag">金融</div>
-              <div class="tag">脚本</div>
-              <div class="tag">金融</div>
-              <div class="tag">脚本</div>
-              <div class="tag">金融</div>
-              <div class="tag">脚本</div>
-              <div class="tag">金融</div>
-              <div class="tag">脚本</div>
-              <div class="tag">金融</div>
-              <div class="tag">脚本</div>
+              <div class="tag" v-for="item in dataInfo.tags" :key="item.id">{{ item.name }}</div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <HistoryVersion v-if="isShowHistory" :historyData="historyData" />
+    <HistoryVersion v-if="isShowHistory" :historyData="historyDataParams" />
   </k-dialog>
 </template>
 

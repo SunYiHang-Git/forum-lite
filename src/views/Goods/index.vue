@@ -1,11 +1,24 @@
 <script setup lang="ts">
 import MainRight from './MainRight/index.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const handleMenu = (e: any) => {
+  const target = e.target
+  if (target && target.dataset && target.dataset.name) {
+    const { name } = target.dataset
+    router.push(name)
+  }
+}
 </script>
 
 <template>
   <div class="goods-box">
     <div class="aside">
-      <div class="menu">金智维市场</div>
+      <!-- <div class="menu">金智维市场</div> -->
+      <div class="menu-box" @click="handleMenu">
+        <!-- <div class="menu" data-name="application">应用管理</div> -->
+        <div class="menu" data-name="shop">金智维市场</div>
+      </div>
     </div>
     <div class="main-box">
       <MainRight />
@@ -22,25 +35,30 @@ import MainRight from './MainRight/index.vue'
   height: 100vh;
   overflow: hidden;
   .aside {
-    top: 0;
-    left: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 10px;
     width: 280px;
     height: 100%;
-    .menu {
+    .menu-box {
       display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 8px 12px;
-      gap: 8px;
-      width: 256px;
-      height: 36px;
-      border-radius: 8px;
-      background-color: var(--k-active-bg-color-1);
-      cursor: pointer;
+      justify-content: space-between;
+      gap: 1px;
+      width: 100%;
+      height: 100%;
+      .menu {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 8px 12px;
+        gap: 8px;
+        width: 256px;
+        height: 36px;
+        border-radius: 8px;
+        background-color: var(--k-active-bg-color-1);
+        cursor: pointer;
+      }
     }
   }
   .main-box {

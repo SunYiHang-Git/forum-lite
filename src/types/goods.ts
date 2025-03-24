@@ -33,8 +33,8 @@ export type IGoodDataType = {
   version?: string
   /** 下载次数 */
   downloadCount?: string
-  /** 审核 */
-  audit?: string
+  /** 审核状态 */
+  status?: string
   /** 审核人 */
   auditBy?: string
   /** 审核时间 */
@@ -85,6 +85,17 @@ export type ITagType = {
   appNumber?: string
   /** appId 对应应用 ID */
   appId?: string
+}
+
+/** 历史版本 */
+export type IHistoryList = {
+  id: string
+  /** 版本号,没有V , : 2.6.0 */
+  version: string
+  /** 版本描述 */
+  updateInfo: string
+  /** 发布时间 */
+  onLineTime: string
 }
 
 export type IColumn<T> = {

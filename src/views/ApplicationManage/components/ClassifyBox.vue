@@ -4,6 +4,7 @@ import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import AddOrEditName, { type IDialogParamsType, type IFormData, type IFormRenderType } from './AddOrEditName.vue'
 import { nextTick, onMounted, reactive, ref } from 'vue'
 import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
+import { getClassifyListAPI } from './data'
 interface IFormType {
   name?: string
 }
@@ -38,22 +39,7 @@ const tableData = reactive<IClassify[]>([])
 
 /** 获取分类数据 */
 const getClassifyData = async () => {
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsGroupList', {})
-  const table = new SQLTable(data.k_lite_shops_group)
-  const rows = []
-  while (!table.eof()) {
-    const row = {
-      id: table.s('ID'),
-      pid: table.s('PID'),
-      name: table.s('Name'),
-      level: table.s('Level'),
-      sort: table.s('Sort'),
-      shopType: table.s('ShopType') as '0' | '1',
-      appNumber: table.s('AppNumber'),
-    }
-    rows.push(row)
-    table.next()
-  }
+  const rows = await getClassifyListAPI()
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)

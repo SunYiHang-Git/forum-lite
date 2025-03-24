@@ -1,7 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 const searchValue = ref<string>('')
+
+const handleMenu = (e: any) => {
+  const target = e.target
+  if (target && target.dataset && target.dataset.name) {
+    const { name } = target.dataset
+    router.push(name)
+  }
+}
 </script>
 
 <template>
@@ -20,8 +30,8 @@ const searchValue = ref<string>('')
     </div>
     <div class="main-box">
       <div class="aside">
-        <div class="menu-box">
-          <div class="menu">应用管理</div>
+        <div class="menu-box" @click="handleMenu">
+          <div class="menu" data-name="application">应用管理</div>
           <div class="menu">集群管理</div>
           <div class="menu">任务管理</div>
         </div>
@@ -120,6 +130,7 @@ const searchValue = ref<string>('')
         box-sizing: border-box;
         padding-left: 20px;
         background-color: #f0fbff;
+        cursor: pointer;
       }
     }
     .main-right {

@@ -2,11 +2,13 @@
 import type { IGoodDataType } from '@/types/goods'
 import { KMessage } from '@ksware/ksw-ux'
 import type { FormInstance, FormRules, UploadProps } from 'element-plus'
-import { computed, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { getClassifyListAPI, getTagsListAPI } from './data'
+import { callServerFunc } from '@ksware/micro-lib-web-temp'
 
-type RuleForm = Pick<IGoodDataType, 'name' | 'icon' | 'blurb' | 'instructions'> & {
+type RuleForm = Pick<IGoodDataType, 'name' | 'icon' | 'blurb' | 'funcDes'> & {
   classify?: string
-  tag?: string
+  tags?: string[]
 }
 const { params } = defineProps<{
   params: any
@@ -18,8 +20,8 @@ const form = reactive<RuleForm>({
   name: '',
   blurb: '',
   classify: '',
-  tag: '',
-  instructions: '',
+  tags: [],
+  funcDes: '',
 })
 const rules = reactive<FormRules<RuleForm>>({
   name: [
@@ -28,24 +30,75 @@ const rules = reactive<FormRules<RuleForm>>({
   ],
 })
 
+/** 标签列表 */
+const tagsListOptions = ref<{ label: string; value: string }[]>([])
+/** 分类列表 */
+const classifyListOptions = ref<{ label: string; value: string }[]>([])
+/** 处理分类和标签 */
+const handleTagOrClass = async () => {
+  const arrC = await getClassifyListAPI()
+  classifyListOptions.value = arrC.map((item) => {
+    return { label: item.name, value: item.id }
+  })
+  const arrT = await getTagsListAPI()
+  tagsListOptions.value = arrT.map((item) => {
+    return { label: item.name, value: item.id }
+  })
+}
+/** 回显编辑的数据 */
+const handleEditData = () => {
+  const { icon, name, blurb, classify, tags } = params.data
+  form.icon = icon
+  form.name = name
+  form.blurb = blurb
+  form.classify = classify.map((item: any) => item.id)[0]
+  form.tags = tags.map((item: any) => item.id)
+}
+onMounted(async () => {
+  await nextTick()
+  await handleTagOrClass()
+  handleEditData()
+})
+
 const imageUrl = ref<string>('')
 
 /** 上传应用图标之前 */
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-  // if (rawFile.type !== 'image/jpeg') {
-  //   KMessage.error('Avatar picture must be JPG format!')
-  //   return false
-  // } else if (rawFile.size / 1024 / 1024 > 2) {
-  //   KMessage.error('Avatar picture size can not exceed 2MB!')
-  //   return false
-  // }
+  const validImageTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/bmp']
+
+  if (!validImageTypes.includes(rawFile.type)) {
+    KMessage.error('只能上传指定格式!')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 2) {
+    // 判断文件大小是否超过2MB
+    KMessage.error('文件大小不能超过2MB!')
+    return false
+  }
+
   return true
 }
-
+const isShowLoading = ref(false)
+const loadingText = ref('正在上传文件...')
 /** 自定义上传图标 */
 const httpRequest = async ({ file }: { file: File }) => {
   imageUrl.value = ''
   console.log('file--->', file)
+  let fileName: string = file.name
+  const requestData = {
+    /** 支持自定义存放到某个位置： 如：20240101/imgs */
+    folderName: 'Data/files',
+    /** 是否为公开的文件，就是不需要校验token，任何人都可以访问的数据， 这个数据会被系统定时清除，具体清除时间再系统设置中可以设置 */
+    isPublic: true,
+  }
+  callServerFunc('demo', 'uploadFile', requestData, { isUpload: true, file, awaitTime: true, isShowLoading: false })
+    .then(({ data }: any) => {
+      const { filePath } = data as { filePath: string }
+      console.log('filePath--->', filePath)
+    })
+    .catch(() => {})
+    .finally(() => {
+      isShowLoading.value = false
+    })
 }
 
 /** 取消 */
@@ -100,18 +153,25 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
         </k-form-item>
         <k-form-item label="分类">
           <el-select v-model="form.classify" placeholder="请选择分类">
-            <el-option label="Zone one" value="shanghai" />
+            <el-option v-for="item in classifyListOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </k-form-item>
         <k-form-item label="标签">
-          <el-select v-model="form.tag" placeholder="请选择标签">
-            <el-option label="Zone one" value="shanghai" />
+          <el-select
+            v-model="form.tags"
+            placeholder="请选择标签"
+            multiple
+            filterable
+            collapse-tags
+            collapse-tags-tooltip
+          >
+            <el-option v-for="item in tagsListOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </k-form-item>
-        <k-form-item label="使用说明">
+        <k-form-item label="功能描述">
           <k-input
-            v-model="form.instructions"
-            placeholder="请输入使用说明"
+            v-model="form.funcDes"
+            placeholder="请输入功能描述"
             :rows="5"
             type="textarea"
             show-word-limit

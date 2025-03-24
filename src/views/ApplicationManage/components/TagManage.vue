@@ -5,6 +5,7 @@ import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 import { nextTick, onMounted, reactive, ref } from 'vue'
 import type { IDialogParamsType, IFormRenderType } from './AddOrEditName.vue'
 import AddOrEditName from './AddOrEditName.vue'
+import { getTagsListAPI } from './data'
 
 interface IFormType {
   name?: string
@@ -40,26 +41,10 @@ const tableData = reactive<ITagType[]>([])
 // THawkeyeDM.GetTagList
 /** 获取标签数据 */
 const getTagsData = async () => {
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetTagList', {})
-  const table = new SQLTable(data.k_tag)
-  const rows = []
-  while (!table.eof()) {
-    const row = {
-      id: table.s('ID'),
-      name: table.s('Name'),
-      tagColor: table.s('TagColor'),
-      colorName: table.s('ColorName'),
-      sort: table.s('Sort'),
-      sType: table.s('sType') as '0' | '1',
-      appNumber: table.s('AppNumber'),
-    }
-    rows.push(row)
-    table.next()
-  }
+  const rows = await getTagsListAPI()
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)
-  console.log('rows---5555>', rows)
 }
 
 /** 初始化数据 */

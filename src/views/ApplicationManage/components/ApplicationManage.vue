@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import type { IColumn, IGoodDataType } from '@/types/goods'
+<script setup lang="tsx">
+import type { IClassify, IColumn, IGoodDataType, ITagType } from '@/types/goods'
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 import { nextTick, onMounted, reactive, ref } from 'vue'
@@ -25,12 +25,24 @@ const column = ref<IColumn<keyof IGoodDataType>[]>([
     title: '版本号',
   },
   {
-    field: 'isPassed',
-    title: '审核',
+    field: 'status',
+    title: '状态',
   },
   {
     field: 'auditUserName',
     title: '审核人',
+  },
+  {
+    field: 'classify',
+    title: '分类',
+  },
+  {
+    field: 'tags',
+    title: '标签',
+  },
+  {
+    field: 'funcDes',
+    title: '功能描述',
   },
   {
     field: 'opt',
@@ -39,18 +51,84 @@ const column = ref<IColumn<keyof IGoodDataType>[]>([
 ])
 
 const tableData = reactive<IGoodDataType[]>([])
+/** 标签列表 */
+const tagsList = ref<ITagType[]>([])
+/** 分类列表 */
+const classifyList = ref<IClassify[]>([])
+/** 获取标签数据 */
+const getTagsData = async () => {
+  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', {})
+  const table = new SQLTable(data.k_tag)
+  const rows = []
+  while (!table.eof()) {
+    const row = {
+      id: table.s('TagID'),
+      name: table.s('Name'),
+      tagColor: table.s('TagColor'),
+      colorName: table.s('ColorName'),
+      sort: table.s('Sort'),
+      sType: table.s('sType') as '0' | '1',
+      appNumber: table.s('AppNumber'),
+      appId: table.s('AppID'),
+    }
+    rows.push(row)
+    table.next()
+  }
+  tagsList.value = rows
+}
 
-async function initWindow() {
-  // 获取数据
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', { isAudit: false })
-  const table = new SQLTable(data.k_lite_application)
+/** 获取分类 */
+const getClassifyList = async () => {
+  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsGroupList', {})
+  const table = new SQLTable(data.k_lite_shops_group)
   const rows = []
   while (!table.eof()) {
     const row = {
       id: table.s('ID'),
       pid: table.s('PID'),
       name: table.s('Name'),
+      level: table.s('Level'),
+      sort: table.s('Sort'),
+      shopType: table.s('ShopType') as '0' | '1',
+      appNumber: table.s('AppNumber'),
+    }
+    rows.push(row)
+    table.next()
+  }
+  classifyList.value = rows
+}
+/**
+ * 处理审核状态
+ *
+ * @returns 0=待审核;1=已审核;2=上架;3=下架
+ */
+function handleAuditStatus(audit: '0' | '1', offLineType: '0' | '1' | '2'): string {
+  if (audit === '0') return '0'
+  if (offLineType === '0') return '1'
+  if (offLineType === '1') return '2'
+  if (offLineType === '2') return '3'
+  return '0'
+}
+/** 获取应用数据 */
+const getAppList = async (name: string = '') => {
+  // 获取数据
+  const params = { isAudit: false, Name: name, IsLimit: true }
+  console.log('params-1111-->', params)
+  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params)
+  console.log('ssssss', data)
+  const table = new SQLTable(data.k_lite_application)
+  const rows = []
+  while (!table.eof()) {
+    const pid = table.s('PID')
+    const id = table.s('ID')
+    const audit = table.s('Audit') as '0' | '1'
+    const offLineType = table.s('OffLineType') as '0' | '1' | '2'
+    const row = {
+      id,
+      pid,
+      name: table.s('Name'),
       icon: table.s('Icon'),
+      blurb: table.s('Blurb'),
       createTime: table.s('CreateTime'),
       sort: table.s('Sort'),
       developer: table.s('Developer'),
@@ -60,12 +138,14 @@ async function initWindow() {
       modifyTime: table.s('ModifyTime'),
       downloadCount: table.s('DownloadCount'),
       version: table.s('Version'),
-      audit: table.s('Audit'),
+      status: handleAuditStatus(audit, offLineType),
       auditBy: table.s('AuditBy'),
       last: table.s('Last'),
       devUserName: table.s('DevUserName'),
       modifyUserName: table.s('ModifyUserName'),
       auditUserName: table.s('AuditUserName'),
+      tags: tagsList.value.filter((item) => item.appId === id),
+      classify: classifyList.value.filter((item) => item.id === pid),
     }
     rows.push(row)
     table.next()
@@ -73,6 +153,30 @@ async function initWindow() {
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)
+  console.log('数据--->', rows)
+}
+
+/** 审核应用 */
+const auditAppById = async (id: string, auditType: boolean, desc: string = '') => {
+  const params = { ID: id, IsPassed: auditType, Remark: desc }
+  try {
+    callServerFunc('THawkeyeDM', 'AuditShopsApp', params)
+    KMessage.success('审核成功!')
+  } catch (error) {
+    KMessage.error('审核失败!')
+    console.error(error)
+  }
+}
+/** 修改应用 */
+const editApp = async () => {
+  const params = {}
+  callServerFunc('THawkeyeDM', 'AuditShopsApp', params)
+}
+
+async function initWindow() {
+  await getTagsData()
+  await getClassifyList()
+  await getAppList()
 }
 
 onMounted(() => {
@@ -98,6 +202,9 @@ const handleAudit = async (item: IGoodDataType) => {
   }
   auditDialogParams.value.submit = (data: any) => {
     auditDialogParams.value.visible = false
+    console.log('审核', data)
+    if (!item.id) return
+    auditAppById(item.id, data.auditType, data.desc)
   }
 }
 
@@ -110,18 +217,22 @@ const handleEdit = async (item: IGoodDataType) => {
   }
   editAPPDialogParams.value.submit = (data: any) => {
     editAPPDialogParams.value.visible = false
+    console.log('data--->', data)
+    editApp()
   }
 }
 /** 删除通过 Id */
 const handleDelById = async (item: IGoodDataType) => {
+  console.log('删除', item)
   try {
     await KMessageBox.confirm('确定删除应用?', '删除应用', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning',
     })
-    /** 删除接口 */
-    KMessage.success('删除成功!')
+    callServerFunc('THawkeyeDM', 'DelShopsApp', { ID: item.id })
+    KMessage.success('删除成功!' + item.id)
+    getAppList()
   } catch (error) {
     if (error === 'cancel') {
       return
@@ -135,9 +246,20 @@ const handleDelById = async (item: IGoodDataType) => {
   <div class="application-com">
     <div class="title">所有应用</div>
     <div class="table-box">
-      <k-tree-table :widgets="widgets" :data="tableData" :column="column">
+      <k-tree-table :widgets="widgets" :data="tableData" :column="column" @refresh="initWindow">
+        <template #status="{ row }">
+          <k-tag v-if="row.status === '0'" type="primary">待审核</k-tag>
+          <k-tag v-if="row.status === '1'" type="success">已审核</k-tag>
+          <k-tag v-if="row.status === '2'" type="warning">上架</k-tag>
+          <k-tag v-if="row.status === '3'" type="info">下架</k-tag>
+        </template>
+        <template #classify="{ row }">
+          <k-tag v-for="item in row.classify" :key="item.id">{{ item.name }}</k-tag>
+        </template>
+        <template #tags="{ row }">
+          <k-tag v-for="item in row.tags" :key="item.id">{{ item.name }}</k-tag>
+        </template>
         <template #opt="{ row }">
-          <!-- {{ row.funcDes }} -->
           <k-button text color="primary" @click="handleAudit(row)">审核</k-button>
           <k-button text color="primary" @click="handleEdit(row)">修改</k-button>
           <k-button text color="error" @click="handleDelById(row)">删除</k-button>

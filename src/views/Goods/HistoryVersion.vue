@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
+import { getHistoryListAPI } from '../ApplicationManage/components/data'
+import type { IHistoryList } from '@/types/goods'
+
 const { historyData } = defineProps<{
   historyData: any
 }>()
@@ -6,6 +10,12 @@ const { historyData } = defineProps<{
 const goBack = () => {
   historyData.goBack()
 }
+const id = computed(() => historyData.id)
+
+const historyList = ref<IHistoryList[]>([])
+onMounted(async () => {
+  historyList.value = await getHistoryListAPI<IHistoryList>(id.value)
+})
 </script>
 
 <template>
@@ -18,19 +28,14 @@ const goBack = () => {
     </div>
     <div class="history-main">
       <k-scrollbar max-height="100%">
-        <div v-for="item in historyData.list" :key="item.ID" class="version-box">
+        <div v-for="item in historyList" :key="item.id" class="version-box">
           <div class="left">
-            <div class="version">{{ item.Version }}</div>
+            <div class="version">{{ item.version }}</div>
             <div class="desc-box">
-              <!-- "个金拓客维客"是工商银行推出的一款综合金融服务应用。这款应用旨在提供一站式的金融解决方案，满足用户的多元化需求。
-              首先，它提供了全面的在线银行业务，包括查询余额、转账、支付账单等功能，使得用户可以随时随地进行金融交易，无需前往实体银行，大大提高了银行业务的便捷性。
-              其次，"个金拓客维客"还提供了投资和理财服务。用户可以在应用中购买和管理各种投资产品，如基金、股票和债券等，这使得用户可以更加轻松地进行资金管理和增值。
-              此外，"个金拓客维客"还提供了在线客户服务，包括答疑解惑、投诉处理等，以确保用户在使用过程中遇到任何问题都能得到及时解决。
-              总的来说，"个金拓客维客"是一款全方位的金融服务应用，它将银行业务、投资理财和客户服务等功能集于一身，为用户提供了一种方便、高效的金融服务方式。然而，具体的功能和服务可能会有所不同，建议用户直接查阅工商银行的官方资源以安装最准确的信息。 -->
-              {{ item.Desc }}
+              {{ item.updateInfo }}
             </div>
           </div>
-          <div class="time">{{ item.PublishTime }}</div>
+          <div class="time">{{ item.onLineTime }}</div>
         </div>
       </k-scrollbar>
     </div>
