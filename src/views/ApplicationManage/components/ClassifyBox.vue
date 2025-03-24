@@ -67,9 +67,9 @@ async function initWindow() {
 onMounted(() => {
   initWindow()
 })
+
 const formData = ref<IFormType>({})
 const formRenderData = ref<IFormRenderType<IFormType>[]>([])
-
 /** 新增/编辑分类 */
 const classifyParams = ref<IDialogParamsType<IFormType, IFormRenderType<IFormType>[]>>({
   visible: false,
@@ -85,7 +85,6 @@ const classifyParams = ref<IDialogParamsType<IFormType, IFormRenderType<IFormTyp
 /** 新增/编辑分类请求 */
 const callClassifyAxios = async (type: 'add' | 'edit', name: string, id: string = '') => {
   // THawkeyeDM NewShopsGroup    SetShopsGroup
-  console.log('id--->', id)
   try {
     if (type === 'add') {
       await callServerFunc('THawkeyeDM', 'NewShopsGroup', { ShopType: 1, Name: name })
@@ -99,7 +98,7 @@ const callClassifyAxios = async (type: 'add' | 'edit', name: string, id: string 
   }
 }
 
-/** 新增分类 */
+/** 新增-编辑 分类 */
 const addOrEditClassify = (type: 'add' | 'edit', row: any = {}) => {
   classifyParams.value.visible = true
   classifyParams.value.title = type === 'add' ? '新增分类' : '编辑分类'
@@ -126,7 +125,7 @@ const addOrEditClassify = (type: 'add' | 'edit', row: any = {}) => {
 /** 删除 */
 const handleDelById = async (item: IClassify) => {
   try {
-    await KMessageBox.confirm('确定删除应用?', '删除应用', {
+    await KMessageBox.confirm('确定删除分类?', '删除分类', {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       type: 'warning',
@@ -137,11 +136,9 @@ const handleDelById = async (item: IClassify) => {
     getClassifyData()
   } catch (error) {
     if (error === 'cancel') {
-      console.log('取消--->')
       return
     }
     KMessage.error('删除失败!')
-    console.log('error--->', error)
   }
 }
 </script>

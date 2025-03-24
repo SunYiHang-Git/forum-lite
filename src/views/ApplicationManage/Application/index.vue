@@ -4,7 +4,7 @@ import ApplicationCom from '../components/ApplicationManage.vue'
 import ClassifyBox from '../components/ClassifyBox.vue'
 import TagManage from '../components/TagManage.vue'
 
-const activeName = ref('classify')
+const activeName = ref('app')
 
 const tabsList = [
   {

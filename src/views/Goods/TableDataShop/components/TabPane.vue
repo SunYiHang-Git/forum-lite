@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import type { IData } from '../../data'
 import GoodInfoDialog from '../../GoodInfoDialog.vue'
 import { downLoadFileById } from '@/utils/download'
+import type { IGoodDataType } from '@/types/goods'
 
 export type IParams = {
   visible: boolean
-  info: IData
+  info: IGoodDataType
   cancel?: () => void
   submit?: (data?: any) => void
   [key: string]: any
@@ -20,10 +20,11 @@ onMounted(() => {})
 
 const shopInfoParams = ref<IParams>({
   visible: false,
-  info: { ID: '' },
+  info: { id: '' },
 })
 
 const handleInfo = (item: any) => {
+  console.log('item--->', item)
   shopInfoParams.value.visible = true
   shopInfoParams.value.info = item
   shopInfoParams.value.cancel = () => {
@@ -44,8 +45,8 @@ const download = (item: any) => {
         </div>
         <div class="content">
           <div class="box">
-            <div class="title overHide">{{ item.Name }}</div>
-            <div class="desc overHide">{{ item.FuncDes }}</div>
+            <div class="title overHide">{{ item.name }}</div>
+            <div class="desc overHide">{{ item.funcDes }}</div>
           </div>
           <div class="download" @click.stop="download(item)">下载</div>
         </div>
@@ -116,7 +117,6 @@ const download = (item: any) => {
           line-height: 24px;
           font-size: 16px;
           font-weight: 600;
-          color: #0f0b1c;
           color: var(--k-text-title);
         }
         .desc {

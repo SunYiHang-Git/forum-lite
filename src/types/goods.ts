@@ -41,8 +41,6 @@ export type IGoodDataType = {
   auditTime?: string
   /** 审核人名称 */
   auditUserName?: string
-  /** 使用说明 */
-  instructions?: string
   /** 分类 */
   classify?: any
   /** 标签 */
@@ -67,6 +65,26 @@ export type IClassify = {
   shopType?: '0' | '1'
   /** 分类下应用数量 */
   appNumber?: string
+}
+
+/** 标签 */
+export type ITagType = {
+  /** ID */
+  id?: string
+  /** 名称 */
+  name?: string
+  /** 颜色 */
+  tagColor?: string
+  /** 颜色名称 */
+  color?: string
+  /** 标签类型 */
+  sType?: string
+  /** 排序 */
+  sort?: string
+  /** 标签下应用数量 */
+  appNumber?: string
+  /** appId 对应应用 ID */
+  appId?: string
 }
 
 export type IColumn<T> = {

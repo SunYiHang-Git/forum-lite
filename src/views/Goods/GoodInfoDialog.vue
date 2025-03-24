@@ -35,7 +35,7 @@ const showHistoryVersion = () => {
 }
 
 const download = () => {
-  downLoadFileById(params.info.ID)
+  downLoadFileById(params.info.id)
 }
 </script>
 
@@ -43,11 +43,11 @@ const download = () => {
   <k-dialog v-model="dialogVisible" title="" width="900" class="info-dialog" :before-close="handleClose">
     <div v-if="!isShowHistory" class="content-box">
       <div class="top">
-        <div class="icon-box">头像</div>
+        <div class="icon-box">{{ dataInfo.icon }}</div>
         <div class="right-box">
-          <div class="title overHide">{{ dataInfo.Name }}</div>
+          <div class="title overHide">{{ dataInfo.name }}</div>
           <div class="desc overHide">
-            {{ dataInfo.FuncDes }}
+            {{ dataInfo.funcDes }}
           </div>
           <k-button main type="primary" class="button" @click="download">下载</k-button>
         </div>
@@ -58,19 +58,19 @@ const download = () => {
             <div class="func-box">
               <div class="func-title">功能描述</div>
               <div class="func-desc">
-                <TextTip :text="dataInfo.FuncDes" :lineNumber="3" />
+                <TextTip :text="dataInfo.funcDes" :lineNumber="3" />
               </div>
             </div>
             <div class="update-box">
               <div class="left-update">
                 <div class="update-title">变更内容</div>
-                <div class="update-desc"><TextTip :text="dataInfo.UpdateInfo" :lineNumber="3" /></div>
+                <div class="update-desc"><TextTip :text="dataInfo.updateInfo" :lineNumber="3" /></div>
               </div>
               <div class="right-update">
                 <div class="history" @click="showHistoryVersion">版本历史记录</div>
                 <div class="desc-info">
-                  <div class="time">{{ dataInfo.CreateTime }}</div>
-                  <div class="version">{{ dataInfo.Ver }}</div>
+                  <div class="time">{{ dataInfo.createTime }}</div>
+                  <div class="version">{{ dataInfo.version }}</div>
                 </div>
               </div>
             </div>
@@ -83,8 +83,7 @@ const download = () => {
               <div class="img">
                 <el-image style="width: 100%; height: 100%" src="/images/RPA.png" fit="fill" />
               </div>
-              <!-- <div class="team">K-RPA Lite 团队</div> -->
-              <div class="team">{{ dataInfo.Developer }}</div>
+              <div class="team">{{ dataInfo.devUserName }}</div>
             </div>
           </div>
           <div class="tag-box">

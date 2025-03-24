@@ -1,48 +1,22 @@
 <script setup lang="ts">
-import TableDataShop from '../TableDataShop/index.vue'
-import { nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
-import { tableDataList, type IData } from '../data'
-
-const topTitleList = [
-  {
-    label: '全部',
-    name: 'all',
-  },
-  {
-    label: '金融',
-    name: 'banking',
-  },
-  {
-    label: '信贷',
-    name: 'credit',
-  },
-  {
-    label: '生活',
-    name: 'life',
-  },
-  {
-    label: '电商',
-    name: 'retailers',
-  },
-  {
-    label: '财务',
-    name: 'finance',
-  },
-]
-
+import TableDataShop, { type ITabDataList } from '../TableDataShop/index.vue'
+import { nextTick, onMounted, ref, useTemplateRef } from 'vue'
+/** 搜索值 */
 const searchValue = ref<string>('')
-
+/** tab 切换名称 */
 const activeNameTab = ref<string>('')
 
 const mainBoxRef = useTemplateRef('mainBoxRef')
 
+const tabPineChange = ref<{ item: ITabDataList | null; cb: Function }>({
+  item: null,
+  cb: (name: string, id: string, pageNumber: number = 1) => {},
+})
+
 const isShowStickyInput = ref(false)
 
-/** 数据 */
-const tableData = ref<IData[]>([])
-
 /** 处理滚动事件 */
-const handleScroll = (data: any) => {
+const handleScroll = async (data: any) => {
   if (!mainBoxRef.value) return
   const { scrollTop, clientHeight, scrollHeight } = data.target
   if (scrollTop < 190 && isShowStickyInput.value === true) {
@@ -52,29 +26,43 @@ const handleScroll = (data: any) => {
   }
   //
   if (scrollTop + clientHeight >= scrollHeight) {
-    console.log('到底了--->')
+    console.log('到底了--->', tabPineChange.value.item)
+    const { page, pageNumber, id, tableData }: any = tabPineChange.value.item
+    if (pageNumber === page) {
+      console.log('没有数据离开--->')
+      return
+    }
+    const object = await tabPineChange.value.cb(searchValue.value, id, pageNumber + 1)
+    const { list } = object
+    tableData.push(...list)
+    tabPineChange.value.item!.pageNumber = object.pageNumber
+    tabPineChange.value.item!.page = object.page
+    tabPineChange.value.item!.total = object.total
   }
 }
 
-const pageNum = ref<number>(1)
-
-/** 获取数据 */
-const getTableData = async (value: string = '') => {
-  tableData.value = await Promise.resolve(tableDataList)
+async function sendHandleSearch(item: ITabDataList, cb: any) {
+  tabPineChange.value.item = item
+  tabPineChange.value.cb = cb
+  await nextTick()
+  handleScroll({ target: mainBoxRef.value })
+}
+/** 查询 */
+const handleSearch = async () => {
+  const { page, pageNumber, id, tableData }: any = tabPineChange.value.item
+  const object = await tabPineChange.value.cb(searchValue.value, tabPineChange.value.item?.id)
+  const { list } = object
+  tableData.length = 0
+  await nextTick()
+  tableData.push(...list)
+  tabPineChange.value.item!.pageNumber = object.pageNumber
+  tabPineChange.value.item!.page = object.page
+  tabPineChange.value.item!.total = object.total
 }
 
 onMounted(async () => {
-  getTableData()
+  //
 })
-
-/** 查询 */
-const handleSearch = async () => {
-  activeNameTab.value = ''
-  await nextTick()
-  activeNameTab.value = 'all'
-  console.log('searchValue--->', searchValue.value)
-  // getTableData(searchValue.value)
-}
 </script>
 
 <template>
@@ -109,7 +97,7 @@ const handleSearch = async () => {
       </div>
     </div>
     <div class="table-box">
-      <TableDataShop :table-data="tableData" :tabsList="topTitleList" :activeNameTab="activeNameTab" />
+      <TableDataShop :searchValue="searchValue" :activeNameTab="activeNameTab" @sendHandleSearch="sendHandleSearch" />
     </div>
   </div>
 </template>

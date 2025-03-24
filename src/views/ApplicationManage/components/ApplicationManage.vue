@@ -43,7 +43,6 @@ const tableData = reactive<IGoodDataType[]>([])
 async function initWindow() {
   // 获取数据
   const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', { isAudit: false })
-  console.log('data--->', data)
   const table = new SQLTable(data.k_lite_application)
   const rows = []
   while (!table.eof()) {
@@ -74,7 +73,6 @@ async function initWindow() {
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)
-  console.log('tableData--->', tableData)
 }
 
 onMounted(() => {
@@ -99,7 +97,6 @@ const handleAudit = async (item: IGoodDataType) => {
     auditDialogParams.value.visible = false
   }
   auditDialogParams.value.submit = (data: any) => {
-    console.log('data--->', data)
     auditDialogParams.value.visible = false
   }
 }
@@ -112,7 +109,6 @@ const handleEdit = async (item: IGoodDataType) => {
     editAPPDialogParams.value.visible = false
   }
   editAPPDialogParams.value.submit = (data: any) => {
-    console.log('data--->', data)
     editAPPDialogParams.value.visible = false
   }
 }
@@ -128,11 +124,9 @@ const handleDelById = async (item: IGoodDataType) => {
     KMessage.success('删除成功!')
   } catch (error) {
     if (error === 'cancel') {
-      console.log('取消--->')
       return
     }
     KMessage.error('删除失败!')
-    console.log('error--->', error)
   }
 }
 </script>
