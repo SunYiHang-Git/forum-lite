@@ -119,7 +119,6 @@ function handleAuditStatus(audit: '0' | '1', offLineType: '0' | '1' | '2'): stri
 const getAppList = async (name: string = '') => {
   // 获取数据
   const params = { isAudit: false, Name: name, IsLimit: false }
-  console.log('params-1111-->', params)
   const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params, { isShowLoading: true })
   const table = new SQLTable(data.k_lite_application)
   const rows = []
@@ -190,6 +189,22 @@ const editApp = async (data: any) => {
     console.error(error)
   }
 }
+/** 新增应用 */
+const addAppAPI = async (data: any) => {
+  const { icon, id, name, blurb, classify, funcDes, tags } = data
+  const TaIDList = tags.join(',')
+  const UpdateInfo = '更新信息.....'
+  const params = { Icon: icon, Name: name, Blurb: blurb, PID: classify, FuncDes: funcDes, TaIDList, UpdateInfo }
+  console.log('params', params)
+  try {
+    callServerFunc('THawkeyeDM', 'NewShopsApp', params)
+    KMessage.success('新增应用成功!')
+    getAppList()
+  } catch (error) {
+    KMessage.error('新增应用失败!')
+    console.error(error)
+  }
+}
 
 async function initWindow() {
   await getTagsData()
@@ -228,7 +243,6 @@ const handleAudit = async (item: IGoodDataType) => {
 
 /** 修改 */
 const handleEdit = async (item: IGoodDataType) => {
-  console.log('item-----', item)
   editAPPDialogParams.value.visible = true
   editAPPDialogParams.value.data = item
   editAPPDialogParams.value.cancel = () => {
@@ -236,8 +250,19 @@ const handleEdit = async (item: IGoodDataType) => {
   }
   editAPPDialogParams.value.submit = (data: any) => {
     editAPPDialogParams.value.visible = false
-    console.log('data---111>', data)
     editApp({ id: item.id, ...data })
+  }
+}
+/** 新增 */
+const addApp = async () => {
+  editAPPDialogParams.value.visible = true
+  editAPPDialogParams.value.data = { icon: '', name: '', blurb: '', classify: '', tags: [], funcDes: '' }
+  editAPPDialogParams.value.cancel = () => {
+    editAPPDialogParams.value.visible = false
+  }
+  editAPPDialogParams.value.submit = (data: any) => {
+    editAPPDialogParams.value.visible = false
+    addAppAPI({ ...data })
   }
 }
 /** 删除通过 Id */
@@ -272,6 +297,9 @@ const handleDelById = async (item: IGoodDataType) => {
         @refresh="initWindow"
         :row-style="{ height: tableRowHeight + 'px' }"
       >
+        <template #custom1>
+          <k-button main @click="addApp">新增</k-button>
+        </template>
         <template #name="{ row }">
           <div class="name-app-box">
             <div class="img-icon">图标</div>

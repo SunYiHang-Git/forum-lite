@@ -20,6 +20,13 @@ export const routeList = [
     name: '金智维市场',
     // 单个路由组件，即，要显示的网页内容
     component: () => import('@/views/Goods/index.vue'),
+    children: [
+      {
+        path: '',
+        name: 'shop',
+        component: () => import('@/views/Goods/MainRight/index.vue'),
+      },
+    ],
   },
   {
     path: '/application',

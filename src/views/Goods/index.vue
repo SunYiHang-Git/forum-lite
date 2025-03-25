@@ -14,14 +14,12 @@ const handleMenu = (e: any) => {
 <template>
   <div class="goods-box">
     <div class="aside">
-      <!-- <div class="menu">金智维市场</div> -->
       <div class="menu-box" @click="handleMenu">
-        <!-- <div class="menu" data-name="application">应用管理</div> -->
         <div class="menu" data-name="shop">金智维市场</div>
       </div>
     </div>
     <div class="main-box">
-      <MainRight />
+      <router-view />
     </div>
   </div>
 </template>
