@@ -7,7 +7,8 @@ import AuditDialog from './AuditDialog.vue'
 import EditAppDialog from './EditAppDialog.vue'
 /** 表格工具栏 */
 const widgets = ref(['search', 'refresh', 'filter', 'transfer', 'custom1', 'sizeControl'])
-
+/** 表格每行的高度 */
+const tableRowHeight = ref<number>(60)
 const column = ref<IColumn<keyof IGoodDataType>[]>([
   {
     type: 'seq',
@@ -15,6 +16,11 @@ const column = ref<IColumn<keyof IGoodDataType>[]>([
     title: '序号',
     width: '50',
     dataType: 'number',
+  },
+  {
+    field: 'name',
+    title: '应用',
+    width: '150',
   },
   {
     field: 'devUserName',
@@ -57,7 +63,7 @@ const tagsList = ref<ITagType[]>([])
 const classifyList = ref<IClassify[]>([])
 /** 获取标签数据 */
 const getTagsData = async () => {
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', {})
+  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', {}, { isShowLoading: false })
   const table = new SQLTable(data.k_tag)
   const rows = []
   while (!table.eof()) {
@@ -79,7 +85,7 @@ const getTagsData = async () => {
 
 /** 获取分类 */
 const getClassifyList = async () => {
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsGroupList', {})
+  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsGroupList', {}, { isShowLoading: false })
   const table = new SQLTable(data.k_lite_shops_group)
   const rows = []
   while (!table.eof()) {
@@ -112,10 +118,9 @@ function handleAuditStatus(audit: '0' | '1', offLineType: '0' | '1' | '2'): stri
 /** 获取应用数据 */
 const getAppList = async (name: string = '') => {
   // 获取数据
-  const params = { isAudit: false, Name: name, IsLimit: true }
+  const params = { isAudit: false, Name: name, IsLimit: false }
   console.log('params-1111-->', params)
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params)
-  console.log('ssssss', data)
+  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params, { isShowLoading: true })
   const table = new SQLTable(data.k_lite_application)
   const rows = []
   while (!table.eof()) {
@@ -123,6 +128,8 @@ const getAppList = async (name: string = '') => {
     const id = table.s('ID')
     const audit = table.s('Audit') as '0' | '1'
     const offLineType = table.s('OffLineType') as '0' | '1' | '2'
+    const status = handleAuditStatus(audit, offLineType)
+    console.log('status-----', status)
     const row = {
       id,
       pid,
@@ -153,7 +160,7 @@ const getAppList = async (name: string = '') => {
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)
-  console.log('数据--->', rows)
+  console.log('数据', rows)
 }
 
 /** 审核应用 */
@@ -162,15 +169,26 @@ const auditAppById = async (id: string, auditType: boolean, desc: string = '') =
   try {
     callServerFunc('THawkeyeDM', 'AuditShopsApp', params)
     KMessage.success('审核成功!')
+    initWindow()
   } catch (error) {
     KMessage.error('审核失败!')
     console.error(error)
   }
 }
 /** 修改应用 */
-const editApp = async () => {
-  const params = {}
-  callServerFunc('THawkeyeDM', 'AuditShopsApp', params)
+const editApp = async (data: any) => {
+  const { icon, id, name, blurb, classify, funcDes, tags } = data
+  const TaIDList = tags.join(',')
+  const params = { Icon: icon, ID: id, Name: name, Blurb: blurb, Classify: classify, FuncDes: funcDes, TaIDList }
+  console.log('params', params)
+  try {
+    callServerFunc('THawkeyeDM', 'SetShopsApp', params)
+    KMessage.success('修改成功!')
+    getAppList()
+  } catch (error) {
+    KMessage.error('修改失败!')
+    console.error(error)
+  }
 }
 
 async function initWindow() {
@@ -210,6 +228,7 @@ const handleAudit = async (item: IGoodDataType) => {
 
 /** 修改 */
 const handleEdit = async (item: IGoodDataType) => {
+  console.log('item-----', item)
   editAPPDialogParams.value.visible = true
   editAPPDialogParams.value.data = item
   editAPPDialogParams.value.cancel = () => {
@@ -217,8 +236,8 @@ const handleEdit = async (item: IGoodDataType) => {
   }
   editAPPDialogParams.value.submit = (data: any) => {
     editAPPDialogParams.value.visible = false
-    console.log('data--->', data)
-    editApp()
+    console.log('data---111>', data)
+    editApp({ id: item.id, ...data })
   }
 }
 /** 删除通过 Id */
@@ -231,7 +250,7 @@ const handleDelById = async (item: IGoodDataType) => {
       type: 'warning',
     })
     callServerFunc('THawkeyeDM', 'DelShopsApp', { ID: item.id })
-    KMessage.success('删除成功!' + item.id)
+    KMessage.success('删除成功!')
     getAppList()
   } catch (error) {
     if (error === 'cancel') {
@@ -246,7 +265,22 @@ const handleDelById = async (item: IGoodDataType) => {
   <div class="application-com">
     <div class="title">所有应用</div>
     <div class="table-box">
-      <k-tree-table :widgets="widgets" :data="tableData" :column="column" @refresh="initWindow">
+      <k-tree-table
+        :widgets="widgets"
+        :data="tableData"
+        :column="column"
+        @refresh="initWindow"
+        :row-style="{ height: tableRowHeight + 'px' }"
+      >
+        <template #name="{ row }">
+          <div class="name-app-box">
+            <div class="img-icon">图标</div>
+            <div class="app-info">
+              <div class="app-title">{{ row.name }}</div>
+              <div class="app-blurb">{{ row.blurb }}</div>
+            </div>
+          </div>
+        </template>
         <template #status="{ row }">
           <k-tag v-if="row.status === '0'" type="primary">待审核</k-tag>
           <k-tag v-if="row.status === '1'" type="success">已审核</k-tag>
@@ -288,6 +322,38 @@ const handleDelById = async (item: IGoodDataType) => {
     height: calc(100% - 32px);
     box-sizing: border-box;
     padding-bottom: 5px;
+    .name-app-box {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      gap: 6px;
+      .img-icon {
+        width: 40px;
+        height: 40px;
+        overflow: hidden;
+        background-color: pink;
+      }
+      .app-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 46px;
+        min-width: 80px;
+        .app-title {
+          font-family: Alibaba PuHuiTi 3;
+          font-size: 14px;
+          font-weight: 600;
+          color: #38363c;
+        }
+        .app-blurb {
+          font-family: Alibaba PuHuiTi 2;
+          font-size: 14px;
+          font-weight: normal;
+          color: #38363c;
+        }
+      }
+    }
   }
 }
 </style>

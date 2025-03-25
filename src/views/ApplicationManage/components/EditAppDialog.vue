@@ -47,10 +47,11 @@ const handleTagOrClass = async () => {
 }
 /** 回显编辑的数据 */
 const handleEditData = () => {
-  const { icon, name, blurb, classify, tags } = params.data
+  const { icon, name, blurb, classify, tags, funcDes } = params.data
   form.icon = icon
   form.name = name
   form.blurb = blurb
+  form.funcDes = funcDes
   form.classify = classify.map((item: any) => item.id)[0]
   form.tags = tags.map((item: any) => item.id)
 }

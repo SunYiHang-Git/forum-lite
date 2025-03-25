@@ -17,9 +17,6 @@ const handleClose = () => {
 }
 
 const dataInfo = computed(() => params.info || {})
-setTimeout(() => {
-  console.log('dataInfo--->', dataInfo)
-}, 1500)
 
 const historyDataParams = ref<{
   id: string
