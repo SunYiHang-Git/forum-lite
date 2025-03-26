@@ -5,6 +5,7 @@ import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 import { nextTick, onMounted, reactive, ref } from 'vue'
 import AuditDialog from './AuditDialog.vue'
 import EditAppDialog from './EditAppDialog.vue'
+import { handleAuditStatus } from './data'
 /** 表格工具栏 */
 const widgets = ref(['search', 'refresh', 'filter', 'transfer', 'custom1', 'sizeControl'])
 /** 表格每行的高度 */
@@ -103,18 +104,6 @@ const getClassifyList = async () => {
   }
   classifyList.value = rows
 }
-/**
- * 处理审核状态
- *
- * @returns 0=待审核;1=已审核;2=上架;3=下架
- */
-function handleAuditStatus(audit: '0' | '1', offLineType: '0' | '1' | '2'): string {
-  if (audit === '0') return '0'
-  if (offLineType === '0') return '1'
-  if (offLineType === '1') return '2'
-  if (offLineType === '2') return '3'
-  return '0'
-}
 /** 获取应用数据 */
 const getAppList = async (name: string = '') => {
   // 获取数据
@@ -127,8 +116,6 @@ const getAppList = async (name: string = '') => {
     const id = table.s('ID')
     const audit = table.s('Audit') as '0' | '1'
     const offLineType = table.s('OffLineType') as '0' | '1' | '2'
-    const status = handleAuditStatus(audit, offLineType)
-    console.log('status-----', status)
     const row = {
       id,
       pid,
@@ -249,6 +236,7 @@ const handleEdit = async (item: IGoodDataType) => {
     editAPPDialogParams.value.visible = false
   }
   editAPPDialogParams.value.submit = (data: any) => {
+    console.log('data--->', data)
     editAPPDialogParams.value.visible = false
     editApp({ id: item.id, ...data })
   }

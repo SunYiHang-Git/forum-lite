@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import MainRight from './MainRight/index.vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const handleMenu = (e: any) => {

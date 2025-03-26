@@ -29,6 +29,7 @@ const rules = reactive<FormRules<RuleForm>>({
     { min: 2, max: 20, message: '名称为 2-20个字符', trigger: 'blur' },
   ],
 })
+const imageUrl = ref<string>('')
 
 /** 标签列表 */
 const tagsListOptions = ref<{ label: string; value: string }[]>([])
@@ -36,11 +37,11 @@ const tagsListOptions = ref<{ label: string; value: string }[]>([])
 const classifyListOptions = ref<{ label: string; value: string }[]>([])
 /** 处理分类和标签 */
 const handleTagOrClass = async () => {
-  const arrC = await getClassifyListAPI()
+  const arrC = await getClassifyListAPI<any>()
   classifyListOptions.value = arrC.map((item) => {
     return { label: item.name, value: item.id }
   })
-  const arrT = await getTagsListAPI()
+  const arrT = await getTagsListAPI<any>()
   tagsListOptions.value = arrT.map((item) => {
     return { label: item.name, value: item.id }
   })
@@ -48,6 +49,7 @@ const handleTagOrClass = async () => {
 /** 回显编辑的数据 */
 const handleEditData = () => {
   const { icon, name, blurb, classify, tags, funcDes } = params.data
+  imageUrl.value = icon
   form.icon = icon
   form.name = name
   form.blurb = blurb
@@ -61,8 +63,6 @@ onMounted(async () => {
   handleEditData()
 })
 
-const imageUrl = ref<string>('')
-
 /** 上传应用图标之前 */
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
   const validImageTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/bmp']
@@ -75,31 +75,22 @@ const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
     KMessage.error('文件大小不能超过2MB!')
     return false
   }
-
   return true
 }
-const isShowLoading = ref(false)
-const loadingText = ref('正在上传文件...')
 /** 自定义上传图标 */
 const httpRequest = async ({ file }: { file: File }) => {
   imageUrl.value = ''
-  console.log('file--->', file)
-  let fileName: string = file.name
-  const requestData = {
-    /** 支持自定义存放到某个位置： 如：20240101/imgs */
-    folderName: 'Data/files',
-    /** 是否为公开的文件，就是不需要校验token，任何人都可以访问的数据， 这个数据会被系统定时清除，具体清除时间再系统设置中可以设置 */
-    isPublic: true,
+  const reader: any = new FileReader()
+  reader.onloadend = function () {
+    console.log(reader.result)
+    form.icon = reader.result
+    imageUrl.value = reader.result
   }
-  callServerFunc('demo', 'uploadFile', requestData, { isUpload: true, file, awaitTime: true, isShowLoading: false })
-    .then(({ data }: any) => {
-      const { filePath } = data as { filePath: string }
-      console.log('filePath--->', filePath)
-    })
-    .catch(() => {})
-    .finally(() => {
-      isShowLoading.value = false
-    })
+  reader.readAsDataURL(file)
+}
+
+const handleRemove = (uploadFile: any, uploadFiles: any) => {
+  console.log(uploadFile, uploadFiles)
 }
 
 /** 取消 */
@@ -143,7 +134,7 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
                 </div>
               </template>
             </k-upload>
-            <div class="k-upload__tip">JPEG/PNG/SVG/BMP 格式，2 MB 以内，大于 240*240 px</div>
+            <div class="k-upload__tip">JPEG/PNG/SVG/BMP 格式，2 MB 以内</div>
           </div>
         </k-form-item>
         <k-form-item label="名称" prop="name">
@@ -203,6 +194,7 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
     display: block;
     border: 1px dashed rgba(128, 128, 128, 0.5);
     border-radius: 6px;
+    overflow: hidden;
     cursor: pointer;
 
     &:hover {
@@ -213,6 +205,11 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
       width: 50px;
       height: 50px;
       position: relative;
+      overflow: hidden;
+      .avatar {
+        width: 100%;
+        height: 100%;
+      }
     }
     .k-uploader__icon {
       position: absolute;

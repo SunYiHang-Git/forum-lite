@@ -1,5 +1,5 @@
 import { getSessionValue, getToken, initGlobalVariable, isInset, setSessionValue } from '@ksware/micro-lib-web-temp'
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
 
 export const routeList = [
   {
@@ -96,7 +96,8 @@ routeList.forEach((item) => {
 })
 
 const router = createRouter({
-  history: createMemoryHistory(),
+  // history: createMemoryHistory(),
+  history: createWebHashHistory(),
   routes: routeList,
 })
 
@@ -106,13 +107,17 @@ let isFirst = false
 // 路由执行前加载缓存数据
 router.beforeEach((to, from, next) => {
   // 解决第一次路由跳转问题
-  if (!isFirst && isInset) {
-    isFirst = true
-    return
-  }
+  // if (!isFirst && isInset) {
+  //   isFirst = true
+  //   return
+  // }
 
   // 非微前端模式，检查token， 没有token则去登录页面
-  if (!isInset && !getToken() && to.path !== '/login') {
+  // if (!isInset && !getToken() && to.path !== '/login') {
+  //   next('/login')
+  //   return
+  // }
+  if (!getToken() && to.path !== '/login') {
     next('/login')
     return
   }
@@ -129,7 +134,6 @@ router.beforeEach((to, from, next) => {
       setSessionValue('last_route_path', to.fullPath)
     }
   }
-
   next()
 })
 export default router

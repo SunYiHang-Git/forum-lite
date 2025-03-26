@@ -24,7 +24,6 @@ const shopInfoParams = ref<IParams>({
 })
 
 const handleInfo = (item: any) => {
-  console.log('item--->', item)
   shopInfoParams.value.visible = true
   shopInfoParams.value.info = item
   shopInfoParams.value.cancel = () => {
@@ -32,7 +31,7 @@ const handleInfo = (item: any) => {
   }
 }
 const download = (item: any) => {
-  downLoadFileById(item.ID)
+  downLoadFileById(item.id)
 }
 </script>
 

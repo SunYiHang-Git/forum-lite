@@ -31,10 +31,12 @@ app.component('FontIcon', FontIcon)
 app.component('AppContainer', AppContainer)
 
 // 判断是否为嵌入模式
-if (isInset) {
-  // 初始化嵌入功能
-  insetInit(app)
-} else {
-  // 不是嵌入模式
-  app.mount('#app')
-}
+// console.log('isInset--->', isInset)
+// if (isInset) {
+//   // 初始化嵌入功能
+//   insetInit(app)
+// } else {
+//   // 不是嵌入模式
+//   app.mount('#app')
+// }
+app.mount('#app')
