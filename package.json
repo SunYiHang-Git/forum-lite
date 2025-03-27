@@ -20,7 +20,7 @@
     "@element-plus/icons": "^0.0.11",
     "@element-plus/icons-vue": "^2.3.1",
     "@ksware/ksw-ux": "^1.1.19-beta4",
-    "@ksware/micro-lib-web-temp": "^1.8.2",
+    "@ksware/micro-lib-web-temp": "^1.8.3",
     "@vue/runtime-dom": "^3.5.13",
     "axios": "^1.7.9",
     "crypto-js": "^4.2.0",

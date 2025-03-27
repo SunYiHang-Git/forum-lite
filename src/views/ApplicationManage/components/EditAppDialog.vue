@@ -54,7 +54,7 @@ const handleEditData = () => {
   form.name = name
   form.blurb = blurb
   form.funcDes = funcDes
-  form.classify = classify.map((item: any) => item.id)[0]
+  form.classify = classify?.map((item: any) => item.id)[0]
   form.tags = tags.map((item: any) => item.id)
 }
 onMounted(async () => {
@@ -82,15 +82,10 @@ const httpRequest = async ({ file }: { file: File }) => {
   imageUrl.value = ''
   const reader: any = new FileReader()
   reader.onloadend = function () {
-    console.log(reader.result)
     form.icon = reader.result
     imageUrl.value = reader.result
   }
   reader.readAsDataURL(file)
-}
-
-const handleRemove = (uploadFile: any, uploadFiles: any) => {
-  console.log(uploadFile, uploadFiles)
 }
 
 /** 取消 */

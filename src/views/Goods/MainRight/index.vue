@@ -1,16 +1,38 @@
 <script setup lang="ts">
 import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 import TableDataShop, { type ITabDataList } from '../TableDataShop/index.vue'
-import { nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import type { IClassify, IGoodDataType, ITagType } from '@/types/goods'
-import { getClassifyListAPI } from '@/views/ApplicationManage/components/data'
+import { getAppListAPI, getClassifyListAPI, hexStrToShowBase64 } from '@/views/ApplicationManage/components/data'
+import TabPane from '../TableDataShop/components/TabPane.vue'
+interface ISearchDataType {
+  /** 数据 */
+  tableData: IGoodDataType[]
+  /** 页码尺寸 */
+  pageSize?: number
+  /** 当前页码 */
+  pageNumber: number
+  /** 总页码 */
+  page: number
+  /** 总页数 */
+  total: number
+}
 /** 搜索值 */
 const searchValue = ref<string>('')
 const mainBoxRef = useTemplateRef('mainBoxRef')
 
-const loadingRef = useTemplateRef('loadingRef')
 /** 底部加载文字 */
 const bottomLoadingText = ref<string>('加载中...')
+/** 搜索数据 */
+const searchTableData = ref<ISearchDataType>({
+  tableData: [],
+  pageSize: 100,
+  pageNumber: 0,
+  page: 0,
+  total: 0,
+})
+/** 是否搜索 */
+const isSearch = ref<boolean>(false)
 /** tabID */
 const tabId = ref<string>('all')
 /** 页码尺寸 */
@@ -28,7 +50,6 @@ const allOption = ref<ITabDataList>({
 /** tab 切换列表 */
 const tabDataList = ref<ITabDataList[]>([])
 /** 标签列表 */
-const tagsList = ref<ITagType[]>([])
 /** 获取分类数据 */
 const getClassifyData = async () => {
   const rows = await getClassifyListAPI<IClassify>()
@@ -48,28 +69,6 @@ const getClassifyData = async () => {
   tabDataList.value = arr
 }
 
-/** 获取标签数据 */
-const getTagsData = async () => {
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', {})
-  const table = new SQLTable(data.k_tag)
-  const rows = []
-  while (!table.eof()) {
-    const row = {
-      id: table.s('TagID'),
-      name: table.s('Name'),
-      tagColor: table.s('TagColor'),
-      colorName: table.s('ColorName'),
-      sort: table.s('Sort'),
-      sType: table.s('sType') as '0' | '1',
-      appNumber: table.s('AppNumber'),
-      appId: table.s('AppID'),
-    }
-    rows.push(row)
-    table.next()
-  }
-  tagsList.value = rows
-}
-
 /**
  * 获取应用数据
  *
@@ -77,60 +76,23 @@ const getTagsData = async () => {
  * @param id 类别名称
  * @param pageNum 当前页码
  * @param pageSize 页面尺寸
+ * @param IsLimit 是否分页
  */
 const getAppList = async ({
   id = 'all',
   name = '',
   pageNum = 1,
   pageSize = pageSizeNum.value,
+  IsLimit = true,
 }: {
   id?: string
   name?: string
   pageNum?: number
   pageSize?: number
+  IsLimit?: boolean
 }) => {
-  const params = {
-    isAudit: false,
-    Name: name,
-    ClassifyID: id === 'all' ? '' : id,
-    pageNumber: pageNum,
-    pageSize,
-    IsLimit: true,
-  }
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params)
-  const { pageNumber, page, total } = data
-  const table = new SQLTable(data.k_lite_application)
-  const rows = []
-  while (!table.eof()) {
-    const pid = table.s('PID')
-    const id = table.s('ID')
-    const row = {
-      id,
-      pid,
-      name: table.s('Name'),
-      icon: table.s('Icon'),
-      blurb: table.s('Blurb'),
-      createTime: table.s('CreateTime'),
-      sort: table.s('Sort'),
-      developer: table.s('Developer'),
-      funcDes: table.s('FuncDes'),
-      updateInfo: table.s('UpdateInfo'),
-      modifyBy: table.s('ModifyBy'),
-      modifyTime: table.s('ModifyTime'),
-      downloadCount: table.s('DownloadCount'),
-      version: table.s('Version'),
-      audit: table.s('Audit'),
-      auditBy: table.s('AuditBy'),
-      last: table.s('Last'),
-      devUserName: table.s('DevUserName'),
-      modifyUserName: table.s('ModifyUserName'),
-      auditUserName: table.s('AuditUserName'),
-      tags: tagsList.value.filter((item) => item.appId === id),
-    }
-    rows.push(row)
-    table.next()
-  }
-  handleTabListById(rows, pageNumber, page, total, id)
+  const { list, pageNumber, page, total } = await getAppListAPI({ id, name, pageNum, pageSize, IsLimit })
+  handleTabListById(list, pageNumber, page, total, id)
 }
 /**
  * 处理加载数据放在哪个 tab下
@@ -157,9 +119,6 @@ function handleTabListById(list: any[], pageNumber: number, page: number, total:
 /** 子传父事件,传递id, all 是全部 */
 const sendTabId = async (id: string) => {
   tabId.value = id
-  console.log('id--->', id)
-  console.log('isObserverShow.value--->', isObserverShow.value)
-  if (!isObserverShow.value) return
   loadDataById()
 }
 
@@ -167,54 +126,32 @@ const sendTabId = async (id: string) => {
 const loadDataById = async () => {
   const findItem = tabDataList.value.find((item) => item.id === tabId.value)
   if (!findItem) return
-  const { page, pageNumber } = findItem
-  if (page <= pageNumber) {
-    bottomLoadingText.value = '到底了~'
-    return
+  bottomLoadingText.value = '加载中...'
+  if (isSearch.value) {
+    const { page, pageNumber } = searchTableData.value
+    if (page <= pageNumber) {
+      bottomLoadingText.value = '到底了~'
+      return
+    }
+    getSearchTableAppList(searchValue.value, pageNumber + 1, 100)
+  } else if (findItem) {
+    const { page, pageNumber } = findItem
+    if (page <= pageNumber) {
+      bottomLoadingText.value = '到底了~'
+      return
+    }
+    getAppList({ id: tabId.value, pageNum: pageNumber + 1 })
   }
-  getAppList({ id: tabId.value, pageNum: pageNumber + 1 })
 }
 /** 初始化数据 */
 async function initWindow() {
   await getClassifyData()
-  await getTagsData()
-}
-
-const observer = ref<any>()
-const isObserverShow = ref<boolean>(true)
-/** 监听滚动 */
-const scrollDiv = () => {
-  let options = {
-    root: null, // 默认为视窗
-    rootMargin: '0px', // 视窗的外边距
-    threshold: 1, // 目标元素可见比例达到 10% 时触发回调
-  }
-  observer.value = new IntersectionObserver((entries) => {
-    console.log('0101--->', observer.value)
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        // 在此处理进入视窗后的逻辑
-        console.log('在此处理进入视窗后的逻辑--->')
-        isObserverShow.value = true
-        sendTabId(tabId.value)
-      } else {
-        // 在此处理离开视窗后的逻辑
-        console.log('离开视窗--->')
-        isObserverShow.value = false
-      }
-    })
-  }, options)
-  observer.value.observe(loadingRef.value!)
+  loadDataById()
 }
 
 onMounted(async () => {
   await initWindow()
-  // await loadDataById()
-  scrollDiv()
-})
-
-onUnmounted(() => {
-  observer.value?.disconnect()
+  parent.window.postMessage({}, 'http://192.168.104.182:8071')
 })
 
 const isShowStickyInput = ref(false)
@@ -229,22 +166,38 @@ const handleScroll = async (data: any) => {
     isShowStickyInput.value = true
   }
 }
+/** 查询数据请求接口 */
+async function getSearchTableAppList(name: string, pageNum: number, pageSize: number) {
+  const res = await getAppListAPI({ name, pageNum, pageSize })
+  const { list, page, pageNumber, total } = res
+  searchTableData.value.page = page
+  searchTableData.value.pageNumber = pageNumber
+  searchTableData.value.total = total
+  searchTableData.value.tableData.push(...list)
+}
 
-/** 是否搜索 */
-const isSearch = ref<boolean>(false)
 /** 查询 */
 const handleSearch = async () => {
-  console.log('searchValue.value--->', searchValue.value)
   if (searchValue.value === '') {
     isSearch.value = false
   } else {
     isSearch.value = true
+    tabId.value = 'all'
+    searchTableData.value.tableData = []
+    getSearchTableAppList(searchValue.value, 1, 100)
   }
 }
 </script>
 
 <template>
-  <div ref="mainBoxRef" class="main-right" @scroll="handleScroll">
+  <div
+    ref="mainBoxRef"
+    class="main-right"
+    @scroll="handleScroll"
+    v-infinite-scroll="loadDataById"
+    :infinite-scroll-delay="300"
+    :infinite-scroll-distance="0"
+  >
     <div class="top-box">
       <div class="title">
         发现适应你的
@@ -275,11 +228,12 @@ const handleSearch = async () => {
       </div>
     </div>
     <div class="table-box">
-      <TableDataShop :tabDataList="tabDataList" @sendTabId="sendTabId" />
-      <div ref="loadingRef" class="load">
-        <IconLoading v-if="bottomLoadingText === '加载中...'" />
-        {{ bottomLoadingText }}
-      </div>
+      <TableDataShop v-if="!isSearch" :tabDataList="tabDataList" @sendTabId="sendTabId" />
+      <TabPane v-if="isSearch" :tableData="searchTableData.tableData" />
+    </div>
+    <div ref="loadingRef" class="load">
+      <IconLoading v-if="bottomLoadingText === '加载中...'" />
+      {{ bottomLoadingText }}
     </div>
   </div>
 </template>
@@ -291,6 +245,7 @@ const handleSearch = async () => {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+  // height: 100vh;
   overflow-y: scroll;
   background-image:
     linear-gradient(to bottom, rgba(255, 255, 255, 0) 10%, /* 完全透明 */ rgba(255, 255, 255, 1) 80% /* 完全不透明 */),
@@ -386,13 +341,20 @@ const handleSearch = async () => {
   width: 100%;
   height: calc(100% - 136px);
   box-sizing: border-box;
+  // margin-top: 20px;
   padding-bottom: 10px;
   box-sizing: border-box;
   background-color: var(--k-bg-1);
-  .load {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  .scroll-box {
+    width: 100%;
+    height: 100%;
   }
+}
+.load {
+  margin-top: 20px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

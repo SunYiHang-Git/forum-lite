@@ -3,11 +3,14 @@ import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-rou
 
 export const routeList = [
   {
+    path: '/',
+    redirect: '/shop',
+  },
+  {
     path: '/empty__Page',
     // 修复手动缓存切换问题，勿删
     component: import('@/component/EmptyPage.vue'),
   },
-
   {
     // 路由地址，同主框架里面增加菜单的路由地址
     path: '/login',
@@ -47,47 +50,6 @@ export const routeList = [
     name: '用户管理',
     component: () => import('@/views/demo/userMgr_table.vue'),
   },
-
-  // //模版页面, 执行流程页面
-  // {
-  //   path: '/execFlowListJson',
-  //   name: '执行流程',
-  //   component: () => import('@/views/demo/execFlow_form.vue')
-  // },
-  // {
-  //   path: '/uploadFile',
-  //   name: '上传文件模版',
-  //   component: () => import('@/views/demo/uploadFile.vue')
-  // }
-
-  // 模版页面, 今日流程执行列表
-  // {
-  //   path: '/toDayFlowExec',
-  //   name: '今日流程',
-  //   component: () => import('@/views/demo/toDayFlowExec.vue')
-  // },
-
-  // 模版页面, 动态路由示例
-  // {
-  //   path: '/toDayFlowExec/:id',
-  //   name: '动态路由示例',
-  //   isShow: false, //动态路由 在调试列表不应该显示出来
-  //   component: () => import('@/views/demo/toDayFlowExec.vue')
-  // },
-
-  // 模版页面, 流程执行统计
-  // {
-  //   path: '/flowStats',
-  //   name: '流程图统计',
-  //   component: () => import('@/views/chart/flowStats.vue'),
-  // },
-
-  // 模版页面, 流程执行统计
-  // {
-  //   path: '/flowStatsTwo',
-  //   name: '流程图统计看板2',
-  //   component: () => import('@/views/chart/flowStatsTwo.vue'),
-  // },
 ]
 
 routeList.forEach((item) => {

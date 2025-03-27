@@ -41,7 +41,7 @@ const tableData = reactive<ITagType[]>([])
 // THawkeyeDM.GetTagList
 /** 获取标签数据 */
 const getTagsData = async () => {
-  const rows = await getTagsListAPI()
+  const rows = await getTagsListAPI<ITagType>()
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)

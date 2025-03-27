@@ -30,8 +30,17 @@ const handleInfo = (item: any) => {
     shopInfoParams.value.visible = false
   }
 }
-const download = (item: any) => {
-  downLoadFileById(item.id)
+const download = async (item: any) => {
+  const res = await downLoadFileById(item.id, item.name)
+  if (!res) return
+  sendMessageToParent(res)
+}
+function sendMessageToParent(data: any) {
+  const obj = {
+    name: 'downloadApp',
+    ...data,
+  }
+  parent.window.postMessage(obj, 'http://192.168.104.182:8071')
 }
 </script>
 
@@ -40,7 +49,11 @@ const download = (item: any) => {
     <div class="gird-box">
       <div v-for="(item, index) in tableData" :key="index" class="gird-item" @click="handleInfo(item)">
         <div class="img">
-          <IconSitemap />
+          <k-image style="width: 100%; height: 100%" :src="item.icon" fit="fill">
+            <template #error>
+              <k-image style="width: 100%; height: 100%" src="/images/icon1.png" fit="fill" />
+            </template>
+          </k-image>
         </div>
         <div class="content">
           <div class="box">

@@ -5,7 +5,7 @@ import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 import { nextTick, onMounted, reactive, ref } from 'vue'
 import AuditDialog from './AuditDialog.vue'
 import EditAppDialog from './EditAppDialog.vue'
-import { handleAuditStatus } from './data'
+import { getAppListAPI, handleAuditStatus, upperOrLowerShelveAPI } from './data'
 /** 表格工具栏 */
 const widgets = ref(['search', 'refresh', 'filter', 'transfer', 'custom1', 'sizeControl'])
 /** 表格每行的高度 */
@@ -54,6 +54,7 @@ const column = ref<IColumn<keyof IGoodDataType>[]>([
   {
     field: 'opt',
     title: '操作',
+    width: '230',
   },
 ])
 
@@ -105,48 +106,13 @@ const getClassifyList = async () => {
   classifyList.value = rows
 }
 /** 获取应用数据 */
-const getAppList = async (name: string = '') => {
+const getAppList = async () => {
   // 获取数据
-  const params = { isAudit: false, Name: name, IsLimit: false }
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params, { isShowLoading: true })
-  const table = new SQLTable(data.k_lite_application)
-  const rows = []
-  while (!table.eof()) {
-    const pid = table.s('PID')
-    const id = table.s('ID')
-    const audit = table.s('Audit') as '0' | '1'
-    const offLineType = table.s('OffLineType') as '0' | '1' | '2'
-    const row = {
-      id,
-      pid,
-      name: table.s('Name'),
-      icon: table.s('Icon'),
-      blurb: table.s('Blurb'),
-      createTime: table.s('CreateTime'),
-      sort: table.s('Sort'),
-      developer: table.s('Developer'),
-      funcDes: table.s('FuncDes'),
-      updateInfo: table.s('UpdateInfo'),
-      modifyBy: table.s('ModifyBy'),
-      modifyTime: table.s('ModifyTime'),
-      downloadCount: table.s('DownloadCount'),
-      version: table.s('Version'),
-      status: handleAuditStatus(audit, offLineType),
-      auditBy: table.s('AuditBy'),
-      last: table.s('Last'),
-      devUserName: table.s('DevUserName'),
-      modifyUserName: table.s('ModifyUserName'),
-      auditUserName: table.s('AuditUserName'),
-      tags: tagsList.value.filter((item) => item.appId === id),
-      classify: classifyList.value.filter((item) => item.id === pid),
-    }
-    rows.push(row)
-    table.next()
-  }
+  const params = { IsLimit: false }
+  const { list } = await getAppListAPI(params)
   tableData.length = 0
   await nextTick()
-  tableData.push(...rows)
-  console.log('数据', rows)
+  tableData.push(...list)
 }
 
 /** 审核应用 */
@@ -164,13 +130,21 @@ const auditAppById = async (id: string, auditType: boolean, desc: string = '') =
 /** 修改应用 */
 const editApp = async (data: any) => {
   const { icon, id, name, blurb, classify, funcDes, tags } = data
-  const TaIDList = tags.join(',')
-  const params = { Icon: icon, ID: id, Name: name, Blurb: blurb, Classify: classify, FuncDes: funcDes, TaIDList }
-  console.log('params', params)
+  const TagIDList = tags.join(',')
+  const params = {
+    Icon: icon,
+    ID: id,
+    Name: name,
+    Blurb: blurb,
+    Classify: classify,
+    FuncDes: funcDes,
+    TagIDList,
+    IsBase64IMG: true,
+  }
   try {
     callServerFunc('THawkeyeDM', 'SetShopsApp', params)
     KMessage.success('修改成功!')
-    getAppList()
+    initWindow()
   } catch (error) {
     KMessage.error('修改失败!')
     console.error(error)
@@ -181,12 +155,20 @@ const addAppAPI = async (data: any) => {
   const { icon, id, name, blurb, classify, funcDes, tags } = data
   const TaIDList = tags.join(',')
   const UpdateInfo = '更新信息.....'
-  const params = { Icon: icon, Name: name, Blurb: blurb, PID: classify, FuncDes: funcDes, TaIDList, UpdateInfo }
-  console.log('params', params)
+  const params = {
+    Icon: icon,
+    Name: name,
+    Blurb: blurb,
+    PID: classify,
+    FuncDes: funcDes,
+    TaIDList,
+    UpdateInfo,
+    IsBase64IMG: true,
+  }
   try {
     callServerFunc('THawkeyeDM', 'NewShopsApp', params)
     KMessage.success('新增应用成功!')
-    getAppList()
+    initWindow()
   } catch (error) {
     KMessage.error('新增应用失败!')
     console.error(error)
@@ -222,7 +204,6 @@ const handleAudit = async (item: IGoodDataType) => {
   }
   auditDialogParams.value.submit = (data: any) => {
     auditDialogParams.value.visible = false
-    console.log('审核', data)
     if (!item.id) return
     auditAppById(item.id, data.auditType, data.desc)
   }
@@ -236,7 +217,6 @@ const handleEdit = async (item: IGoodDataType) => {
     editAPPDialogParams.value.visible = false
   }
   editAPPDialogParams.value.submit = (data: any) => {
-    console.log('data--->', data)
     editAPPDialogParams.value.visible = false
     editApp({ id: item.id, ...data })
   }
@@ -244,7 +224,7 @@ const handleEdit = async (item: IGoodDataType) => {
 /** 新增 */
 const addApp = async () => {
   editAPPDialogParams.value.visible = true
-  editAPPDialogParams.value.data = { icon: '', name: '', blurb: '', classify: '', tags: [], funcDes: '' }
+  editAPPDialogParams.value.data = { icon: '', name: '', blurb: '', classify: [], tags: [], funcDes: '' }
   editAPPDialogParams.value.cancel = () => {
     editAPPDialogParams.value.visible = false
   }
@@ -255,7 +235,6 @@ const addApp = async () => {
 }
 /** 删除通过 Id */
 const handleDelById = async (item: IGoodDataType) => {
-  console.log('删除', item)
   try {
     await KMessageBox.confirm('确定删除应用?', '删除应用', {
       confirmButtonText: '确定',
@@ -271,6 +250,17 @@ const handleDelById = async (item: IGoodDataType) => {
     }
     KMessage.error('删除失败!')
   }
+}
+
+/**
+ * 上下架
+ *
+ * @param id ID
+ * @param type 上架=1;下架=2
+ */
+async function upperOrLowerShelve(id: string, type: 1 | 2) {
+  await upperOrLowerShelveAPI(id, type)
+  initWindow()
 }
 </script>
 
@@ -290,7 +280,13 @@ const handleDelById = async (item: IGoodDataType) => {
         </template>
         <template #name="{ row }">
           <div class="name-app-box">
-            <div class="img-icon">图标</div>
+            <div class="img-icon">
+              <k-image style="width: 100%; height: 100%" :src="row.icon" fit="fill">
+                <template #error>
+                  <k-image style="width: 100%; height: 100%" src="/images/icon1.png" fit="fill" />
+                </template>
+              </k-image>
+            </div>
             <div class="app-info">
               <div class="app-title">{{ row.name }}</div>
               <div class="app-blurb">{{ row.blurb }}</div>
@@ -310,7 +306,13 @@ const handleDelById = async (item: IGoodDataType) => {
           <k-tag v-for="item in row.tags" :key="item.id">{{ item.name }}</k-tag>
         </template>
         <template #opt="{ row }">
-          <k-button text color="primary" @click="handleAudit(row)">审核</k-button>
+          <k-button text :disabled="row.status !== '0'" color="primary" @click="handleAudit(row)">审核</k-button>
+          <k-button text :disabled="row.status === '2'" color="primary" @click="upperOrLowerShelve(row.id, 1)">
+            上架
+          </k-button>
+          <k-button text :disabled="row.status === '3'" color="primary" @click="upperOrLowerShelve(row.id, 2)">
+            下架
+          </k-button>
           <k-button text color="primary" @click="handleEdit(row)">修改</k-button>
           <k-button text color="error" @click="handleDelById(row)">删除</k-button>
         </template>
@@ -348,7 +350,6 @@ const handleDelById = async (item: IGoodDataType) => {
         width: 40px;
         height: 40px;
         overflow: hidden;
-        background-color: pink;
       }
       .app-info {
         display: flex;

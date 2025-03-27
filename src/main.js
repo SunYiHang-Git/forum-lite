@@ -6,7 +6,6 @@ import '@ksware/ksw-ux/kingsware-ui/style.css'
 
 import KswUx from '@ksware/ksw-ux'
 // 封装统一请求方法
-import { insetInit, isInset } from '@ksware/micro-lib-web-temp'
 import ElementPlus, { ClickOutside } from 'element-plus'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import { KswIcon } from 'ksw-vue-icon'
@@ -30,13 +29,4 @@ app.component('SvgIcon', SvgIcon)
 app.component('FontIcon', FontIcon)
 app.component('AppContainer', AppContainer)
 
-// 判断是否为嵌入模式
-// console.log('isInset--->', isInset)
-// if (isInset) {
-//   // 初始化嵌入功能
-//   insetInit(app)
-// } else {
-//   // 不是嵌入模式
-//   app.mount('#app')
-// }
 app.mount('#app')

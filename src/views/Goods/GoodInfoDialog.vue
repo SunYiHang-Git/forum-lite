@@ -31,7 +31,6 @@ const historyDataParams = ref<{
 const showHistoryVersion = () => {
   // 请求 GetShopsAppInfo
   isShowHistory.value = true
-  console.log('historyDataParams.value--->', historyDataParams.value)
 }
 
 const download = () => {
@@ -43,7 +42,9 @@ const download = () => {
   <k-dialog v-model="dialogVisible" title="" width="900" class="info-dialog" :before-close="handleClose">
     <div v-if="!isShowHistory" class="content-box">
       <div class="top">
-        <div class="icon-box">{{ dataInfo.icon }}</div>
+        <div class="icon-box">
+          <k-image style="width: 100px; height: 100px" :src="dataInfo.icon" fit="fill" />
+        </div>
         <div class="right-box">
           <div class="title overHide">{{ dataInfo.name }}</div>
           <div class="desc overHide">
@@ -133,7 +134,6 @@ const download = () => {
         box-sizing: border-box;
         border: 1.04px solid rgba(0, 0, 0, 0.12);
         overflow: hidden;
-        background-color: pink;
       }
       .right-box {
         flex: 1;

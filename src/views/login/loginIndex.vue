@@ -52,7 +52,7 @@ function submitForm() {
         callServerFunc('TBaseDM', 'Test1', data).then(async ({ data }) => {
           setToken(data.Token)
           await saveUserInfo()
-          router.push('/shop')
+          router.push('/')
           delRouteCache('/login')
         })
       })

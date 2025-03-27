@@ -23,7 +23,7 @@ onMounted(() => {
     </keep-alive>
   </router-view>
   <!-- 开发模式显示的路由切换工具 -->
-  <!-- <MenuTool v-if="!isInset && isDev"></MenuTool> -->
+  <MenuTool v-if="!isInset && isDev"></MenuTool>
 </template>
 
 <style lang="scss"></style>

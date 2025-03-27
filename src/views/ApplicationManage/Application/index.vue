@@ -23,15 +23,11 @@ const tabsList = [
     component: TagManage,
   },
 ]
-
-const handleChange = (tab: string) => {
-  console.log('tab--->', tab)
-}
 </script>
 
 <template>
   <div class="application-box">
-    <k-tabs v-model="activeName" @tab-change="handleChange">
+    <k-tabs v-model="activeName">
       <k-tab-pane v-for="item in tabsList" :key="item.name" :label="item.label" :name="item.name">
         <div class="pane-box">
           <component :is="item.component"></component>

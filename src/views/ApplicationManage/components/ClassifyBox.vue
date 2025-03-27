@@ -39,7 +39,7 @@ const tableData = reactive<IClassify[]>([])
 
 /** 获取分类数据 */
 const getClassifyData = async () => {
-  const rows = await getClassifyListAPI()
+  const rows = await getClassifyListAPI<IClassify>()
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)
@@ -52,6 +52,7 @@ async function initWindow() {
 
 onMounted(() => {
   initWindow()
+  console.log('class--->')
 })
 
 const formData = ref<IFormType>({})
