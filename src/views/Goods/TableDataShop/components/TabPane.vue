@@ -15,8 +15,11 @@ export type IParams = {
 const { tableData } = defineProps<{
   tableData: any[]
 }>()
-
-onMounted(() => {})
+const parentOrigin = ref()
+onMounted(() => {
+  const urlParams = new URLSearchParams(window.location.search)
+  parentOrigin.value = urlParams.get('parentOrigin') ?? 'http://127.0.0.1:8071'
+})
 
 const shopInfoParams = ref<IParams>({
   visible: false,
@@ -40,7 +43,7 @@ function sendMessageToParent(data: any) {
     name: 'downloadApp',
     ...data,
   }
-  parent.window?.postMessage(obj, 'http://192.168.104.182:8071')
+  parent.window?.postMessage(obj, parentOrigin.value)
 }
 </script>
 
