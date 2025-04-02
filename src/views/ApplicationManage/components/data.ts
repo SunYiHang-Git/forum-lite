@@ -15,7 +15,7 @@ export const getClassifyListAPI = async <T>(): Promise<T[]> => {
       level: table.s('Level'),
       sort: table.s('Sort'),
       shopType: table.s('ShopType') as '0' | '1',
-      appNumber: table.s('AppNumber'),
+      appNumber: table.s('AppCount'),
     }
     rows.push(row as T)
     table.next()
@@ -36,7 +36,7 @@ export const getTagsListAPI = async <T>(): Promise<T[]> => {
       colorName: table.s('ColorName'),
       sort: table.s('Sort'),
       sType: table.s('sType') as '0' | '1',
-      appNumber: table.s('AppNumber'),
+      appNumber: table.s('AppCount'),
       appId: table.s('AppId'),
     }
     rows.push(row as T)
@@ -91,15 +91,20 @@ export const getAppListAPI = async ({
   pageNum = 1,
   pageSize = 20,
   IsLimit = true,
+  isAudit = false,
+  IsOnLine = false,
 }: {
   id?: string
   name?: string
   pageNum?: number
   pageSize?: number
   IsLimit?: boolean
+  isAudit?: boolean
+  IsOnLine?: boolean
 }) => {
   const params = {
-    isAudit: false,
+    isAudit,
+    IsOnLine,
     Name: name,
     ClassifyID: id === 'all' ? '' : id,
     pageNumber: pageNum,

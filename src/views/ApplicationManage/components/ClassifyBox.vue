@@ -43,6 +43,7 @@ const getClassifyData = async () => {
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)
+  console.log('tableData--->', tableData)
 }
 
 /** 初始化数据 */
@@ -52,7 +53,6 @@ async function initWindow() {
 
 onMounted(() => {
   initWindow()
-  console.log('class--->')
 })
 
 const formData = ref<IFormType>({})
@@ -81,7 +81,7 @@ const callClassifyAxios = async (type: 'add' | 'edit', name: string, id: string 
     }
     getClassifyData()
   } catch (error) {
-    KMessage.success('新建分类失败')
+    KMessage.error('新建分类失败')
   }
 }
 
@@ -90,7 +90,7 @@ const addOrEditClassify = (type: 'add' | 'edit', row: any = {}) => {
   classifyParams.value.visible = true
   classifyParams.value.title = type === 'add' ? '新增分类' : '编辑分类'
   classifyParams.value.rules = {
-    name: [{ required: true, message: '名称未必填项', trigger: 'blur' }],
+    name: [{ required: true, message: '名称为必填项', trigger: 'blur' }],
   }
   formRenderData.value = [
     {

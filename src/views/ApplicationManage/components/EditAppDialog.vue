@@ -107,7 +107,7 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
   <k-dialog
     :model-value="dialogVisible"
     width="600"
-    title="审核应用"
+    title="修改应用"
     class="edit-app-dialog"
     @close="handleCancel(ruleFormRef)"
     :close-on-click-modal="false"

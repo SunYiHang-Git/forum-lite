@@ -45,11 +45,11 @@ export const routeList = [
     ],
   },
   // 模版页面,用户管理页面
-  {
-    path: '/userMgrJson',
-    name: '用户管理',
-    component: () => import('@/views/demo/userMgr_table.vue'),
-  },
+  // {
+  //   path: '/userMgrJson',
+  //   name: '用户管理',
+  //   component: () => import('@/views/demo/userMgr_table.vue'),
+  // },
 ]
 
 routeList.forEach((item) => {

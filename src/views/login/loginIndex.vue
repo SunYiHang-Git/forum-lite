@@ -30,6 +30,7 @@ const formRef = ref('')
 function updateKey() {
   return new Promise((res) => {
     callServerFunc('TBaseDM', 'Test2', {}).then(({ data }) => {
+      console.log('data--->', data)
       res({ key: data.key })
     })
   })
@@ -49,6 +50,7 @@ function submitForm() {
           webJson: true,
           WebLogin: true,
         }
+        console.log('data--->', data)
         callServerFunc('TBaseDM', 'Test1', data).then(async ({ data }) => {
           setToken(data.Token)
           await saveUserInfo()

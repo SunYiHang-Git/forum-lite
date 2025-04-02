@@ -91,7 +91,15 @@ const getAppList = async ({
   pageSize?: number
   IsLimit?: boolean
 }) => {
-  const { list, pageNumber, page, total } = await getAppListAPI({ id, name, pageNum, pageSize, IsLimit })
+  const { list, pageNumber, page, total } = await getAppListAPI({
+    id,
+    name,
+    pageNum,
+    pageSize,
+    IsLimit,
+    isAudit: true,
+    IsOnLine: true,
+  })
   handleTabListById(list, pageNumber, page, total, id)
 }
 /**
@@ -151,7 +159,6 @@ async function initWindow() {
 
 onMounted(async () => {
   await initWindow()
-  parent.window.postMessage({}, 'http://192.168.104.182:8071')
 })
 
 const isShowStickyInput = ref(false)

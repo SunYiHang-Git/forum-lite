@@ -70,13 +70,13 @@ const tagParams = ref<IDialogParamsType<IFormType, IFormRenderType<IFormType>[]>
   },
 })
 
-/** 新增/编辑分类请求 */
-const callClassifyAxios = async (type: 'add' | 'edit', name: string, id: string = '') => {
+/** 新增/编辑标签请求 */
+const callTagListAxios = async (type: 'add' | 'edit', name: string, id: string = '') => {
   // THawkeyeDM AddTag
   try {
     if (type === 'add') {
       await callServerFunc('THawkeyeDM', 'AddTag', { sType: 'k_lite', Name: name })
-      KMessage.success('新建分类成功!')
+      KMessage.success('新增标签成功!')
     } else if (type === 'edit') {
       await callServerFunc('THawkeyeDM', 'SetTag', {
         ID: id,
@@ -86,7 +86,7 @@ const callClassifyAxios = async (type: 'add' | 'edit', name: string, id: string 
     }
     getTagsData()
   } catch (error) {
-    KMessage.success('新建分类失败')
+    KMessage.error('新建标签失败')
   }
 }
 
@@ -95,7 +95,7 @@ const addOrEditClassify = (type: 'add' | 'edit', row: any = {}) => {
   tagParams.value.visible = true
   tagParams.value.title = type === 'add' ? '新增标签' : '编辑标签'
   tagParams.value.rules = {
-    name: [{ required: true, message: '名称未必填项', trigger: 'blur' }],
+    name: [{ required: true, message: '名称为必填项', trigger: 'blur' }],
   }
   formRenderData.value = [
     {
@@ -110,7 +110,7 @@ const addOrEditClassify = (type: 'add' | 'edit', row: any = {}) => {
   tagParams.value.submit = (data: any) => {
     tagParams.value.visible = false
     const { name } = data
-    callClassifyAxios(type, name.trim(), row.id)
+    callTagListAxios(type, name.trim(), row.id)
   }
 }
 
@@ -123,7 +123,7 @@ const handleDelById = async (item: ITagType) => {
       type: 'warning',
     })
     /** 删除接口 */
-    await callServerFunc('THawkeyeDM', 'DelTag', { ID: item.id, sType: 'k_lite' })
+    const res = await callServerFunc('THawkeyeDM', 'DelTag', { ID: item.id, sType: 'k_lite' })
     KMessage.success('删除成功!')
     getTagsData()
   } catch (error) {

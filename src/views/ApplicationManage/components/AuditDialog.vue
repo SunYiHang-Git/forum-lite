@@ -5,13 +5,13 @@ const { params } = defineProps<{
   params: any
 }>()
 interface RuleForm {
-  auditType: boolean
+  auditType: 1 | 2
   desc: string
 }
 const dialogVisible = computed(() => params.visible)
 const ruleFormRef = ref<FormInstance>()
 const form = reactive<RuleForm>({
-  auditType: true,
+  auditType: 1,
   desc: '',
 })
 const rules = reactive<FormRules<RuleForm>>({
@@ -53,8 +53,8 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
       <k-form ref="ruleFormRef" :model="form" label-position="left" label-width="100" :rules="rules">
         <k-form-item label="审核" prop="auditType">
           <k-radio-group v-model="form.auditType">
-            <k-radio :value="true">通过</k-radio>
-            <k-radio :value="false">不通过</k-radio>
+            <k-radio :value="1">通过</k-radio>
+            <k-radio :value="2">不通过</k-radio>
           </k-radio-group>
         </k-form-item>
         <k-form-item label="备注" prop="desc">

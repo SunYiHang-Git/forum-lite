@@ -5,7 +5,8 @@ import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 import { nextTick, onMounted, reactive, ref } from 'vue'
 import AuditDialog from './AuditDialog.vue'
 import EditAppDialog from './EditAppDialog.vue'
-import { getAppListAPI, handleAuditStatus, upperOrLowerShelveAPI } from './data'
+import { getAppListAPI, upperOrLowerShelveAPI } from './data'
+import { arrayBufferToHex } from '@/utils/download'
 /** 表格工具栏 */
 const widgets = ref(['search', 'refresh', 'filter', 'transfer', 'custom1', 'sizeControl'])
 /** 表格每行的高度 */
@@ -59,69 +60,32 @@ const column = ref<IColumn<keyof IGoodDataType>[]>([
 ])
 
 const tableData = reactive<IGoodDataType[]>([])
-/** 标签列表 */
-const tagsList = ref<ITagType[]>([])
-/** 分类列表 */
-const classifyList = ref<IClassify[]>([])
-/** 获取标签数据 */
-const getTagsData = async () => {
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', {}, { isShowLoading: false })
-  const table = new SQLTable(data.k_tag)
-  const rows = []
-  while (!table.eof()) {
-    const row = {
-      id: table.s('TagID'),
-      name: table.s('Name'),
-      tagColor: table.s('TagColor'),
-      colorName: table.s('ColorName'),
-      sort: table.s('Sort'),
-      sType: table.s('sType') as '0' | '1',
-      appNumber: table.s('AppNumber'),
-      appId: table.s('AppID'),
-    }
-    rows.push(row)
-    table.next()
-  }
-  tagsList.value = rows
-}
 
-/** 获取分类 */
-const getClassifyList = async () => {
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsGroupList', {}, { isShowLoading: false })
-  const table = new SQLTable(data.k_lite_shops_group)
-  const rows = []
-  while (!table.eof()) {
-    const row = {
-      id: table.s('ID'),
-      pid: table.s('PID'),
-      name: table.s('Name'),
-      level: table.s('Level'),
-      sort: table.s('Sort'),
-      shopType: table.s('ShopType') as '0' | '1',
-      appNumber: table.s('AppNumber'),
-    }
-    rows.push(row)
-    table.next()
-  }
-  classifyList.value = rows
-}
 /** 获取应用数据 */
 const getAppList = async () => {
   // 获取数据
   const params = { IsLimit: false }
+  console.time()
   const { list } = await getAppListAPI(params)
+  console.timeEnd()
+  console.log('list', list)
   tableData.length = 0
   await nextTick()
   tableData.push(...list)
 }
 
 /** 审核应用 */
-const auditAppById = async (id: string, auditType: boolean, desc: string = '') => {
+const auditAppById = async (id: string, auditType: number, desc: string = '') => {
   const params = { ID: id, IsPassed: auditType, Remark: desc }
   try {
-    callServerFunc('THawkeyeDM', 'AuditShopsApp', params)
-    KMessage.success('审核成功!')
-    initWindow()
+    const res = await callServerFunc('THawkeyeDM', 'AuditShopsApp', params)
+    const { IsPassed } = res.data as any
+    if (IsPassed === 1) {
+      KMessage.success('审核通过!')
+      initWindow()
+    } else {
+      KMessage.warning('审核不通过!')
+    }
   } catch (error) {
     KMessage.error('审核失败!')
     console.error(error)
@@ -150,34 +114,8 @@ const editApp = async (data: any) => {
     console.error(error)
   }
 }
-/** 新增应用 */
-const addAppAPI = async (data: any) => {
-  const { icon, id, name, blurb, classify, funcDes, tags } = data
-  const TaIDList = tags.join(',')
-  const UpdateInfo = '更新信息.....'
-  const params = {
-    Icon: icon,
-    Name: name,
-    Blurb: blurb,
-    PID: classify,
-    FuncDes: funcDes,
-    TaIDList,
-    UpdateInfo,
-    IsBase64IMG: true,
-  }
-  try {
-    callServerFunc('THawkeyeDM', 'NewShopsApp', params)
-    KMessage.success('新增应用成功!')
-    initWindow()
-  } catch (error) {
-    KMessage.error('新增应用失败!')
-    console.error(error)
-  }
-}
 
 async function initWindow() {
-  await getTagsData()
-  await getClassifyList()
   await getAppList()
 }
 
@@ -222,16 +160,10 @@ const handleEdit = async (item: IGoodDataType) => {
   }
 }
 /** 新增 */
-const addApp = async () => {
-  editAPPDialogParams.value.visible = true
-  editAPPDialogParams.value.data = { icon: '', name: '', blurb: '', classify: [], tags: [], funcDes: '' }
-  editAPPDialogParams.value.cancel = () => {
-    editAPPDialogParams.value.visible = false
-  }
-  editAPPDialogParams.value.submit = (data: any) => {
-    editAPPDialogParams.value.visible = false
-    addAppAPI({ ...data })
-  }
+const importAppFile = async () => {
+  // let newData = {}
+  // newData.file = data.file
+  // newData.Cover = true
 }
 /** 删除通过 Id */
 const handleDelById = async (item: IGoodDataType) => {
@@ -262,6 +194,41 @@ async function upperOrLowerShelve(id: string, type: 1 | 2) {
   await upperOrLowerShelveAPI(id, type)
   initWindow()
 }
+
+/** 上传文件前 */
+const beforeAvatarUpload = (rawFile: any) => {
+  const fileExtension = rawFile.name.split('.').pop().toLowerCase()
+  console.log('fileExtension----', fileExtension)
+  if (fileExtension !== 'db') {
+    KMessage.error('文件后缀必须是.db格式！')
+    return false
+  }
+  // 检查文件大小是否超过2MB
+  if (rawFile.size / 1024 / 1024 > 2) {
+    KMessage.error('文件大小不能超过2MB！')
+    return false
+  }
+
+  return true
+}
+
+const httpRequestFile = async ({ file }: { file: File }) => {
+  const reader = new FileReader()
+  reader.onload = (e: any) => {
+    const arrayBuffer = e.target.result
+    let newData: any = {}
+    newData.file = arrayBufferToHex(arrayBuffer)
+    newData.Cover = true
+    callServerFunc('THawkeyeDM', 'UpLoadShopsApp', newData).then(() => {
+      KMessage({
+        type: 'success',
+        message: '导入成功',
+      })
+      initWindow()
+    })
+  }
+  reader.readAsArrayBuffer(file)
+}
 </script>
 
 <template>
@@ -276,7 +243,13 @@ async function upperOrLowerShelve(id: string, type: 1 | 2) {
         :row-style="{ height: tableRowHeight + 'px' }"
       >
         <template #custom1>
-          <k-button main @click="addApp">新增</k-button>
+          <!-- <k-button main @click="importAppFile"> -->
+          <!-- </k-button> -->
+          <k-upload class="upload-demo" multiple :before-upload="beforeAvatarUpload" :http-request="httpRequestFile">
+            <template #trigger>
+              <k-button type="primary" main>导入</k-button>
+            </template>
+          </k-upload>
         </template>
         <template #name="{ row }">
           <div class="name-app-box">
@@ -368,6 +341,16 @@ async function upperOrLowerShelve(id: string, type: 1 | 2) {
           font-size: 14px;
           font-weight: normal;
           color: #38363c;
+        }
+      }
+    }
+    .k-upload {
+      :deep(.upload-demo) {
+        & > .el-upload__tip {
+          display: none;
+        }
+        & > .el-upload-list {
+          display: none;
         }
       }
     }

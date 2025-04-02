@@ -32,8 +32,8 @@ const handleMenu = (e: any) => {
       <div class="aside">
         <div class="menu-box" @click="handleMenu">
           <div class="menu" data-name="application">应用管理</div>
-          <div class="menu">集群管理</div>
-          <div class="menu">任务管理</div>
+          <!-- <div class="menu">集群管理</div>
+          <div class="menu">任务管理</div> -->
         </div>
       </div>
       <div class="main-right">

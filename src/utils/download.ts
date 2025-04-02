@@ -66,3 +66,16 @@ async function downloadBlob(blob: Blob, fileName: string, successMsg = '导出�
     })
   }
 }
+
+/**
+ * ArrayBuffer转16进制字符串
+ *
+ * @param {Buffer} buffer 传入二进制数据流
+ * @returns {String} 十六进制字符串
+ */
+export function arrayBufferToHex(buffer: ArrayBuffer) {
+  const hexArr = Array.prototype.map.call(new Uint8Array(buffer), function (bit) {
+    return ('00' + bit.toString(16)).slice(-2)
+  })
+  return hexArr.join('')
+}
