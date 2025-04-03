@@ -18,6 +18,9 @@ const appName = __dirname.substring(__dirname.lastIndexOf('\\') + 1)
 const outDirFolder = 'dist'
 
 export default defineConfig({
+  optimizeDeps: {
+    force: true,
+  },
   // default
   root: process.cwd(),
   // 打包时，这里填充的为绝对路径，对应的是部署路径
@@ -85,7 +88,7 @@ export default defineConfig({
     // default
     cssCodeSplit: true,
     // default
-    sourcemap: false,
+    sourcemap: true,
   },
   server: {
     host: '0.0.0.0',

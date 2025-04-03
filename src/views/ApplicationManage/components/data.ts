@@ -113,7 +113,6 @@ export const getAppListAPI = async ({
   }
   const classifyList = await getClassifyListAPI<IClassify>()
   const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params, { isShowLoading: true })
-  console.log('data--->', data)
   const { pageNumber, page, total } = data
   const tableTag = new SQLTable(data.k_tag)
   const tagsList: ITagType[] = []

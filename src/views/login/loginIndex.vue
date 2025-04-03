@@ -2,6 +2,7 @@
 import {
   callServerFunc,
   encryptByDES,
+  getToken,
   MD5,
   removeToken,
   saveUserInfo,
@@ -13,8 +14,14 @@ import { delRouteCache } from '@/store/routerCache'
 import router from '@/utils/router'
 
 // 打开页面时清空原有Token
-removeToken()
 
+function initWindow() {
+  const token = getToken()
+  if (token) {
+    router.push('/')
+  }
+}
+initWindow()
 const formData = ref({
   user: '',
   pass: '',
@@ -30,16 +37,15 @@ const formRef = ref('')
 function updateKey() {
   return new Promise((res) => {
     callServerFunc('TBaseDM', 'Test2', {}).then(({ data }) => {
-      console.log('data--->', data)
       res({ key: data.key })
     })
   })
 }
 
+// removeToken()
 /** 提交表单 */
 function submitForm() {
   if (!formRef.value) return
-
   formRef.value.validate((bool) => {
     if (bool) {
       updateKey().then(({ key }) => {
@@ -50,12 +56,12 @@ function submitForm() {
           webJson: true,
           WebLogin: true,
         }
-        console.log('data--->', data)
         callServerFunc('TBaseDM', 'Test1', data).then(async ({ data }) => {
           setToken(data.Token)
+          console.log('data--->', data)
           await saveUserInfo()
           router.push('/')
-          delRouteCache('/login')
+          // delRouteCache('/login')
         })
       })
     }
