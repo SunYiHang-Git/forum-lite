@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import TextTip from '@/component/TextTip/index.vue'
-import { historyList, type IHistoryList } from './data'
 import HistoryVersion from './HistoryVersion.vue'
 import type { IParams } from './TableDataShop/components/TabPane.vue'
 import { downLoadFileById } from '@/utils/download'
@@ -32,9 +31,22 @@ const showHistoryVersion = () => {
   // 请求 GetShopsAppInfo
   isShowHistory.value = true
 }
-
-const download = () => {
-  downLoadFileById(params.info.id)
+const parentOrigin = ref()
+onMounted(() => {
+  const urlParams = new URLSearchParams(window.location.search)
+  parentOrigin.value = urlParams.get('parentOrigin') ?? 'http://127.0.0.1:8071'
+})
+function sendMessageToParent(data: any) {
+  const obj = {
+    name: 'downloadApp',
+    ...data,
+  }
+  parent.window?.postMessage(obj, parentOrigin.value)
+}
+const download = async () => {
+  const res = await downLoadFileById(params.info.id, params.info.name)
+  if (!res) return
+  sendMessageToParent(res)
 }
 </script>
 

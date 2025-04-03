@@ -4,7 +4,7 @@ import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-rou
 export const routeList = [
   {
     path: '/',
-    redirect: '/shop',
+    redirect: '/store',
   },
   {
     path: '/empty__Page',
@@ -19,14 +19,14 @@ export const routeList = [
     component: () => import('@/views/login/loginIndex.vue'),
   },
   {
-    path: '/shop',
+    path: '/store',
     name: '金智维市场',
     // 单个路由组件，即，要显示的网页内容
     component: () => import('@/views/Goods/index.vue'),
     children: [
       {
         path: '',
-        name: 'shop',
+        name: 'store',
         component: () => import('@/views/Goods/MainRight/index.vue'),
       },
     ],

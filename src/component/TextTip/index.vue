@@ -32,6 +32,9 @@ type IProps = {
 const { text, tWidth, tColor, tSize, tBg, tLineH, lineNumber, singSize, signText, signColor, signPosition } =
   defineProps<IProps>()
 
+const showText = computed(() => {
+  return text ? text : '无'
+})
 const defaultSizeValue = 14 + 'px'
 const defaultWidthValue = '100%'
 
@@ -102,12 +105,12 @@ const showMore = () => {
 }
 
 function getLinesCount(element: any) {
-  if (!element) return 0
+  if (!element) return 1
   const range = document.createRange()
-  range.setStart(element.firstChild, 0)
-  range.setEnd(element.lastChild, element.lastChild ? element.lastChild.textContent.length : 0)
-  const lines = range.getClientRects()
-  return lines.length
+  range?.setStart?.(element.firstChild, 0)
+  range?.setEnd?.(element.lastChild, element.lastChild ? element.lastChild.textContent.length : 0)
+  const lines = range?.getClientRects()
+  return lines.length ?? 1
 }
 
 /** 处理查看更多位置 */
@@ -131,7 +134,7 @@ onMounted(async () => {
 
 <template>
   <div class="text-tip" :style="{ width: handleDataProps(tWidth) ?? defaultWidthValue }">
-    <div ref="textRef" class="text" :style="styleText">{{ text }}</div>
+    <div ref="textRef" class="text" :style="styleText">{{ showText }}</div>
     <div v-if="factLine > (lineNumber ?? 1)" class="sign" :style="styleSign" @click="showMore">
       {{ showMoreText ?? '查看更多' }}
     </div>
