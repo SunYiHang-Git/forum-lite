@@ -15,7 +15,7 @@ export const getClassifyListAPI = async <T>(): Promise<T[]> => {
       level: table.s('Level'),
       sort: table.s('Sort'),
       shopType: table.s('ShopType') as '0' | '1',
-      appNumber: table.s('AppCount') || 0,
+      appNumber: table.s('AppCount'),
     }
     rows.push(row as T)
     table.next()

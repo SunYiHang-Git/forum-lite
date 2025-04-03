@@ -7,6 +7,7 @@ import AuditDialog from './AuditDialog.vue'
 import EditAppDialog from './EditAppDialog.vue'
 import { getAppListAPI, upperOrLowerShelveAPI } from './data'
 import { arrayBufferToHex } from '@/utils/download'
+import IconImg from '@/assets/images/icon1.png'
 /** 表格工具栏 */
 const widgets = ref(['search', 'refresh', 'filter', 'transfer', 'custom1', 'sizeControl'])
 /** 表格每行的高度 */
@@ -68,7 +69,6 @@ const getAppList = async () => {
   console.time()
   const { list } = await getAppListAPI(params)
   console.timeEnd()
-  console.log('list----', list)
   tableData.length = 0
   await nextTick()
   tableData.push(...list)
@@ -106,7 +106,7 @@ const editApp = async (data: any) => {
     IsBase64IMG: true,
   }
   try {
-    callServerFunc('THawkeyeDM', 'SetShopsApp', params)
+    await callServerFunc('THawkeyeDM', 'SetShopsApp', params)
     KMessage.success('修改成功!')
     initWindow()
   } catch (error) {
@@ -249,7 +249,7 @@ const httpRequestFile = async ({ file }: { file: File }) => {
             <div class="img-icon">
               <k-image style="width: 100%; height: 100%" :src="row.icon" fit="fill">
                 <template #error>
-                  <k-image style="width: 100%; height: 100%" src="/images/icon1.png" fit="fill" />
+                  <k-image style="width: 100%; height: 100%" :src="IconImg" fit="fill" />
                 </template>
               </k-image>
             </div>

@@ -19,7 +19,7 @@ const handleMenu = (e: any) => {
     <div class="top-box">
       <div class="logo-box">
         <div class="logo">
-          <k-image style="width: 100%; height: 100%" src="/images/rpa2.png" fit="fill" />
+          <k-image style="width: 100%; height: 100%" src="./images/rpa2.png" fit="fill" />
         </div>
         <div class="logo-name">K-RPA Lite 管理后台</div>
       </div>

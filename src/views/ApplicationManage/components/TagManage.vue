@@ -73,21 +73,18 @@ const tagParams = ref<IDialogParamsType<IFormType, IFormRenderType<IFormType>[]>
 /** 新增/编辑标签请求 */
 const callTagListAxios = async (type: 'add' | 'edit', name: string, id: string = '') => {
   // THawkeyeDM AddTag
-  try {
-    if (type === 'add') {
-      await callServerFunc('THawkeyeDM', 'AddTag', { sType: 'k_lite', Name: name })
-      KMessage.success('新增标签成功!')
-    } else if (type === 'edit') {
-      await callServerFunc('THawkeyeDM', 'SetTag', {
-        ID: id,
-        Name: name,
-        sType: 'k_lite',
-      })
-    }
-    getTagsData()
-  } catch (error) {
-    KMessage.error('新建标签失败')
+  if (type === 'add') {
+    await callServerFunc('THawkeyeDM', 'AddTag', { sType: 'k_lite', Name: name })
+    KMessage.success('新增标签成功!')
+  } else if (type === 'edit') {
+    await callServerFunc('THawkeyeDM', 'SetTag', {
+      ID: id,
+      Name: name,
+      sType: 'k_lite',
+    })
+    KMessage.success('编辑标签成功!')
   }
+  getTagsData()
 }
 
 /** 新增-编辑 分类 */

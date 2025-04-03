@@ -43,6 +43,7 @@ const getClassifyData = async () => {
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)
+  console.log('tableData--->', tableData)
 }
 
 /** 初始化数据 */
@@ -71,17 +72,14 @@ const classifyParams = ref<IDialogParamsType<IFormType, IFormRenderType<IFormTyp
 /** 新增/编辑分类请求 */
 const callClassifyAxios = async (type: 'add' | 'edit', name: string, id: string = '') => {
   // THawkeyeDM NewShopsGroup    SetShopsGroup
-  try {
-    if (type === 'add') {
-      await callServerFunc('THawkeyeDM', 'NewShopsGroup', { ShopType: 1, Name: name })
-      KMessage.success('新建分类成功!')
-    } else if (type === 'edit') {
-      await callServerFunc('THawkeyeDM', 'SetShopsGroup', { ID: id, Name: name })
-    }
-    getClassifyData()
-  } catch (error) {
-    KMessage.error('新建分类失败')
+  if (type === 'add') {
+    await callServerFunc('THawkeyeDM', 'NewShopsGroup', { ShopType: 1, Name: name })
+    KMessage.success('新建分类成功!')
+  } else if (type === 'edit') {
+    await callServerFunc('THawkeyeDM', 'SetShopsGroup', { ID: id, Name: name })
+    KMessage.success('编辑分类成功!')
   }
+  getClassifyData()
 }
 
 /** 新增-编辑 分类 */

@@ -5,6 +5,7 @@ import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 
 import type { IClassify, IGoodDataType, ITagType } from '@/types/goods'
 import { getAppListAPI, getClassifyListAPI, hexStrToShowBase64 } from '@/views/ApplicationManage/components/data'
 import TabPane from '../TableDataShop/components/TabPane.vue'
+import RPAImg from '@/assets/images/RPA.png'
 interface ISearchDataType {
   /** 数据 */
   tableData: IGoodDataType[]
@@ -221,7 +222,7 @@ const handleSearch = async () => {
     <div v-show="isShowStickyInput" class="sticky-input-box">
       <div class="logo-box">
         <div class="logo">
-          <k-image style="width: 100%; height: 100%" src="/images/RPA.png" fit="fill" />
+          <k-image style="width: 100%; height: 100%" :src="RPAImg" fit="fill" />
         </div>
         <div class="logo-title">RPA 市场</div>
       </div>

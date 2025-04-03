@@ -4,6 +4,7 @@ import { onMounted, ref } from 'vue'
 import GoodInfoDialog from '../../GoodInfoDialog.vue'
 import { downLoadFileById } from '@/utils/download'
 import type { IGoodDataType } from '@/types/goods'
+import IconImg from '@/assets/images/icon1.png'
 
 export type IParams = {
   visible: boolean
@@ -54,7 +55,8 @@ function sendMessageToParent(data: any) {
         <div class="img">
           <k-image style="width: 100%; height: 100%" :src="item.icon" fit="fill">
             <template #error>
-              <k-image style="width: 100%; height: 100%" src="/images/icon1.png" fit="fill" />
+              <!-- <k-image style="width: 100%; height: 100%" src="./images/icon1.png" fit="fill" /> -->
+              <k-image style="width: 100%; height: 100%" :src="IconImg" fit="fill" />
             </template>
           </k-image>
         </div>

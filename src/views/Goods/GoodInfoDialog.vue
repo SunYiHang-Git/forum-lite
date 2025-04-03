@@ -4,6 +4,8 @@ import TextTip from '@/component/TextTip/index.vue'
 import HistoryVersion from './HistoryVersion.vue'
 import type { IParams } from './TableDataShop/components/TabPane.vue'
 import { downLoadFileById } from '@/utils/download'
+import IconImg from '@/assets/images/icon1.png'
+import RPAImg from '@/assets/images/RPA.png'
 
 const { params } = defineProps<{
   params: IParams
@@ -55,7 +57,12 @@ const download = async () => {
     <div v-if="!isShowHistory" class="content-box">
       <div class="top">
         <div class="icon-box">
-          <k-image style="width: 100px; height: 100px" :src="dataInfo.icon" fit="fill" />
+          <k-image style="width: 100px; height: 100px" :src="dataInfo.icon" fit="fill">
+            <template #error>
+              <!-- <k-image style="width: 100%; height: 100%" src="./images/icon1.png" fit="fill" /> -->
+              <k-image style="width: 100%; height: 100%" :src="IconImg" fit="fill" />
+            </template>
+          </k-image>
         </div>
         <div class="right-box">
           <div class="title overHide">{{ dataInfo.name }}</div>
@@ -94,7 +101,8 @@ const download = async () => {
             <div class="dev-title">开发者</div>
             <div class="sign">
               <div class="img">
-                <el-image style="width: 100%; height: 100%" src="/images/RPA.png" fit="fill" />
+                <!-- <el-image style="width: 100%; height: 100%" src="/images/RPA.png" fit="fill" /> -->
+                <el-image style="width: 100%; height: 100%" :src="RPAImg" fit="fill" />
               </div>
               <div class="team">{{ dataInfo.devUserName }}</div>
             </div>
