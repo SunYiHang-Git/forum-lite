@@ -19,7 +19,6 @@ import SvgIcon from '@/component/icon/SvgIcon.vue'
 import router from '@/utils/router'
 
 import App from './App.vue'
-import { postMessageTransmit } from '@/utils/postMessage'
 
 const app = createApp(App)
 app.directive('ClickOutside', ClickOutside)
@@ -31,4 +30,3 @@ app.component('FontIcon', FontIcon)
 app.component('AppContainer', AppContainer)
 
 app.mount('#app')
-postMessageTransmit()

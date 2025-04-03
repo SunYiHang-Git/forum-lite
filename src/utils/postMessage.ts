@@ -24,3 +24,18 @@ export const postMessageTransmit = () => {
     }
   })
 }
+
+/** 获取 url 对象 */
+export const getWindowUrlObj = () => {
+  const search = window.location.search // 示例值: "?parentOrigin=...&token=..."
+  const params = new URLSearchParams(search)
+
+  const queryObject: any = {}
+  for (const [key, value] of params) {
+    queryObject[key] = decodeURIComponent(value) // 解码特殊字符（如 %3A → :）
+  }
+  console.log('queryObject--->', queryObject)
+  const { token } = queryObject
+  setToken(token)
+  return queryObject
+}

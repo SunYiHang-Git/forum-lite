@@ -6,6 +6,7 @@ import type { IParams } from './TableDataShop/components/TabPane.vue'
 import { downLoadFileById } from '@/utils/download'
 import IconImg from '@/assets/images/icon1.png'
 import RPAImg from '@/assets/images/RPA.png'
+import { getWindowUrlObj } from '@/utils/postMessage'
 
 const { params } = defineProps<{
   params: IParams
@@ -35,8 +36,8 @@ const showHistoryVersion = () => {
 }
 const parentOrigin = ref()
 onMounted(() => {
-  const urlParams = new URLSearchParams(window.location.search)
-  parentOrigin.value = urlParams.get('parentOrigin') ?? 'http://127.0.0.1:8071'
+  const { pl } = getWindowUrlObj()
+  parentOrigin.value = pl
 })
 function sendMessageToParent(data: any) {
   const obj = {

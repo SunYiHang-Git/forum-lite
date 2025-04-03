@@ -1,5 +1,13 @@
-import { getSessionValue, getToken, initGlobalVariable, isInset, setSessionValue } from '@ksware/micro-lib-web-temp'
+import {
+  getSessionValue,
+  getToken,
+  initGlobalVariable,
+  isInset,
+  setSessionValue,
+  setToken,
+} from '@ksware/micro-lib-web-temp'
 import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
+import { getWindowUrlObj } from './postMessage'
 
 export const routeList = [
   {
@@ -79,6 +87,14 @@ router.beforeEach((to, from, next) => {
   //   next('/login')
   //   return
   // }
+  if (!getToken()) {
+    const { token } = getWindowUrlObj()
+    if (token) {
+      setToken(token)
+      next('/')
+      return
+    }
+  }
   if (!getToken() && to.path !== '/login') {
     next('/login')
     return

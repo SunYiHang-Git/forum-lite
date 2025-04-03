@@ -14,14 +14,6 @@ import { delRouteCache } from '@/store/routerCache'
 import router from '@/utils/router'
 
 // 打开页面时清空原有Token
-
-function initWindow() {
-  const token = getToken()
-  if (token) {
-    router.push('/')
-  }
-}
-initWindow()
 const formData = ref({
   user: '',
   pass: '',
@@ -42,7 +34,7 @@ function updateKey() {
   })
 }
 
-// removeToken()
+removeToken()
 /** 提交表单 */
 function submitForm() {
   if (!formRef.value) return
@@ -61,7 +53,7 @@ function submitForm() {
           console.log('data--->', data)
           await saveUserInfo()
           router.push('/')
-          // delRouteCache('/login')
+          delRouteCache('/login')
         })
       })
     }

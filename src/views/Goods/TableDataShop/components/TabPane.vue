@@ -5,6 +5,7 @@ import GoodInfoDialog from '../../GoodInfoDialog.vue'
 import { downLoadFileById } from '@/utils/download'
 import type { IGoodDataType } from '@/types/goods'
 import IconImg from '@/assets/images/icon1.png'
+import { getWindowUrlObj } from '@/utils/postMessage'
 
 export type IParams = {
   visible: boolean
@@ -16,10 +17,12 @@ export type IParams = {
 const { tableData } = defineProps<{
   tableData: any[]
 }>()
-const parentOrigin = ref()
+const parentOrigin = ref('')
 onMounted(() => {
-  const urlParams = new URLSearchParams(window.location.search)
-  parentOrigin.value = urlParams.get('parentOrigin') ?? 'http://127.0.0.1:8071'
+  // const urlParams = new URLSearchParams(window.location.search)
+  // parentOrigin.value = urlParams.get('parentOrigin') ?? 'http://127.0.0.1:8071'
+  const { parentOrigin: pl } = getWindowUrlObj()
+  parentOrigin.value = pl
 })
 
 const shopInfoParams = ref<IParams>({
