@@ -68,7 +68,7 @@ const getAppList = async () => {
   console.time()
   const { list } = await getAppListAPI(params)
   console.timeEnd()
-  console.log('list', list)
+  console.log('list----', list)
   tableData.length = 0
   await nextTick()
   tableData.push(...list)
@@ -159,12 +159,6 @@ const handleEdit = async (item: IGoodDataType) => {
     editApp({ id: item.id, ...data })
   }
 }
-/** 新增 */
-const importAppFile = async () => {
-  // let newData = {}
-  // newData.file = data.file
-  // newData.Cover = true
-}
 /** 删除通过 Id */
 const handleDelById = async (item: IGoodDataType) => {
   try {
@@ -198,7 +192,6 @@ async function upperOrLowerShelve(id: string, type: 1 | 2) {
 /** 上传文件前 */
 const beforeAvatarUpload = (rawFile: any) => {
   const fileExtension = rawFile.name.split('.').pop().toLowerCase()
-  console.log('fileExtension----', fileExtension)
   if (fileExtension !== 'db') {
     KMessage.error('文件后缀必须是.db格式！')
     return false
@@ -280,13 +273,23 @@ const httpRequestFile = async ({ file }: { file: File }) => {
         </template>
         <template #opt="{ row }">
           <k-button text :disabled="row.status !== '0'" color="primary" @click="handleAudit(row)">审核</k-button>
-          <k-button text :disabled="row.status === '2'" color="primary" @click="upperOrLowerShelve(row.id, 1)">
+          <k-button
+            text
+            :disabled="row.status === '0' || row.status === '2'"
+            color="primary"
+            @click="upperOrLowerShelve(row.id, 1)"
+          >
             上架
           </k-button>
-          <k-button text :disabled="row.status === '3'" color="primary" @click="upperOrLowerShelve(row.id, 2)">
+          <k-button
+            text
+            :disabled="row.status === '0' || row.status === '1' || row.status === '3'"
+            color="primary"
+            @click="upperOrLowerShelve(row.id, 2)"
+          >
             下架
           </k-button>
-          <k-button text color="primary" @click="handleEdit(row)">修改</k-button>
+          <k-button text color="primary" :disabled="row.status === '2'" @click="handleEdit(row)">修改</k-button>
           <k-button text color="error" @click="handleDelById(row)">删除</k-button>
         </template>
       </k-tree-table>

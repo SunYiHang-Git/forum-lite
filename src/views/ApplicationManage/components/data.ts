@@ -15,7 +15,7 @@ export const getClassifyListAPI = async <T>(): Promise<T[]> => {
       level: table.s('Level'),
       sort: table.s('Sort'),
       shopType: table.s('ShopType') as '0' | '1',
-      appNumber: table.s('AppCount'),
+      appNumber: table.s('AppCount') || 0,
     }
     rows.push(row as T)
     table.next()
@@ -36,7 +36,7 @@ export const getTagsListAPI = async <T>(): Promise<T[]> => {
       colorName: table.s('ColorName'),
       sort: table.s('Sort'),
       sType: table.s('sType') as '0' | '1',
-      appNumber: table.s('AppCount'),
+      appNumber: table.s('AppCount') || 0,
       appId: table.s('AppId'),
     }
     rows.push(row as T)
@@ -113,6 +113,7 @@ export const getAppListAPI = async ({
   }
   const classifyList = await getClassifyListAPI<IClassify>()
   const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params, { isShowLoading: true })
+  console.log('data--->', data)
   const { pageNumber, page, total } = data
   const tableTag = new SQLTable(data.k_tag)
   const tagsList: ITagType[] = []
