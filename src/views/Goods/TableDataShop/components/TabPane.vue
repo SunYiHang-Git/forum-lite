@@ -19,8 +19,6 @@ const { tableData } = defineProps<{
 }>()
 const parentOrigin = ref('')
 onMounted(() => {
-  // const urlParams = new URLSearchParams(window.location.search)
-  // parentOrigin.value = urlParams.get('parentOrigin') ?? 'http://127.0.0.1:8071'
   const { parentOrigin: pl } = getWindowUrlObj()
   parentOrigin.value = pl
 })

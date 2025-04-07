@@ -12,8 +12,11 @@ import { ref } from 'vue'
 
 import { delRouteCache } from '@/store/routerCache'
 import router from '@/utils/router'
+import { clearLocalStorage, clearSessionStorage, setSessionStorage } from '@/utils/auth'
 
 // 打开页面时清空原有Token
+clearSessionStorage()
+clearLocalStorage()
 const formData = ref({
   user: '',
   pass: '',
@@ -21,43 +24,15 @@ const formData = ref({
 
 const formRef = ref('')
 
-/**
- * 更新 key
- *
- * @returns key 对象
- */
-function updateKey() {
-  return new Promise((res) => {
-    callServerFunc('TBaseDM', 'Test2', {}).then(({ data }) => {
-      res({ key: data.key })
-    })
-  })
-}
-
-removeToken()
-/** 提交表单 */
-function submitForm() {
+const loginAPI = async () => {
   if (!formRef.value) return
-  formRef.value.validate((bool) => {
-    if (bool) {
-      updateKey().then(({ key }) => {
-        const data = {
-          Key: key,
-          User: formData.value.user,
-          Pass: encryptByDES(MD5(formData.value.pass), key),
-          webJson: true,
-          WebLogin: true,
-        }
-        callServerFunc('TBaseDM', 'Test1', data).then(async ({ data }) => {
-          setToken(data.Token)
-          console.log('data--->', data)
-          await saveUserInfo()
-          router.push('/')
-          delRouteCache('/login')
-        })
-      })
-    }
-  })
+  await formRef.value.validate()
+  const data = { IsForumLogin: true, User: formData.value.user, Pass: MD5(formData.value.pass) }
+  const res = await callServerFunc('TRPADM', 'RPAUserLogin', data)
+  setToken(res.data.Token)
+  setSessionStorage('userLogin', res.data)
+  router.push('/')
+  delRouteCache('/login')
 }
 </script>
 <template>
@@ -75,12 +50,12 @@ function submitForm() {
             v-model="formData.pass"
             placeholder="请输入用户登录密码"
             type="password"
-            @keydown.enter="submitForm"
+            @keydown.enter="loginAPI"
           />
         </el-form-item>
         <el-form-item label="">
           <el-form-item>
-            <el-button type="primary" @click="submitForm()">登录</el-button>
+            <el-button type="primary" @click="loginAPI">登录</el-button>
           </el-form-item>
         </el-form-item>
       </el-form>

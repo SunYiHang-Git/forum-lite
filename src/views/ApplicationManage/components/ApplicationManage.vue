@@ -66,9 +66,7 @@ const tableData = reactive<IGoodDataType[]>([])
 const getAppList = async () => {
   // 获取数据
   const params = { IsLimit: false }
-  console.time()
   const { list } = await getAppListAPI(params)
-  console.timeEnd()
   tableData.length = 0
   await nextTick()
   tableData.push(...list)

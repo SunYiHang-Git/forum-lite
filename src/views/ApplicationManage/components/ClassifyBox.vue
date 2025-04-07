@@ -43,7 +43,6 @@ const getClassifyData = async () => {
   tableData.length = 0
   await nextTick()
   tableData.push(...rows)
-  console.log('tableData--->', tableData)
 }
 
 /** 初始化数据 */

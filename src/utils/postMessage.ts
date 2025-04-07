@@ -1,4 +1,4 @@
-import { setToken } from '@ksware/micro-lib-web-temp'
+import { isInset, setToken } from '@ksware/micro-lib-web-temp'
 
 /** 接收父级传输的消息 */
 const allowedIPPorts = ['127.0.0.1:8071', 'localhost:8071', '192.168.104.62:8071']
@@ -27,6 +27,7 @@ export const postMessageTransmit = () => {
 
 /** 获取 url 对象 */
 export const getWindowUrlObj = () => {
+  if (!isInset) return {}
   const search = window.location.search // 示例值: "?parentOrigin=...&token=..."
   const params = new URLSearchParams(search)
 
@@ -34,7 +35,6 @@ export const getWindowUrlObj = () => {
   for (const [key, value] of params) {
     queryObject[key] = decodeURIComponent(value) // 解码特殊字符（如 %3A → :）
   }
-  console.log('queryObject--->', queryObject)
   const { token } = queryObject
   setToken(token)
   return queryObject

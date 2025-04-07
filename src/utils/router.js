@@ -8,7 +8,6 @@ import {
 } from '@ksware/micro-lib-web-temp'
 import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
 import { getWindowUrlObj } from './postMessage'
-
 export const routeList = [
   {
     path: '/',
@@ -72,7 +71,6 @@ const router = createRouter({
 })
 
 initGlobalVariable('routerInstance', router)
-
 let isFirst = false
 // 路由执行前加载缓存数据
 router.beforeEach((to, from, next) => {
@@ -87,7 +85,7 @@ router.beforeEach((to, from, next) => {
   //   next('/login')
   //   return
   // }
-  if (!getToken()) {
+  if (!getToken() && isInset) {
     const { token } = getWindowUrlObj()
     if (token) {
       setToken(token)
