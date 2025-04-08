@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import { getSessionStorage } from '@/utils/auth'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-const searchValue = ref<string>('')
+// const searchValue = ref<string>('')
 
 const handleMenu = (e: any) => {
   const target = e.target
@@ -12,6 +13,15 @@ const handleMenu = (e: any) => {
     router.push(name)
   }
 }
+const userInfo = ref<any>({})
+/** 获取用户信息 */
+const getUserInfo = () => {
+  const userStore = getSessionStorage('userLogin')
+  if (typeof userStore === 'object') {
+    userInfo.value = userStore
+  }
+}
+getUserInfo()
 </script>
 
 <template>
@@ -24,9 +34,11 @@ const handleMenu = (e: any) => {
         <div class="logo-name">K-RPA Lite 管理后台</div>
       </div>
       <div class="search-box">
-        <KInput v-model="searchValue" placeholder="请输入..." prefix-icon="IconSearch" />
+        <!-- <KInput v-model="searchValue" placeholder="请输入..." prefix-icon="IconSearch" /> -->
       </div>
-      <div class="user-box">user888</div>
+      <div class="user-box">
+        <div class="avatar">{{ userInfo?.UserName?.slice(0, 1) }}</div>
+      </div>
     </div>
     <div class="main-box">
       <div class="aside">
@@ -98,8 +110,22 @@ const handleMenu = (e: any) => {
     .user-box {
       display: flex;
       align-items: center;
+      justify-content: end;
+      box-sizing: border-box;
+      padding-right: 15px;
       width: 150px;
       height: 40px;
+      .avatar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        overflow: hidden;
+        color: #fff;
+        background-color: #3a897ded;
+      }
     }
   }
   .main-box {

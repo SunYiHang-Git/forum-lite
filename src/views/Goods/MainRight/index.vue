@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
+import { callServerFunc, isInset, SQLTable } from '@ksware/micro-lib-web-temp'
 import TableDataShop, { type ITabDataList } from '../TableDataShop/index.vue'
 import { computed, nextTick, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import type { IClassify, IGoodDataType, ITagType } from '@/types/goods'
 import { getAppListAPI, getClassifyListAPI, hexStrToShowBase64 } from '@/views/ApplicationManage/components/data'
 import TabPane from '../TableDataShop/components/TabPane.vue'
 import RPAImg from '@/assets/images/RPA.png'
+import { getWindowUrlObj } from '@/utils/postMessage'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 interface ISearchDataType {
   /** 数据 */
   tableData: IGoodDataType[]
@@ -154,6 +157,11 @@ const loadDataById = async () => {
 }
 /** 初始化数据 */
 async function initWindow() {
+  const { token } = getWindowUrlObj()
+  if (isInset && !token) {
+    router.push('/login')
+    return
+  }
   await getClassifyData()
   loadDataById()
 }
