@@ -64,7 +64,7 @@ function sendMessageToParent(data: any) {
         <div class="content">
           <div class="box">
             <div class="title overHide">{{ item.name }}</div>
-            <div class="desc overHide">{{ item.funcDes }}</div>
+            <div class="desc overHide">{{ item.blurb }}</div>
           </div>
           <div class="download" @click.stop="download(item)">下载</div>
         </div>
