@@ -8,6 +8,7 @@ import EditAppDialog from './EditAppDialog.vue'
 import { getAppListAPI, upperOrLowerShelveAPI } from './data'
 import { arrayBufferToHex } from '@/utils/download'
 import IconImg from '@/assets/images/icon1.png'
+import AppUpdateDialog from './AppUpdateDialog.vue'
 /** 表格工具栏 */
 const widgets = ref(['search', 'refresh', 'filter', 'transfer', 'custom1', 'sizeControl'])
 /** 表格每行的高度 */
@@ -220,6 +221,22 @@ const httpRequestFile = async ({ file }: { file: File }) => {
   }
   reader.readAsArrayBuffer(file)
 }
+
+const appUpdateDialogParams = ref<any>({
+  visible: false,
+})
+/** 更新 */
+const appUpdate = (row: any) => {
+  appUpdateDialogParams.value.visible = true
+  appUpdateDialogParams.value.item = row
+  appUpdateDialogParams.value.cancel = () => {
+    appUpdateDialogParams.value.visible = false
+  }
+  appUpdateDialogParams.value.submit = (data: any) => {
+    console.log('data---', data)
+    appUpdateDialogParams.value.visible = false
+  }
+}
 </script>
 
 <template>
@@ -236,7 +253,7 @@ const httpRequestFile = async ({ file }: { file: File }) => {
         <template #custom1>
           <!-- <k-button main @click="importAppFile"> -->
           <!-- </k-button> -->
-          <k-upload class="upload-demo" multiple :before-upload="beforeAvatarUpload" :http-request="httpRequestFile">
+          <k-upload class="upload-demo" :before-upload="beforeAvatarUpload" :http-request="httpRequestFile">
             <template #trigger>
               <k-button type="primary" main>导入</k-button>
             </template>
@@ -273,20 +290,13 @@ const httpRequestFile = async ({ file }: { file: File }) => {
           <k-button text :disabled="row.status !== '0'" color="primary" @click="handleAudit(row)">审核</k-button>
           <k-button
             text
-            :disabled="row.status === '0' || row.status === '2'"
+            :disabled="row.status === '0'"
             color="primary"
-            @click="upperOrLowerShelve(row.id, 1)"
+            @click="upperOrLowerShelve(row.id, row.status === '2' ? 2 : 1)"
           >
-            上架
+            {{ row.status === '2' ? '下架' : '上架' }}
           </k-button>
-          <k-button
-            text
-            :disabled="row.status === '0' || row.status === '1' || row.status === '3'"
-            color="primary"
-            @click="upperOrLowerShelve(row.id, 2)"
-          >
-            下架
-          </k-button>
+          <k-button text color="primary" @click="appUpdate(row)">更新</k-button>
           <k-button text color="primary" :disabled="row.status === '2'" @click="handleEdit(row)">修改</k-button>
           <k-button text color="error" @click="handleDelById(row)">删除</k-button>
         </template>
@@ -295,6 +305,7 @@ const httpRequestFile = async ({ file }: { file: File }) => {
   </div>
   <AuditDialog v-if="auditDialogParams.visible" :params="auditDialogParams" />
   <EditAppDialog v-if="editAPPDialogParams.visible" :params="editAPPDialogParams" />
+  <AppUpdateDialog v-if="appUpdateDialogParams.visible" :params="appUpdateDialogParams" />
 </template>
 
 <style lang="scss" scoped>
