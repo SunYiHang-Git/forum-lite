@@ -1,19 +1,12 @@
 <script setup>
-import {
-  callServerFunc,
-  encryptByDES,
-  getToken,
-  MD5,
-  removeToken,
-  saveUserInfo,
-  setToken,
-} from '@ksware/micro-lib-web-temp/index'
+import { callServerFunc, MD5, setToken } from '@ksware/micro-lib-web-temp/index'
 import { ref } from 'vue'
 
 import { delRouteCache } from '@/store/routerCache'
 import router from '@/utils/router'
 import { clearLocalStorage, clearSessionStorage, setSessionStorage } from '@/utils/auth'
-
+import { useUser } from '@/store/modules/user'
+const { setUserInfo } = useUser()
 // 打开页面时清空原有Token
 clearSessionStorage()
 clearLocalStorage()
@@ -21,7 +14,6 @@ const formData = ref({
   user: '',
   pass: '',
 })
-
 const formRef = ref('')
 
 const loginAPI = async () => {
@@ -29,8 +21,23 @@ const loginAPI = async () => {
   await formRef.value.validate()
   const data = { IsForumLogin: true, User: formData.value.user, Pass: MD5(formData.value.pass) }
   const res = await callServerFunc('TRPADM', 'RPAUserLogin', data)
+  const isAdminObj = await callServerFunc('TRPADM', 'RPAJudgeUserIsAdmin', {
+    Token: res.data.Token,
+    LoginID: res.data.LoginID,
+  })
+  const resData = res.data
+  const userInfoObj = {
+    isAdmin: isAdminObj.data.UserAdmin === 1 ? true : false,
+    id: resData.ID,
+    loginId: resData.LoginID,
+    token: resData.Token,
+    password: resData.PassWord,
+    user: resData.User,
+    userId: resData.UserID,
+    userName: resData.UserName,
+  }
   setToken(res.data.Token)
-  setSessionStorage('userLogin', res.data)
+  setUserInfo(userInfoObj)
   router.push('/')
   delRouteCache('/login')
 }

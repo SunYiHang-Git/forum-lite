@@ -3,7 +3,7 @@ import 'element-plus/dist/index.css'
 import 'vxe-table/lib/style.css'
 import 'ksw-vue-icon/styles/icon.css'
 import '@ksware/ksw-ux/kingsware-ui/style.css'
-
+import { useUser } from '@/store/modules/user'
 import KswUx from '@ksware/ksw-ux'
 // 封装统一请求方法
 import ElementPlus, { ClickOutside } from 'element-plus'
@@ -30,3 +30,5 @@ app.component('FontIcon', FontIcon)
 app.component('AppContainer', AppContainer)
 
 app.mount('#app')
+const { getSessionUser } = useUser()
+getSessionUser()

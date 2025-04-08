@@ -8,6 +8,9 @@ import {
 } from '@ksware/micro-lib-web-temp'
 import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
 import { getWindowUrlObj } from './postMessage'
+import { useUser } from '@/store/modules/user'
+import { KMessage } from '@ksware/ksw-ux'
+
 export const routeList = [
   {
     path: '/',
@@ -96,6 +99,14 @@ router.beforeEach((to, from, next) => {
   if (!getToken() && to.path !== '/login') {
     next('/login')
     return
+  }
+  if (to.path === '/application') {
+    const { isAdminByUser } = useUser()
+    if (!isAdminByUser()) {
+      KMessage.error('没有权限进入该页面!')
+      next('/store')
+      return
+    }
   }
 
   // 开发模式生效，刷新浏览器 继续打开之前打开的路由，方便调试
