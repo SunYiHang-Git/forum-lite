@@ -53,7 +53,7 @@ export const getHistoryListAPI = async <T>(id: string): Promise<T[]> => {
   while (!table.eof()) {
     const row = {
       id: table.s('ID'),
-      version: table.s('Version'),
+      version: table.s('VerName'),
       updateInfo: table.s('UpdateInfo'),
       onLineTime: table.s('OnLineTime'),
     }
@@ -91,29 +91,34 @@ export const getAppListAPI = async ({
   pageNum = 1,
   pageSize = 20,
   IsLimit = true,
-  isAudit = false,
-  IsOnLine = false,
 }: {
   id?: string
   name?: string
   pageNum?: number
   pageSize?: number
   IsLimit?: boolean
-  isAudit?: boolean
-  IsOnLine?: boolean
 }) => {
   const params = {
-    isAudit,
-    IsOnLine,
     Name: name,
     ClassifyID: id === 'all' ? '' : id,
     pageNumber: pageNum,
     pageSize,
     IsLimit,
   }
+  let data: any = {}
+  if (IsLimit) {
+    // 分页
+    const res = await callServerFunc('THawkeyeDM', 'GetShopsAppListByOnline', params, { isShowLoading: true })
+    data = res.data
+  } else {
+    // 不分页
+    const res = await callServerFunc('THawkeyeDM', 'GetShopsAppListByLast', { IsLimit: false }, { isShowLoading: true })
+    data = res.data
+  }
   const classifyList = await getClassifyListAPI<IClassify>()
-  const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params, { isShowLoading: true })
+  // const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params, { isShowLoading: true })
   const { pageNumber, page, total } = data
+  console.log('data--->', data)
   const tableTag = new SQLTable(data.k_tag)
   const tagsList: ITagType[] = []
   while (!tableTag.eof()) {
@@ -149,7 +154,8 @@ export const getAppListAPI = async ({
       modifyBy: table.s('ModifyBy'),
       modifyTime: table.s('ModifyTime'),
       downloadCount: table.s('DownloadCount'),
-      version: table.s('Version'),
+      version: table.s('VerName'),
+      isPassed: table.s('IsPassed'),
       audit,
       offLineType,
       status: handleAuditStatus(audit, offLineType),
@@ -160,12 +166,13 @@ export const getAppListAPI = async ({
       auditUserName: table.s('AuditUserName'),
       tags: tagsList.filter((item) => item.appId === id),
       classifyName: table.s('ClassifyName'),
+      remark: table.s('Remark'),
       classify: classifyList.filter((item) => item.id === pid),
     }
     rows.push(row)
     table.next()
   }
-
+  console.log('rows--->', rows)
   return { pageNumber, page, total, list: rows }
 }
 

@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { getSessionStorage } from '@/utils/auth'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useUser } from '@/store/modules/user'
+import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 const router = useRouter()
+const { getSessionUser, exitLogin } = useUser()
 
 // const searchValue = ref<string>('')
 
@@ -16,12 +18,38 @@ const handleMenu = (e: any) => {
 const userInfo = ref<any>({})
 /** 获取用户信息 */
 const getUserInfo = () => {
-  const userStore = getSessionStorage('userLogin')
+  const userStore = getSessionUser()
   if (typeof userStore === 'object') {
     userInfo.value = userStore
   }
 }
 getUserInfo()
+
+/** 退出登录 */
+async function logOut() {
+  try {
+    await KMessageBox.confirm('确定要退出登录吗?', '提示', {
+      confirmButtonText: '退出',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+    exitLogin()
+    KMessage.success('退出登录!')
+    router.push('/login')
+  } catch (error) {
+    KMessage.info('取消!')
+  }
+}
+/** 头像点击事件 */
+const handleCommand = async (com: string) => {
+  switch (com) {
+    case 'exit':
+      logOut()
+      return
+    default:
+      return
+  }
+}
 </script>
 
 <template>
@@ -37,7 +65,14 @@ getUserInfo()
         <!-- <KInput v-model="searchValue" placeholder="请输入..." prefix-icon="IconSearch" /> -->
       </div>
       <div class="user-box">
-        <div class="avatar">{{ userInfo?.UserName?.slice(0, 1) }}</div>
+        <k-dropdown trigger="click" @command="handleCommand">
+          <template #title>
+            <div class="avatar">{{ userInfo?.userName?.slice(0, 1) }}</div>
+          </template>
+          <template #default>
+            <k-dropdown-item command="exit">退出登录</k-dropdown-item>
+          </template>
+        </k-dropdown>
       </div>
     </div>
     <div class="main-box">
@@ -112,7 +147,7 @@ getUserInfo()
       align-items: center;
       justify-content: end;
       box-sizing: border-box;
-      padding-right: 15px;
+      padding-right: 25px;
       width: 150px;
       height: 40px;
       .avatar {
@@ -168,7 +203,7 @@ getUserInfo()
         width: 100%;
         height: 100%;
         background-color: var(--k-bg-1);
-        overflow: hidden;
+        // overflow: hidden;
       }
     }
   }

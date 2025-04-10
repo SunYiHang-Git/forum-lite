@@ -101,8 +101,6 @@ const getAppList = async ({
     pageNum,
     pageSize,
     IsLimit,
-    isAudit: true,
-    IsOnLine: true,
   })
   handleTabListById(list, pageNumber, page, total, id)
 }

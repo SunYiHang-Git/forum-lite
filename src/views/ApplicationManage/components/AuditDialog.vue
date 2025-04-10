@@ -54,7 +54,7 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
         <k-form-item label="审核" prop="auditType">
           <k-radio-group v-model="form.auditType">
             <k-radio :value="1">通过</k-radio>
-            <!-- <k-radio :value="2">不通过</k-radio> -->
+            <k-radio :value="2">不通过</k-radio>
           </k-radio-group>
         </k-form-item>
         <k-form-item label="备注" prop="desc">

@@ -6,7 +6,7 @@ import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import { getClassifyListAPI, getTagsListAPI } from './data'
 import { callServerFunc } from '@ksware/micro-lib-web-temp'
 
-type RuleForm = Pick<IGoodDataType, 'name' | 'icon' | 'blurb' | 'funcDes'> & {
+type RuleForm = Pick<IGoodDataType, 'id' | 'name' | 'icon' | 'blurb' | 'funcDes' | 'version'> & {
   classify?: string
   tags?: string[]
 }
@@ -16,7 +16,9 @@ const { params } = defineProps<{
 const dialogVisible = computed(() => params.visible)
 const ruleFormRef = ref<FormInstance>()
 const form = reactive<RuleForm>({
+  id: '',
   icon: '',
+  version: '',
   name: '',
   blurb: '',
   classify: '',
@@ -28,6 +30,7 @@ const rules = reactive<FormRules<RuleForm>>({
     { required: true, message: '必须填写名称', trigger: 'blur' },
     { min: 2, max: 20, message: '名称为 2-20个字符', trigger: 'blur' },
   ],
+  version: [{ required: true, message: '必须填写版本号', trigger: 'blur' }],
 })
 const imageUrl = ref<string>('')
 
@@ -48,10 +51,12 @@ const handleTagOrClass = async () => {
 }
 /** 回显编辑的数据 */
 const handleEditData = () => {
-  const { icon, name, blurb, classify, tags, funcDes } = params.data
+  const { id, icon, name, blurb, classify, tags, funcDes, version } = params.data
   imageUrl.value = icon
+  form.id = id
   form.icon = icon
   form.name = name
+  form.version = version
   form.blurb = blurb
   form.funcDes = funcDes
   form.classify = classify?.map((item: any) => item.id)[0]
@@ -107,7 +112,7 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
   <k-dialog
     :model-value="dialogVisible"
     width="600"
-    title="修改应用"
+    :title="params.title"
     class="edit-app-dialog"
     @close="handleCancel(ruleFormRef)"
     :close-on-click-modal="false"
@@ -134,6 +139,9 @@ const submit = async (ruleFormRef: FormInstance | undefined) => {
         </k-form-item>
         <k-form-item label="名称" prop="name">
           <k-input v-model="form.name" placeholder="请输入名称" />
+        </k-form-item>
+        <k-form-item label="版本号" prop="version">
+          <k-input v-model="form.version" placeholder="请输入版本号" />
         </k-form-item>
         <k-form-item label="简介">
           <k-input v-model="form.blurb" show-word-limit :maxlength="50" placeholder="请输入应用简介" />

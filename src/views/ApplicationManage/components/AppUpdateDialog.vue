@@ -69,14 +69,7 @@ const httpRequestFile = async ({ file }: { file: UploadRawFile }) => {
     const arrayBuffer = e.target.result
     let newData: any = {}
     newData.file = arrayBufferToHex(arrayBuffer)
-    newData.Cover = true
     appUploadFile.value = newData
-    //   callServerFunc('THawkeyeDM', 'UpLoadShopsApp', newData).then(() => {
-    //     KMessage({
-    //       type: 'success',
-    //       message: '导入成功',
-    //     })
-    //   })
   }
   reader.readAsArrayBuffer(file)
 }
@@ -103,7 +96,7 @@ const submit = async () => {
   await ruleFormRef.value.validate()
   const data = {
     ...form,
-    file: appUploadFile.value,
+    ...appUploadFile.value,
   }
   params?.submit(data)
 }
@@ -153,7 +146,7 @@ const submit = async () => {
         </div>
       </div>
       <div class="btn-box">
-        <k-button v-if="active === 0" secondary>取 消</k-button>
+        <k-button v-if="active === 0" secondary @click="handleCancel">取 消</k-button>
         <k-button v-if="active === 1" secondary @click="handlePrev">上一步</k-button>
         <k-button v-if="active === 0" main @click="next">下一步</k-button>
         <k-button v-if="active === 1" main @click="submit">保存</k-button>

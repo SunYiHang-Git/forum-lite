@@ -102,7 +102,6 @@ const download = async () => {
             <div class="dev-title">开发者</div>
             <div class="sign">
               <div class="img">
-                <!-- <el-image style="width: 100%; height: 100%" src="/images/RPA.png" fit="fill" /> -->
                 <el-image style="width: 100%; height: 100%" :src="RPAImg" fit="fill" />
               </div>
               <div class="team">{{ dataInfo.devUserName }}</div>
@@ -229,6 +228,7 @@ const download = async () => {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            align-items: end;
             min-width: 63px;
             height: 80px;
             .history {

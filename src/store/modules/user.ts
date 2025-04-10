@@ -1,4 +1,4 @@
-import { getSessionStorage, setSessionStorage } from '@/utils/auth'
+import { clearLocalStorage, clearSessionStorage, getSessionStorage, setSessionStorage } from '@/utils/auth'
 // import { maturityDays } from '@/views/Login/login'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
@@ -40,6 +40,7 @@ export const useUser = defineStore('user', () => {
   function getSessionUser() {
     const obj = getSessionStorage(USER_KEY)
     userInfo.value = obj
+    return obj
   }
 
   /** 设置用户信息 */
@@ -71,11 +72,18 @@ export const useUser = defineStore('user', () => {
     const { isAdmin } = userInfo.value
     return isAdmin
   }
+  /** 退出登录 */
+  function exitLogin() {
+    clearUserInfoStore()
+    clearLocalStorage()
+    clearSessionStorage()
+  }
   return {
     userInfo,
     setUserInfo,
     getSessionUser,
     clearUserInfoStore,
     isAdminByUser,
+    exitLogin,
   }
 })

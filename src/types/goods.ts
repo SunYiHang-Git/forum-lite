@@ -47,6 +47,12 @@ export type IGoodDataType = {
   tags?: any
   /** 简介 */
   blurb?: string
+  /** 审核备注 */
+  remark?: string
+  /** 上下架状态 */
+  offLineType?: '0' | '1' | '2'
+  /** 审核状态(暂时弃用) */
+  audit?: '0' | '1'
 }
 
 /** 分类数据类型 */
@@ -62,7 +68,7 @@ export type IClassify = {
   /** 排序 */
   sort?: string
   /** 商品类型 0=分组; 1=分类 */
-  shopType?: '0' | '1'
+  shopType?: '0' | '1' | '2'
   /** 分类下应用数量 */
   appNumber?: string
 }
