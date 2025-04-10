@@ -133,6 +133,7 @@ export const getAppListAPI = async ({
     tagsList.push(row)
     tableTag.next()
   }
+  console.log('tagsList--->', tagsList)
   const table = new SQLTable(data.k_lite_application)
   const rows = []
   while (!table.eof()) {

@@ -14,8 +14,10 @@ export interface IUserInfo {
   user: string
   userId: string
   userName: string
-  /** 是否是管理员 */
+  /** 是否是市场管理员 */
   isAdmin: boolean
+  /** 角色 1=市场管理员, 2=云开发 , 0=普通用户 */
+  role: 1 | 2 | 0
 }
 /** userStore存储键 */
 export const USER_KEY = 'userInfo_Store'
@@ -35,12 +37,17 @@ export const useUser = defineStore('user', () => {
     userName: '',
     /** 是否是管理员 */
     isAdmin: false,
+    role: 0,
   })
   /** 获取本地用户信息 */
   function getSessionUser() {
     const obj = getSessionStorage(USER_KEY)
-    userInfo.value = obj
-    return obj
+    if (typeof obj === 'object') {
+      userInfo.value = obj
+    } else {
+      clearUserInfoStore()
+    }
+    return userInfo.value
   }
 
   /** 设置用户信息 */
@@ -65,6 +72,7 @@ export const useUser = defineStore('user', () => {
       userName: '',
       /** 是否是管理员 */
       isAdmin: false,
+      role: 0,
     }
   }
   /** 判断是否是管理员 */

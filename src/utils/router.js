@@ -6,10 +6,10 @@ import {
   setSessionValue,
   setToken,
 } from '@ksware/micro-lib-web-temp'
-import { createMemoryHistory, createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { getWindowUrlObj } from './postMessage'
-import { useUser } from '@/store/modules/user'
 import { KMessage } from '@ksware/ksw-ux'
+import { isAdminRolePermission } from '@/views/login/permission'
 
 export const routeList = [
   {
@@ -100,9 +100,9 @@ router.beforeEach((to, from, next) => {
     next('/login')
     return
   }
-  if (to.path === '/application') {
-    const { isAdminByUser } = useUser()
-    if (!isAdminByUser()) {
+  const permNameList = ['/application']
+  if (permNameList.includes(to.path)) {
+    if (!isAdminRolePermission()) {
       KMessage.error('没有权限进入该页面!')
       next('/store')
       return

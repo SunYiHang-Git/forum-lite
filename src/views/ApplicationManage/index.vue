@@ -19,9 +19,7 @@ const userInfo = ref<any>({})
 /** 获取用户信息 */
 const getUserInfo = () => {
   const userStore = getSessionUser()
-  if (typeof userStore === 'object') {
-    userInfo.value = userStore
-  }
+  userInfo.value = userStore
 }
 getUserInfo()
 

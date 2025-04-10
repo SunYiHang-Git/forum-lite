@@ -82,6 +82,7 @@ const getAppList = async () => {
   // 获取数据
   const params = { IsLimit: false }
   const { list } = await getAppListAPI(params)
+  console.log('list', list)
   tableData.length = 0
   await nextTick()
   tableData.push(...list)
@@ -387,11 +388,11 @@ const handleApplyForAudit = async (row: any) => {
           <k-button text :disabled="row.isPassed !== '0'" color="primary" @click="handleAudit(row)">审核</k-button>
           <k-button
             text
-            :disabled="row.status === '0'"
+            :disabled="row.isPassed !== '1'"
             color="primary"
             @click="upperOrLowerShelve(row.id, row.status === '2' ? 2 : 1)"
           >
-            {{ row.status === '2' ? '下架' : '上架' }}
+            {{ row.offLineType === '1' ? '下架' : '上架' }}
           </k-button>
           <k-button text color="primary" @click="appUpdate(row)">更新</k-button>
           <k-button text color="primary" :disabled="row.status === '2'" @click="handleEdit(row)">修改</k-button>

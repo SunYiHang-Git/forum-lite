@@ -21,13 +21,22 @@ const loginAPI = async () => {
   await formRef.value.validate()
   const data = { IsForumLogin: true, User: formData.value.user, Pass: MD5(formData.value.pass) }
   const res = await callServerFunc('TRPADM', 'RPAUserLogin', data)
-  const isAdminObj = await callServerFunc('TRPADM', 'RPAJudgeUserIsAdmin', {
-    Token: res.data.Token,
-    LoginID: res.data.LoginID,
-  })
+  setToken(res.data.Token)
+  const isAdminObj = await callServerFunc('TRPADM', 'GetRPAUser', {})
+  const { IsAdmin } = isAdminObj?.data
+  // const role = IsAdmin === 1 ? 1 : IsAdmin === 2 ? 1 : IsAdmin === 3 ? 2 : 0
+  let role
+  if (IsAdmin === 1 || IsAdmin === 2) {
+    role = 1
+  } else if (IsAdmin === 3) {
+    role = 2
+  } else {
+    role = 0
+  }
   const resData = res.data
   const userInfoObj = {
-    isAdmin: isAdminObj.data.UserAdmin === 1 ? true : false,
+    isAdmin: IsAdmin === 2 ? true : false,
+    role: role,
     id: resData.ID,
     loginId: resData.LoginID,
     token: resData.Token,
@@ -36,7 +45,6 @@ const loginAPI = async () => {
     userId: resData.UserID,
     userName: resData.UserName,
   }
-  setToken(res.data.Token)
   setUserInfo(userInfoObj)
   router.push('/')
   delRouteCache('/login')
