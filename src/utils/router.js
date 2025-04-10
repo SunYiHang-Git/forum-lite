@@ -54,6 +54,23 @@ export const routeList = [
       },
     ],
   },
+  {
+    path: '/lite',
+    name: 'lite 仓库',
+    component: () => import('@/views/LiteTools/index.vue'),
+    children: [
+      {
+        path: '',
+        name: 'litePage',
+        component: () => import('@/views/LiteTools/components/PageList.vue'),
+      },
+      {
+        path: '/detail/:id',
+        name: 'lite-detail',
+        component: () => import('@/views/LiteTools/LiteDetail.vue'),
+      },
+    ],
+  },
   // 模版页面,用户管理页面
   // {
   //   path: '/userMgrJson',
