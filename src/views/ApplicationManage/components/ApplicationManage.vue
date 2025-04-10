@@ -1,7 +1,7 @@
 <script setup lang="tsx">
-import type { IClassify, IColumn, IGoodDataType, ITagType } from '@/types/goods'
+import type { IColumn, IGoodDataType } from '@/types/goods'
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
-import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
+import { callServerFunc, downServerFile } from '@ksware/micro-lib-web-temp'
 import { nextTick, onMounted, reactive, ref } from 'vue'
 import AuditDialog from './AuditDialog.vue'
 import EditAppDialog from './EditAppDialog.vue'
@@ -9,6 +9,9 @@ import { getAppListAPI, upperOrLowerShelveAPI } from './data'
 import { arrayBufferToHex } from '@/utils/download'
 import IconImg from '@/assets/images/icon1.png'
 import AppUpdateDialog from './AppUpdateDialog.vue'
+import { useUser } from '@/store/modules/user'
+
+const { userInfo } = useUser()
 /** 表格工具栏 */
 const widgets = ref(['search', 'refresh', 'filter', 'transfer', 'custom1', 'sizeControl'])
 /** 表格每行的高度 */
@@ -204,7 +207,10 @@ async function upperOrLowerShelve(id: string, type: 1 | 2) {
   await upperOrLowerShelveAPI(id, type)
   initWindow()
 }
-
+/** 云开发申请上架 */
+async function applyForOffLine(row: any) {
+  console.log('云开发申请上架---', row)
+}
 /** 上传文件前 */
 const beforeAvatarUpload = (rawFile: any) => {
   const fileExtension = rawFile.name.split('.').pop().toLowerCase()
@@ -219,6 +225,12 @@ const beforeAvatarUpload = (rawFile: any) => {
   // }
 
   return true
+}
+
+/** 下载应用 */
+async function downLoadNewApp(row: any) {
+  const res: any = await callServerFunc('THawkeyeDM', 'DownShopsAppByLast', { ID: row.id })
+  downServerFile(res.data.Url, row.name)
 }
 /** 导入上传文件应用 */
 const importAppFileAPI = async (data: any) => {
@@ -382,11 +394,44 @@ const handleApplyForAudit = async (row: any) => {
           <k-tag v-for="item in row.tags" :key="item.id">{{ item.name }}</k-tag>
         </template>
         <template #opt="{ row }">
-          <k-button text :disabled="row.isPassed !== '2'" color="primary" @click="handleApplyForAudit(row)">
+          <k-button
+            text
+            v-if="userInfo.role === 2"
+            :disabled="row.isPassed !== '2'"
+            color="primary"
+            @click="handleApplyForAudit(row)"
+          >
             申请审核
           </k-button>
-          <k-button text :disabled="row.isPassed !== '0'" color="primary" @click="handleAudit(row)">审核</k-button>
           <k-button
+            v-if="userInfo.role === 1"
+            text
+            :disabled="row.isPassed !== '0'"
+            color="primary"
+            @click="handleAudit(row)"
+          >
+            审核
+          </k-button>
+          <!-- <k-button
+            v-if="userInfo.role === 2"
+            text
+            :disabled="row.offLineType === '1'"
+            color="primary"
+            @click="applyForOffLine(row)"
+          >
+            申请上架
+          </k-button> -->
+          <k-button
+            v-if="userInfo.role === 2"
+            text
+            :disabled="row.isPassed !== '1' || row.offLineType === '2'"
+            color="primary"
+            @click="upperOrLowerShelve(row.id, 2)"
+          >
+            {{ '下架' }}
+          </k-button>
+          <k-button
+            v-if="userInfo.role === 1"
             text
             :disabled="row.isPassed !== '1'"
             color="primary"
@@ -396,6 +441,7 @@ const handleApplyForAudit = async (row: any) => {
           </k-button>
           <k-button text color="primary" @click="appUpdate(row)">更新</k-button>
           <k-button text color="primary" :disabled="row.status === '2'" @click="handleEdit(row)">修改</k-button>
+          <k-button text color="primary" @click="downLoadNewApp(row)">下载</k-button>
           <k-button text color="error" @click="handleDelById(row)">删除</k-button>
         </template>
       </k-tree-table>
