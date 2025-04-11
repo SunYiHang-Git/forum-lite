@@ -16,13 +16,16 @@ function getFirstChar(str: string): string {
 }
 /** 处理数字渲染 */
 function formatNumber(num: number): string {
-  if (num < 1000) {
+  if (num < 9999) {
     return num.toString()
   }
-  if (num < 10000) {
+  if (num < 999999) {
     return (num / 1000).toFixed(2) + 'k'
   }
-  return (num / 10000).toFixed(2) + 'w'
+  if (num < 99999999) {
+    return (num / 10000).toFixed(2) + 'w'
+  }
+  return (num / 10000000).toFixed(2) + 'kw'
 }
 </script>
 
@@ -54,7 +57,7 @@ function formatNumber(num: number): string {
       </div>
     </div>
     <div class="download">
-      <el-icon><Download /></el-icon>
+      <IconDownload />
       <div class="num">{{ formatNumber(data.download) }}</div>
     </div>
   </div>

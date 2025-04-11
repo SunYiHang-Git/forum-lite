@@ -85,7 +85,6 @@ const getAppList = async () => {
   // 获取数据
   const params = { IsLimit: false }
   const { list } = await getAppListAPI(params)
-  console.log('list', list)
   tableData.length = 0
   await nextTick()
   tableData.push(...list)

@@ -94,17 +94,6 @@ initGlobalVariable('routerInstance', router)
 let isFirst = false
 // 路由执行前加载缓存数据
 router.beforeEach((to, from, next) => {
-  // 解决第一次路由跳转问题
-  // if (!isFirst && isInset) {
-  //   isFirst = true
-  //   return
-  // }
-
-  // 非微前端模式，检查token， 没有token则去登录页面
-  // if (!isInset && !getToken() && to.path !== '/login') {
-  //   next('/login')
-  //   return
-  // }
   if (!getToken() && isInset) {
     const { token } = getWindowUrlObj()
     if (token) {
@@ -114,7 +103,7 @@ router.beforeEach((to, from, next) => {
     }
   }
   if (!getToken() && to.path !== '/login') {
-    next('/login')
+    next('/login' + `?toFullPath=${to.path}`)
     return
   }
   const permNameList = ['/application']

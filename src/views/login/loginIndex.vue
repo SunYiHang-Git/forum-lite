@@ -4,8 +4,10 @@ import { ref } from 'vue'
 
 import { delRouteCache } from '@/store/routerCache'
 import router from '@/utils/router'
-import { clearLocalStorage, clearSessionStorage, setSessionStorage } from '@/utils/auth'
+import { clearLocalStorage, clearSessionStorage } from '@/utils/auth'
 import { useUser } from '@/store/modules/user'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 const { setUserInfo } = useUser()
 // 打开页面时清空原有Token
 clearSessionStorage()
@@ -24,14 +26,11 @@ const loginAPI = async () => {
   setToken(res.data.Token)
   const isAdminObj = await callServerFunc('TRPADM', 'GetRPAUser', {})
   const { IsAdmin } = isAdminObj?.data
-  // const role = IsAdmin === 1 ? 1 : IsAdmin === 2 ? 1 : IsAdmin === 3 ? 2 : 0
-  let role
+  let role = 0
   if (IsAdmin === 1 || IsAdmin === 2) {
     role = 1
   } else if (IsAdmin === 3) {
     role = 2
-  } else {
-    role = 0
   }
   const resData = res.data
   const userInfoObj = {
@@ -46,7 +45,16 @@ const loginAPI = async () => {
     userName: resData.UserName,
   }
   setUserInfo(userInfoObj)
-  router.push('/')
+  const regex = /^toFullPath=\/(?!.*toFullPath=\/$).*/
+  const fullPath = route.fullPath
+  const toPath = fullPath.split('?')[1] || ''
+  const isHasGoPage = regex.test(toPath)
+  if (isHasGoPage) {
+    const path = toPath.split('=')[1]
+    router.push(path)
+  } else {
+    router.push('/')
+  }
   delRouteCache('/login')
 }
 </script>

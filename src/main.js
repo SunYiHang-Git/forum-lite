@@ -17,6 +17,7 @@ import AppContainer from '@/component/AppContainer.vue'
 import FontIcon from '@/component/icon/FontIcon.vue'
 import SvgIcon from '@/component/icon/SvgIcon.vue'
 import router from '@/utils/router'
+import i18n from '@/i18n'
 
 import App from './App.vue'
 
@@ -28,6 +29,7 @@ app.use(router).use(createPinia()).use(VXETable, { size: 'mini' }).use(ElementPl
 app.component('SvgIcon', SvgIcon)
 app.component('FontIcon', FontIcon)
 app.component('AppContainer', AppContainer)
+app.use(i18n)
 
 app.mount('#app')
 const { getSessionUser } = useUser()

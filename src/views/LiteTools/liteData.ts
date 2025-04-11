@@ -14,9 +14,11 @@ export type DataType = {
   historyVersion: string[]
   /** 更新时间 */
   updateTime: string
-  /** 分类标签 */
+  /** 创建时间 */
+  createTime?: string
+  /** 分类标签 字符串数组 */
   tags?: string[]
-  /** 系统 */
+  /** 系统名称 */
   systemVersion: string
   /** 下载量 */
   download: number
@@ -66,7 +68,7 @@ const instructionData: DataType[] = [
       '标签4',
     ],
     systemVersion: 'window',
-    download: 123456,
+    download: 758123255,
     picture: 'https://img.shetu66.com/2023/07/04/1688453333865029.png',
   },
   {

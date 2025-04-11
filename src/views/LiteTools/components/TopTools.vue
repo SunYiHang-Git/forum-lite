@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-
+import { useLang } from '@/store/modules/lang'
+import { useI18n } from 'vue-i18n'
+const i18 = useI18n()
+const { locale, langList, setNewLang } = useLang()
 const router = useRouter()
 const route = useRoute()
 const searchValue = ref<string>('')
@@ -17,6 +20,10 @@ const searchData = () => {
       searchValue: searchValue.value,
     },
   })
+}
+const handleCommand = (command: string) => {
+  setNewLang(command)
+  i18.locale.value = command
 }
 
 watch(
@@ -40,32 +47,50 @@ watch(
         <p>K-RPA Lite.Tools</p>
       </div>
       <div class="right">
-        <div class="tag" @click="goHome">主页</div>
+        <div class="tag" @click="goHome">{{ $t('common.uname') }}</div>
         <div class="tag">论坛</div>
         <div class="tag">文档</div>
         <div class="tag">指令集</div>
+
+        <k-dropdown trigger="click" @command="handleCommand">
+          <template #title>
+            <div class="tag">切换语言</div>
+          </template>
+          <template #default>
+            <k-dropdown-item
+              v-for="item in langList"
+              :key="item.value"
+              :command="item.value"
+              :disabled="locale === item.value"
+            >
+              {{ item.label }}
+            </k-dropdown-item>
+          </template>
+        </k-dropdown>
         <div class="people">
           <div class="user flex-c">M</div>
-          <div class="more flex-c">
-            <el-icon>
-              <CaretBottom />
-            </el-icon>
-          </div>
+          <k-dropdown trigger="click">
+            <template #title>
+              <div class="more flex-c">
+                <IconTriangleBottom :size="28" />
+              </div>
+            </template>
+            <template #default>
+              <k-dropdown-item>Action 1</k-dropdown-item>
+              <k-dropdown-item>Action 2</k-dropdown-item>
+              <k-dropdown-item>Action 3</k-dropdown-item>
+            </template>
+          </k-dropdown>
         </div>
       </div>
     </div>
     <div class="search-box">
       <div class="input-box">
-        <el-input
-          v-model="searchValue"
-          @keydown.enter="searchData"
-          style="width: 100%; height: 100%"
-          placeholder="请输入"
-        >
+        <k-input v-model="searchValue" @keydown.enter="searchData" style="width: 100%" placeholder="请输入">
           <template #prefix>
-            <el-icon><search /></el-icon>
+            <IconSearch />
           </template>
-        </el-input>
+        </k-input>
       </div>
       <div class="submit" @click="searchData">搜索</div>
     </div>
@@ -89,6 +114,7 @@ watch(
   height: 64px;
   padding: 12px 24px;
   .input-box {
+    background-color: pink;
     flex: 1;
     width: 100%;
     height: 40px;
@@ -98,9 +124,13 @@ watch(
     border-color: #cdcacf;
     box-sizing: border-box;
     overflow: hidden;
-    ::v-deep(.el-input__wrapper) {
-      border: none !important;
-      box-shadow: none !important;
+    .k-input {
+      height: 100%;
+      ::v-deep(.el-input__wrapper) {
+        border: none !important;
+        box-shadow: none !important;
+        height: 100%;
+      }
     }
   }
   .submit {
@@ -166,7 +196,7 @@ watch(
       display: flex;
       align-items: center;
       justify-content: start;
-      gap: 5px;
+      margin-right: 15px;
     }
     .user {
       width: 40px;
@@ -181,7 +211,6 @@ watch(
     .more {
       width: 24px;
       height: 24px;
-      font-size: 18px;
       cursor: pointer;
     }
   }

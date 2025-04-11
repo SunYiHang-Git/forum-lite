@@ -118,7 +118,6 @@ export const getAppListAPI = async ({
   const classifyList = await getClassifyListAPI<IClassify>()
   // const { data }: any = await callServerFunc('THawkeyeDM', 'GetShopsAppList', params, { isShowLoading: true })
   const { pageNumber, page, total } = data
-  console.log('data--->', data)
   const tableTag = new SQLTable(data.k_tag)
   const tagsList: ITagType[] = []
   while (!tableTag.eof()) {
@@ -133,7 +132,6 @@ export const getAppListAPI = async ({
     tagsList.push(row)
     tableTag.next()
   }
-  console.log('tagsList--->', tagsList)
   const table = new SQLTable(data.k_lite_application)
   const rows = []
   while (!table.eof()) {
@@ -173,7 +171,6 @@ export const getAppListAPI = async ({
     rows.push(row)
     table.next()
   }
-  console.log('rows--->', rows)
   return { pageNumber, page, total, list: rows }
 }
 
