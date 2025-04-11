@@ -203,13 +203,16 @@ const handleDelById = async (item: IGoodDataType) => {
  * @param type 上架=1;下架=2
  */
 async function upperOrLowerShelve(id: string, type: 1 | 2) {
+  const msg = type === 1 ? '上架' : '下架'
+  await KMessageBox.confirm(`确认要${msg}吗?`, `${msg}提示`, {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'success',
+  })
   await upperOrLowerShelveAPI(id, type)
   initWindow()
 }
 /** 云开发申请上架 */
-async function applyForOffLine(row: any) {
-  console.log('云开发申请上架---', row)
-}
 /** 上传文件前 */
 const beforeAvatarUpload = (rawFile: any) => {
   const fileExtension = rawFile.name.split('.').pop().toLowerCase()
@@ -411,15 +414,6 @@ const handleApplyForAudit = async (row: any) => {
           >
             审核
           </k-button>
-          <!-- <k-button
-            v-if="userInfo.role === 2"
-            text
-            :disabled="row.offLineType === '1'"
-            color="primary"
-            @click="applyForOffLine(row)"
-          >
-            申请上架
-          </k-button> -->
           <k-button
             v-if="userInfo.role === 2"
             text

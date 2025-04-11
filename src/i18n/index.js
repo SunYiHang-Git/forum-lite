@@ -35,7 +35,6 @@ export const i18n = createI18n({
 
 export default (app) => {
   const { locale } = useLang()
-  console.log('locale--->', locale)
   // 引入 i18n
   app.use(i18n)
   const $i18n = app.config.globalProperties.$i18n

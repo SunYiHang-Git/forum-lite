@@ -13,6 +13,8 @@ const goHome = () => {
   router.push('/lite')
 }
 
+const tempLocale = ref(locale)
+
 const searchData = () => {
   router.push({
     path: '/lite',
@@ -23,13 +25,13 @@ const searchData = () => {
 }
 const handleCommand = (command: string) => {
   setNewLang(command)
+  tempLocale.value = command
   i18.locale.value = command
 }
 
 watch(
   () => route.name,
   (name) => {
-    console.log('name--->', name)
     if (name !== 'lite-detail') return
     searchValue.value = ''
   },
@@ -61,7 +63,7 @@ watch(
               v-for="item in langList"
               :key="item.value"
               :command="item.value"
-              :disabled="locale === item.value"
+              :disabled="tempLocale === item.value"
             >
               {{ item.label }}
             </k-dropdown-item>
