@@ -1,12 +1,17 @@
 import { clearLocalStorage, clearSessionStorage, getSessionStorage, setSessionStorage } from '@/utils/auth'
-// import { maturityDays } from '@/views/Login/login'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 export interface IUserInfo {
   /** ID */
   id: string
-  /** PassWord */
+  /** isLite */
+  isLite: boolean
+  /** isForumLogin */
+  isForumLogin: boolean
+  /** 密码 */
   password: string
+  /** 剩余天数 */
+  remainDays: number
   /** 登录ID */
   loginId: string
   /** Token */
@@ -16,82 +21,84 @@ export interface IUserInfo {
   userName: string
   /** 是否是市场管理员 */
   isAdmin: boolean
-  /** 角色 1=市场管理员, 2=云开发 , 0=普通用户 */
-  role: 1 | 2 | 0
+  /** 角色 1=超级管理员 2=市场管理员, 3=云开发 , 0=普通用户 */
+  role: 0 | 1 | 2 | 3
+  /** 登录状态 */
+  loginStatus: false
+  /** 记住用户信息 */
+  rememberInfo: boolean
 }
 /** userStore存储键 */
 export const USER_KEY = 'userInfo_Store'
-export const useUser = defineStore('user', () => {
-  /** 用户信息 */
-  const userInfo = ref<IUserInfo>({
-    /** ID */
-    id: '',
-    /** PassWord */
-    password: '',
-    /** 登录ID */
-    loginId: '',
-    /** Token */
-    token: '',
-    user: '',
-    userId: '',
-    userName: '',
-    /** 是否是管理员 */
-    isAdmin: false,
-    role: 0,
-  })
-  /** 获取本地用户信息 */
-  function getSessionUser() {
-    const obj = getSessionStorage(USER_KEY)
-    if (typeof obj === 'object') {
-      userInfo.value = obj
-    } else {
-      clearUserInfoStore()
-    }
-    return userInfo.value
-  }
-
-  /** 设置用户信息 */
-  function setUserInfo(data: any) {
-    userInfo.value = { ...userInfo.value, ...data }
-    setSessionStorage(USER_KEY, userInfo.value)
-  }
-
-  /** 清空用户信息 */
-  function clearUserInfoStore() {
-    userInfo.value = {
-      /** ID */
+export const useUser = defineStore(
+  'user',
+  () => {
+    /** 用户信息 */
+    const userInfo = ref<IUserInfo>({
       id: '',
-      /** PassWord */
+      isLite: true,
+      isForumLogin: true,
       password: '',
-      /** 登录ID */
+      remainDays: 0,
       loginId: '',
-      /** Token */
       token: '',
       user: '',
       userId: '',
       userName: '',
-      /** 是否是管理员 */
       isAdmin: false,
       role: 0,
+      loginStatus: false,
+      rememberInfo: false,
+    })
+
+    /** 设置用户信息 */
+    function setUserInfo(data: any) {
+      userInfo.value = { ...userInfo.value, ...data }
     }
-  }
-  /** 判断是否是管理员 */
-  function isAdminByUser() {
-    const { isAdmin } = userInfo.value
-    return isAdmin
-  }
-  /** 退出登录 */
-  function exitLogin() {
-    clearUserInfoStore()
-    clearLocalStorage()
-    clearSessionStorage()
-  }
-  return {
-    userInfo,
-    setUserInfo,
-    getSessionUser,
-    clearUserInfoStore,
-    isAdminByUser,
-    exitLogin,
-  }
-})
+
+    /** 清空用户信息 */
+    function clearUserInfoStore() {
+      userInfo.value = {
+        id: '',
+        isLite: true,
+        isForumLogin: true,
+        password: '',
+        remainDays: 0,
+        loginId: '',
+        token: '',
+        user: '',
+        userId: '',
+        userName: '',
+        isAdmin: false,
+        role: 0,
+        loginStatus: false,
+        rememberInfo: false,
+      }
+    }
+    /** 判断是否是管理员 */
+    function isAdminByUser() {
+      const { isAdmin } = userInfo.value
+      return isAdmin
+    }
+    /** 退出登录 */
+    function exitLogin() {
+      clearUserInfoStore()
+      clearLocalStorage()
+      clearSessionStorage()
+    }
+    return {
+      userInfo,
+      setUserInfo,
+      clearUserInfoStore,
+      isAdminByUser,
+      exitLogin,
+    }
+  },
+  {
+    persist: {
+      storage: localStorage,
+      // 指定存储的键名
+      key: USER_KEY + '_my_user',
+    },
+  },
+)

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCI18n } from '@/i18n'
 import { KMessage } from '@ksware/ksw-ux'
+import { callServerFunc, MD5 } from '@ksware/micro-lib-web-temp'
 import type { FormInstance, FormRules } from 'element-plus'
 import { computed, reactive, ref } from 'vue'
 const { ct, t } = useCI18n()
@@ -13,6 +14,9 @@ interface RuleForm {
   code: string
   username: string
 }
+
+const env = import.meta.env
+const isDev = env.DEV
 
 /** 是否记住状态 */
 const isRememberStatus = ref<boolean>(false)
@@ -47,24 +51,23 @@ const getPhoneCode = async () => {
     return KMessage.warning(t('common.checkTip', { cnt: ct('login.validity', 'login.phone') }))
   let timer: any = 0
   const data = { PhoneTo: ruleForm.phone, SendCodeType: 0 }
-  //   try {
-  //     const res = await callServerFuncSocket('RPALiteSendPhoneCode', data)
-  //     console.log('res--->', res)
-  //     if (import.meta.env.VITE_MODE_NAME === 'development') {
-  //       const { sPhoneCode } = res
-  //       ruleForm.code = sPhoneCode
-  //     }
-  //     phoneCoseTime.value = 60
-  //     timer = setInterval(() => {
-  //       if (phoneCoseTime.value > 0) {
-  //         phoneCoseTime.value--
-  //       } else {
-  //         clearInterval(timer) // 当倒计时结束时，清除定时器
-  //       }
-  //     }, 1000)
-  //   } catch (error) {
-  //     clearInterval(timer)
-  //   }
+  try {
+    const res: any = await callServerFunc('TRPADM', 'SendPhoneCode', data)
+    if (isDev) {
+      const { sPhoneCode } = res
+      ruleForm.code = sPhoneCode
+    }
+    phoneCoseTime.value = 60
+    timer = setInterval(() => {
+      if (phoneCoseTime.value > 0) {
+        phoneCoseTime.value--
+      } else {
+        clearInterval(timer) // 当倒计时结束时，清除定时器
+      }
+    }, 1000)
+  } catch (error) {
+    clearInterval(timer)
+  }
 }
 /** 发送验证码文字 */
 const sendCodeBtnText = computed(() => {
@@ -74,10 +77,19 @@ const sendCodeBtnText = computed(() => {
   return ct('login.gain', 'login.verificationCode')
 })
 
+/** 注册 */
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
   console.log('ruleForm--->', ruleForm)
+  const data = {
+    PhoneTo: ruleForm.phone,
+    PhoneCode: ruleForm.code,
+    UserName: ruleForm.username,
+    Pass: MD5(ruleForm.password),
+    IsLite: true,
+  }
+  await callServerFunc('TRPADM', 'RPAUserRegister', data)
 }
 
 const goLogin = () => {

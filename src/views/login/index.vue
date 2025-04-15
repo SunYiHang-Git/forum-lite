@@ -1,6 +1,27 @@
 <script setup lang="ts">
 import imgBg from '@/assets/images/login_bg.png'
-import CloudLogin from './component/index.vue'
+import CloudPage from './component/index.vue'
+import { useRoute, useRouter } from 'vue-router'
+import { ref, watch } from 'vue'
+const route = useRoute()
+const router = useRouter()
+const type = ref('login')
+/** 获取 */
+function getParams() {
+  type.value = (route.query?.type ?? 'login') as string
+}
+getParams()
+
+watch(
+  () => router,
+  () => {
+    getParams()
+  },
+  {
+    deep: true,
+    immediate: true,
+  },
+)
 </script>
 
 <template>
@@ -18,7 +39,7 @@ import CloudLogin from './component/index.vue'
         </div>
         <div class="login-form-box">
           <div class="main">
-            <CloudLogin />
+            <CloudPage :type="type" />
           </div>
         </div>
       </div>

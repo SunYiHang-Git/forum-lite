@@ -4,7 +4,10 @@ import CloudLogin from './CloudLogin.vue'
 import CloudRegister from './CloudRegister.vue'
 import CloudForget from './CloudForget.vue'
 
-const showPage = ref('login')
+const { type } = defineProps<{
+  type: string
+}>()
+const showPage = ref(type || 'login')
 const goPage = (page: 'login' | 'register' | 'forget') => {
   showPage.value = page
 }

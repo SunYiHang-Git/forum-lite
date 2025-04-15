@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { KMessage } from '@ksware/ksw-ux'
-import { MD5 } from '@ksware/micro-lib-web-temp'
-import { computed, reactive, ref } from 'vue'
+import { callServerFunc, MD5 } from '@ksware/micro-lib-web-temp'
+import { computed, nextTick, reactive, ref } from 'vue'
 import { useCI18n } from '@/i18n'
 import type { FormInstance, FormRules } from 'element-plus'
 const { ct, t } = useCI18n()
@@ -10,6 +10,8 @@ interface RuleForm {
   password: string
   code: string
 }
+const env = import.meta.env
+const isDev = env.DEV
 
 const emits = defineEmits<{
   (e: 'goPage', page: 'login'): void
@@ -43,23 +45,23 @@ const getPhoneCode = async () => {
     return KMessage.warning(t('common.checkTip', { cnt: ct('login.validity', 'login.phone') }))
   let timer: any = 0
   const data = { PhoneTo: ruleForm.phone, SendCodeType: 1 }
-  //   try {
-  //     const res = await callServerFuncSocket('RPALiteSendPhoneCode', data)
-  //     if (import.meta.env.VITE_MODE_NAME === 'development') {
-  //       const { sPhoneCode } = res
-  //       ruleForm.code = sPhoneCode
-  //     }
-  //     phoneCoseTime.value = 60
-  //     timer = setInterval(() => {
-  //       if (phoneCoseTime.value > 0) {
-  //         phoneCoseTime.value--
-  //       } else {
-  //         clearInterval(timer) // 当倒计时结束时，清除定时器
-  //       }
-  //     }, 1000)
-  //   } catch (error) {
-  //     clearInterval(timer)
-  //   }
+  try {
+    const res: any = await callServerFunc('TRPADM', 'SendPhoneCode', data)
+    if (isDev) {
+      const { sPhoneCode } = res
+      ruleForm.code = sPhoneCode
+    }
+    phoneCoseTime.value = 60
+    timer = setInterval(() => {
+      if (phoneCoseTime.value > 0) {
+        phoneCoseTime.value--
+      } else {
+        clearInterval(timer) // 当倒计时结束时，清除定时器
+      }
+    }, 1000)
+  } catch (error) {
+    clearInterval(timer)
+  }
 }
 /** 发送验证码文字 */
 const sendCodeBtnText = computed(() => {
@@ -79,9 +81,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
   const data = { MailTo: ruleForm.phone, MailCode: ruleForm.code, Pass: MD5(ruleForm.password) }
-  //   await callServerFuncSocket('RPALiteUserForget', data)
-  //   KMessage.success(ct('login.reset', 'common.pwd', 'login.success', { pt: true }))
-  //   goLogin()
+  await callServerFunc('TRPADM', 'RPAUserForget', data)
+  KMessage.success(ct('login.reset', 'common.pwd', 'login.success', { pt: true }))
+  await nextTick()
+  goLogin()
 }
 
 /** 是否禁用确定按钮 */

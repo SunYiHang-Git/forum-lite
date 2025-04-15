@@ -1,31 +1,65 @@
 <script setup lang="ts">
+import { maturityDays } from '@/utils/format'
+import { callServerFunc, MD5, setToken } from '@ksware/micro-lib-web-temp'
 import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
+import { useUser } from '@/store/modules/user'
+import { useRouter } from 'vue-router'
 
 const emits = defineEmits<{
   (e: 'goPage', page: 'register' | 'forget'): void
 }>()
 interface RuleForm {
-  username: string
+  account: string
   password: string
 }
+const router = useRouter()
+const { setUserInfo } = useUser()
 
 /** 是否记住状态 */
 const isRememberStatus = ref<boolean>(false)
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  username: '',
-  password: '',
+  account: 'admin',
+  password: '1',
 })
 const rules = reactive<FormRules<RuleForm>>({
-  username: [{ required: true, message: '此为必填项', trigger: 'blur' }],
+  account: [{ required: true, message: '此为必填项', trigger: 'blur' }],
   password: [{ required: true, message: '此为必填项', trigger: 'blur' }],
 })
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
-  console.log('ruleForm--->', ruleForm)
+  const params = {
+    IsForumLogin: true,
+    IsLite: true,
+    User: ruleForm.account,
+    Pass: MD5(ruleForm.password),
+  }
+  const { data }: any = await callServerFunc('TRPADM', 'RPAUserLogin', params)
+  const { ID, IsLite, LncDate, LoginID, PassWord, Token, User, UserID, UserName, IsForumLogin } = data
+  setToken(Token)
+  const isAdminObj = await callServerFunc('TRPADM', 'GetRPAUser', {})
+  const { IsAdmin } = isAdminObj?.data as any
+  const userInfoObj = {
+    id: ID,
+    isLite: IsLite,
+    isForumLogin: IsForumLogin,
+    remainDays: maturityDays(LncDate),
+    loginId: LoginID,
+    passWord: PassWord,
+    token: Token,
+    user: User,
+    userId: UserID,
+    userName: UserName,
+    role: IsAdmin,
+    isAdmin: IsAdmin === 1,
+    loginStatus: true,
+    rememberInfo: isRememberStatus.value,
+  }
+  setUserInfo(userInfoObj)
+  router.push('/')
 }
 
 /** 忘记密码 */
@@ -51,8 +85,8 @@ const register = () => {
         class="demo-ruleForm"
         status-icon
       >
-        <k-form-item prop="username">
-          <k-input v-model="ruleForm.username" placeholder="请输入用户名" prefix-icon="IconUser" />
+        <k-form-item prop="account">
+          <k-input v-model="ruleForm.account" placeholder="请输入手机号" prefix-icon="IconUser" />
         </k-form-item>
         <k-form-item prop="password">
           <k-input v-model="ruleForm.password" placeholder="请输入密码" type="password" prefix-icon="IconLock" />
