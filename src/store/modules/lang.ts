@@ -4,7 +4,7 @@ import { ref } from 'vue'
 
 export const useLang = defineStore('lane', () => {
   const LOCAL_KEY = 'store_lang'
-  const locale = ref('en')
+  const locale = ref('zh')
   const langList = ref([
     { label: '中文', value: 'zh' },
     { label: '英语', value: 'en' },

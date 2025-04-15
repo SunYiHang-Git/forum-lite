@@ -7,14 +7,15 @@ import {
   setToken,
 } from '@ksware/micro-lib-web-temp'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { getWindowUrlObj } from './postMessage'
+// import { getWindowUrlObj } from './postMessage'
 import { KMessage } from '@ksware/ksw-ux'
-import { isAdminRolePermission } from '@/views/login/permission'
+import { isAdminRolePermission } from '@/views/login-001/permission'
+import Layout from '@/Layout/index.vue'
 
 export const routeList = [
   {
     path: '/',
-    redirect: '/store',
+    redirect: '/home',
   },
   {
     path: '/empty__Page',
@@ -26,48 +27,18 @@ export const routeList = [
     path: '/login',
     name: '登录页面',
     // 单个路由组件，即，要显示的网页内容
-    component: () => import('@/views/login/loginIndex.vue'),
+    component: () => import('@/views/login/index.vue'),
   },
   {
-    path: '/store',
-    name: '金智维市场',
-    // 单个路由组件，即，要显示的网页内容
-    component: () => import('@/views/Goods/index.vue'),
+    path: '/home',
+    name: 'layout',
+    component: Layout,
     children: [
       {
         path: '',
-        name: 'store',
-        component: () => import('@/views/Goods/MainRight/index.vue'),
-      },
-    ],
-  },
-  {
-    path: '/application',
-    name: '应用管理',
-    // 单个路由组件，即，要显示的网页内容
-    component: () => import('@/views/ApplicationManage/index.vue'),
-    children: [
-      {
-        path: '',
-        name: 'app-manage',
-        component: () => import('@/views/ApplicationManage/Application/index.vue'),
-      },
-    ],
-  },
-  {
-    path: '/lite',
-    name: 'lite 仓库',
-    component: () => import('@/views/LiteTools/index.vue'),
-    children: [
-      {
-        path: '',
-        name: 'litePage',
-        component: () => import('@/views/LiteTools/components/PageList.vue'),
-      },
-      {
-        path: '/detail/:id',
-        name: 'lite-detail',
-        component: () => import('@/views/LiteTools/LiteDetail.vue'),
+        name: 'Home',
+        component: () => import('@/views/home/index.vue'),
+        meta: { title: '金智维rpa论坛', icon: 'el-icon-s-home' },
       },
     ],
   },
@@ -92,28 +63,29 @@ const router = createRouter({
 
 initGlobalVariable('routerInstance', router)
 let isFirst = false
+const permNameList = ['/application']
 // 路由执行前加载缓存数据
 router.beforeEach((to, from, next) => {
-  if (!getToken() && isInset) {
-    const { token } = getWindowUrlObj()
-    if (token) {
-      setToken(token)
-      next('/')
-      return
-    }
-  }
+  // if (!getToken() && isInset) {
+  //   const { token } = getWindowUrlObj()
+  //   if (token) {
+  //     setToken(token)
+  //     next('/')
+  //     return
+  //   }
+  // }
   if (!getToken() && to.path !== '/login') {
     next('/login' + `?toFullPath=${to.path}`)
     return
   }
-  const permNameList = ['/application']
-  if (permNameList.includes(to.path)) {
-    if (!isAdminRolePermission()) {
-      KMessage.error('没有权限进入该页面!')
-      next('/store')
-      return
-    }
-  }
+
+  // if (permNameList.includes(to.path)) {
+  //   if (!isAdminRolePermission()) {
+  //     KMessage.error('没有权限进入该页面!')
+  //     next('/store')
+  //     return
+  //   }
+  // }
 
   // 开发模式生效，刷新浏览器 继续打开之前打开的路由，方便调试
   if (import.meta.env.DEV && !isInset) {
