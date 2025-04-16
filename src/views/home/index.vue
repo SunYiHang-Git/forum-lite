@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Footer from './Footer/index.vue'
 import { ref } from 'vue'
-import Banner from './component/banner.vue'
+import Banner from './component/Banner.vue'
 import UserCard from './component/UserCard.vue'
 import NavCard from './component/NavCard.vue'
 import OfficialAnnouncement from './component/OfficialAnnouncement.vue'

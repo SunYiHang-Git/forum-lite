@@ -8,8 +8,6 @@ import {
 } from '@ksware/micro-lib-web-temp'
 import { createRouter, createWebHashHistory } from 'vue-router'
 // import { getWindowUrlObj } from './postMessage'
-import { KMessage } from '@ksware/ksw-ux'
-import { isAdminRolePermission } from '@/views/login-001/permission'
 import Layout from '@/Layout/index.vue'
 
 export const routeList = [
@@ -30,15 +28,21 @@ export const routeList = [
     component: () => import('@/views/login/index.vue'),
   },
   {
-    path: '/home',
+    path: '/',
     name: 'layout',
     component: Layout,
     children: [
       {
-        path: '',
+        path: '/home',
         name: 'Home',
         component: () => import('@/views/home/index.vue'),
         meta: { title: '金智维rpa论坛', icon: 'el-icon-s-home' },
+      },
+      {
+        path: '/class',
+        name: 'Class',
+        component: () => import('@/views/classList/index.vue'),
+        meta: { title: '论坛分类', icon: 'el-icon-s-home' },
       },
     ],
   },

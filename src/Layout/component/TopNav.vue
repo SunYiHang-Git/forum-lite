@@ -5,7 +5,9 @@ import { useUser } from '@/store/modules/user'
 import { KMessageBox } from '@ksware/ksw-ux'
 import { useRouter } from 'vue-router'
 import { clearLocalStorage, clearSessionStorage } from '@/utils/auth'
-const { userInfo, clearUserInfoStore } = useUser()
+import { storeToRefs } from 'pinia'
+const { clearUserInfoStore } = useUser()
+const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
 const searchValue = ref<string>('')
 const activeName = ref('community')
@@ -71,9 +73,8 @@ async function layout() {
   clearLocalStorage()
   clearSessionStorage()
   await nextTick()
-  console.log('userInfo--->', userInfo)
-  // router.push('/login')
   // TODO 是否清楚路由
+  // router.replace('/login')
 }
 function handleCommand(name: string) {
   console.log('name--->', name)
@@ -85,6 +86,10 @@ function handleCommand(name: string) {
     default:
       return
   }
+}
+
+function xxx() {
+  console.log('userInfo-2222-->', userInfo.value)
 }
 
 onMounted(() => {
@@ -107,7 +112,7 @@ function goRegister() {
       <div class="logo">
         <img :src="logoSvg" />
       </div>
-      <div class="logo-title">K-RPA Lite 社区</div>
+      <div class="logo-title" @click="xxx">K-RPA Lite 社区</div>
     </div>
     <div class="top-menu">
       <k-button

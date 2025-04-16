@@ -58,22 +58,23 @@ export const useUser = defineStore(
 
     /** 清空用户信息 */
     function clearUserInfoStore() {
-      userInfo.value = {
-        id: '',
-        isLite: true,
-        isForumLogin: true,
-        password: '',
-        remainDays: 0,
-        loginId: '',
-        token: '',
-        user: '',
-        userId: '',
-        userName: '',
-        isAdmin: false,
-        role: 0,
-        loginStatus: false,
-        rememberInfo: false,
-      }
+      // userInfo.value = {
+      //   id: '',
+      //   isLite: true,
+      //   isForumLogin: true,
+      //   password: '',
+      //   remainDays: 0,
+      //   loginId: '',
+      //   token: '',
+      //   user: '',
+      //   userId: '',
+      //   userName: '',
+      //   isAdmin: false,
+      //   role: 0,
+      //   loginStatus: false,
+      //   rememberInfo: false,
+      // }
+      userInfo.value.token = 'qqqqqqqq'
       console.log('userInfo.value--->', userInfo.value)
     }
     /** 判断是否是管理员 */

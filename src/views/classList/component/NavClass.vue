@@ -1,0 +1,76 @@
+<script setup lang="ts">
+import interactionSvg from '@/assets/svg/interaction.svg'
+</script>
+
+<template>
+  <div class="nav-class">
+    <div class="left-name dfc">
+      <div class="icon dfc">
+        <img :src="interactionSvg" />
+      </div>
+      <div class="name-box">
+        <div class="name">互动解答</div>
+        <div class="desc">交流思想的舞台</div>
+      </div>
+    </div>
+    <div class="right-btn dfc">
+      <div class="search-box">
+        <k-input placeholder="搜索..." suffix-icon="IconSearch" style="width: 160px"></k-input>
+      </div>
+      <k-button main>我要提问</k-button>
+    </div>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.dfc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.nav-class {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 24px 32px;
+  background-color: #fff;
+  .left-name {
+    justify-content: start;
+    gap: 22px;
+    .icon {
+      width: 32px;
+      height: 32px;
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .name-box {
+      .name {
+        font-family: Alibaba PuHuiTi 3;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 26px;
+        letter-spacing: 0px;
+        color: #3d3d3d;
+      }
+      .desc {
+        margin-top: 8px;
+        font-family: Alibaba PuHuiTi 3;
+        font-size: 16px;
+        font-weight: normal;
+        line-height: 20px;
+        letter-spacing: 0px;
+        color: #3d3d3d;
+      }
+    }
+  }
+  .right-btn {
+    justify-content: start;
+    gap: 8px;
+  }
+}
+</style>
