@@ -2,7 +2,7 @@
 import { KMessage } from '@ksware/ksw-ux'
 import type { FormInstance, FormRules, UploadInstance, UploadRawFile } from 'element-plus'
 import { reactive, ref } from 'vue'
-import MarkDown from '@/component/MarkDown.vue'
+import TEditor from '@/component/TEditor/index.vue'
 import { useRouter } from 'vue-router'
 
 interface RuleForm {
@@ -63,7 +63,6 @@ const httpRequestFile = async ({ file }: { file: UploadRawFile }) => {
   reader.onload = (e: any) => {
     const arrayBuffer = e.target.result
     imageUrl.value = e.target.result
-    console.log('imageUrl.value--->', imageUrl.value)
     let newData: any = {}
     // newData.file = arrayBufferToHex(arrayBuffer)
     // appUploadFile.value = newData
@@ -124,8 +123,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             <div class="hr"></div>
             <div class="form-title">正文</div>
             <k-form-item label="">
-              <div style="width: 100%; height: 300px; background-color: pink">
-                <MarkDown />
+              <div style="width: 100%; min-height: 300px; background-color: pink">
+                <TEditor v-model="ruleForm.text" />
               </div>
             </k-form-item>
             <div class="hr"></div>

@@ -1,6 +1,8 @@
 <template>
-  <div style="height: 100%; overflow: hidden">
-    <editor v-model="myValue" :init="init" :enabled="enabled" :id="tinymceId"></editor>
+  <div class="tinyMac">
+    <el-scrollbar height="100%">
+      <editor v-model="myValue" :init="init" :enabled="enabled" :id="tinymceId"></editor>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -43,6 +45,11 @@ import 'tinymce/plugins/fullscreen'
 const emits = defineEmits(['update:modelValue', 'setHtml'])
 //这里我选择将数据定义在props里面，方便在不同的页面也可以配置出不同的编辑器，当然也可以直接在组件中直接定义
 const props = defineProps({
+  minHeight: {
+    // 修改默认高度
+    type: Number,
+    default: 400, // 默认高度改为200
+  },
   value: {
     type: String,
     default: () => {
@@ -79,10 +86,6 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  minHeight: {
-    type: Number,
-    default: 630,
-  },
 })
 const loading = ref(false)
 const tinymceId = ref('vue-tinymce-' + +new Date() + ((Math.random() * 1000).toFixed(0) + ''))
@@ -94,7 +97,7 @@ const init = reactive({
   language: 'zh_CN',
   skin_url: '/tinymce/skins/ui/oxide', // skin路径，具体路径看自己的项目
   editable_root: props.editable_root,
-  height: 600,
+  height: 200,
   branding: false, // 是否禁用“Powered by TinyMCE”
   promotion: false, //去掉 upgrade
   // toolbar_sticky: true,
@@ -137,7 +140,7 @@ const init = reactive({
   quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable',
   // 编辑器高度自适应
   autoresize_bottom_margin: 20,
-  // autoresize_overflow_padding: 16,
+  autoresize_overflow_padding: 16,
   min_height: props.minHeight,
   content_css: '/tinymce/skins/content/default/content.css', //以css文件方式自定义可编辑区域的css样式，css文件需自己创建并引入
   // setup: function (editor) {
@@ -225,6 +228,9 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+.tinyMac {
+  height: 100%;
+}
 :deep(.tox-tinymce) {
   border: 1px solid #dcdfe6;
   border-radius: 4px;
