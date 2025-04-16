@@ -22,16 +22,19 @@ const menuList = ref([
     name: 'home',
     label: '首页',
     src: 'https://krpalite.com/',
+    color: '#171717',
   },
   {
     name: 'document',
     label: '文档',
     src: 'https://krpalite.com/HelpDoc/Conditional/IF%20Condition',
+    color: '#171717',
   },
   {
     name: 'community',
     label: '社区',
     src: 'http://192.168.104.11:8071/',
+    color: '#0A5CFF',
   },
 ])
 
@@ -77,7 +80,6 @@ async function layout() {
   // router.replace('/login')
 }
 function handleCommand(name: string) {
-  console.log('name--->', name)
   switch (name) {
     case 'exit':
       layout()
@@ -104,6 +106,11 @@ function goLogin() {
 function goRegister() {
   router.push({ path: '/login', query: { type: 'register' } })
 }
+
+/** 发帖 */
+const postArticle = async () => {
+  router.push('/post-article')
+}
 </script>
 
 <template>
@@ -120,7 +127,7 @@ function goRegister() {
         v-for="(item, index) in menuList"
         :key="index"
         class="link"
-        :color="activeName === item.name ? '#0A5CFF' : '#171717'"
+        :color="item.color"
         @click="routerToPage(item.name, item.src)"
       >
         {{ item.label }}
@@ -134,7 +141,7 @@ function goRegister() {
       <k-button main @click="goRegister">注册</k-button>
     </div>
     <div v-if="userInfo.loginStatus" class="opt-but">
-      <k-button text color="#000">发帖</k-button>
+      <k-button text color="#000" @click="postArticle">发帖</k-button>
       <k-button text color="#000">消息</k-button>
 
       <k-dropdown trigger="click" @command="handleCommand">

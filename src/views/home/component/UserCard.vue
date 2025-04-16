@@ -1,7 +1,14 @@
 <script setup lang="ts">
 import avatarSvg from '@/assets/svg/default-avatar.svg'
 import { useUser } from '@/store/modules/user'
+import { useRouter } from 'vue-router'
 const { userInfo } = useUser()
+const router = useRouter()
+
+/** 发帖 */
+const postArticle = async () => {
+  router.push('/post-article')
+}
 </script>
 
 <template>
@@ -34,7 +41,7 @@ const { userInfo } = useUser()
         <div class="menu-num">0</div>
       </div>
     </div>
-    <k-button main style="width: 100%">发帖</k-button>
+    <k-button main style="width: 100%" @click="postArticle">发帖</k-button>
   </div>
 </template>
 

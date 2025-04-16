@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import NavClass from './component/NavClass.vue'
 import TabList from './component/TabList.vue'
+import RightUser from './component/RightUser.vue'
 </script>
 
 <template>
@@ -13,7 +14,9 @@ import TabList from './component/TabList.vue'
         <div class="main-list">
           <TabList />
         </div>
-        <div class="user-right">11</div>
+        <div class="user-right">
+          <RightUser />
+        </div>
       </div>
     </div>
   </div>
@@ -63,6 +66,8 @@ import TabList from './component/TabList.vue'
     }
     .user-right {
       width: 400px;
+      padding-bottom: 20px;
+      overflow: hidden;
     }
   }
 }

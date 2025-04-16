@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import Footer from './Footer/index.vue'
+import Footer from '@/views/home/Footer/index.vue'
 import { ref } from 'vue'
-import Banner from './component/Banner.vue'
-import UserCard from './component/UserCard.vue'
-import NavCard from './component/NavCard.vue'
-import OfficialAnnouncement from './component/OfficialAnnouncement.vue'
-import InteractionAnswer from './component/InteractionAnswer.vue'
-import KnowledgeShare from './component/KnowledgeShare.vue'
+import Banner from '@/views/home/component/Banner.vue'
+import UserCard from '@/views/home/component/UserCard.vue'
+import NavCard from '@/views/home/component/NavCard.vue'
+import OfficialAnnouncement from '@/views/home/component/OfficialAnnouncement.vue'
+import InteractionAnswer from '@/views/home/component/InteractionAnswer.vue'
+import KnowledgeShare from '@/views/home/component/KnowledgeShare.vue'
 const searchValue = ref<string>('')
 </script>
 
@@ -79,6 +79,7 @@ const searchValue = ref<string>('')
           height: 232px;
           border-radius: 12px;
           overflow: hidden;
+          background-color: pink;
         }
         .userInfo-box {
           top: 0px;

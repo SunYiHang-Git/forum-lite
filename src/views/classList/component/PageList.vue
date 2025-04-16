@@ -1,21 +1,9 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-
-/** 当前页 */
-const currentPage = ref(1)
-/** 总共页数 */
-const pageTotal = ref(100)
-
-/** 切换分页 */
-const handleCurrentChange = (val: number) => {
-  console.log('val--->', val)
-}
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="page-list">
     <div class="list-box">
-      <div class="lis-box" v-for="i in 4" :key="i">
+      <div class="lis-box" v-for="i in 10" :key="i">
         <div class="title-box">
           <div class="tags">
             <div class="tag dfc">精华</div>
@@ -47,17 +35,6 @@ const handleCurrentChange = (val: number) => {
         </div>
       </div>
     </div>
-    <div class="page-footer">
-      <k-pagination
-        v-model:current-page="currentPage"
-        :page-size="20"
-        layout="total,->, prev, pager, next, jumper"
-        :total="pageTotal"
-        :pager-count="5"
-        background
-        @current-change="handleCurrentChange"
-      />
-    </div>
   </div>
 </template>
 
@@ -69,7 +46,6 @@ const handleCurrentChange = (val: number) => {
   gap: 16px;
   align-items: center;
   width: 100%;
-  min-height: calc(100vh - 300px);
   .dfc {
     display: flex;
     justify-content: center;
@@ -165,17 +141,6 @@ const handleCurrentChange = (val: number) => {
           }
         }
       }
-    }
-  }
-  .page-footer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 72px;
-    padding: 0 15px;
-    .k-pagination {
-      width: 100%;
     }
   }
 }

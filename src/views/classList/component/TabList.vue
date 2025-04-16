@@ -28,8 +28,15 @@ const tabTitleList = ref([
 const filterChangeBtn = (name: string) => {
   console.log('name--->', name)
 }
-const xx = () => {
-  console.log('1111--->', 1111)
+
+/** 当前页 */
+const currentPage = ref(1)
+/** 总共页数 */
+const pageTotal = ref(100)
+
+/** 切换分页 */
+const handleCurrentChange = (val: number) => {
+  console.log('val--->', val)
 }
 </script>
 
@@ -37,23 +44,34 @@ const xx = () => {
   <div class="tab-list">
     <k-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
       <div class="select-btn">
-        <k-slider-button
-          @click="xx"
-          @change="filterChangeBtn"
-          :items="filterBtnList"
-          :active="filterBtnValue"
-        ></k-slider-button>
+        <k-slider-button @change="filterChangeBtn" :items="filterBtnList" :active="filterBtnValue"></k-slider-button>
       </div>
       <k-tab-pane v-for="(item, index) in tabTitleList" :label="item.label" :name="item.name">
-        <div class="tab-div-content"><PageList /></div>
+        <div class="tab-div-content">
+          <PageList />
+        </div>
       </k-tab-pane>
     </k-tabs>
+    <div class="page-footer">
+      <k-pagination
+        v-model:current-page="currentPage"
+        :page-size="20"
+        layout="total,->, prev, pager, next, jumper"
+        :total="pageTotal"
+        :pager-count="5"
+        background
+        @current-change="handleCurrentChange"
+      />
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .tab-list {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
   width: 100%;
   min-height: 100%;
   background-color: #fff;
@@ -79,11 +97,19 @@ const xx = () => {
       }
     }
   }
-  .k-tabs {
-    height: 100%;
-  }
   .tab-div-content {
-    min-height: calc(100vh - 300px);
+    min-height: calc(100vh - 400px);
+  }
+  .page-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 72px;
+    padding: 0 15px;
+    .k-pagination {
+      width: 100%;
+    }
   }
 }
 </style>

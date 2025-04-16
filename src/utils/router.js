@@ -44,6 +44,12 @@ export const routeList = [
         component: () => import('@/views/classList/index.vue'),
         meta: { title: '论坛分类', icon: 'el-icon-s-home' },
       },
+      {
+        path: '/post-article',
+        name: 'post-article',
+        component: () => import('@/views/Article/PostArticle.vue'),
+        meta: { title: '论坛分类', icon: 'el-icon-s-home' },
+      },
     ],
   },
   // 模版页面,用户管理页面
