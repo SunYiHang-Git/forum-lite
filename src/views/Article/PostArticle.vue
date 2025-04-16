@@ -3,6 +3,7 @@ import { KMessage } from '@ksware/ksw-ux'
 import type { FormInstance, FormRules, UploadInstance, UploadRawFile } from 'element-plus'
 import { reactive, ref } from 'vue'
 import MarkDown from '@/component/MarkDown.vue'
+import { useRouter } from 'vue-router'
 
 interface RuleForm {
   /** 标题 */
@@ -16,6 +17,8 @@ interface RuleForm {
   /** 标签 */
   tags: string[]
 }
+
+const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   title: '',
@@ -35,7 +38,6 @@ const imageUrl = ref('')
 const active = ref(0)
 
 const upload = ref<UploadInstance>()
-const fileList = ref([])
 
 /** 上传文件前 */
 const beforeAvatarUpload = (rawFile: any) => {
@@ -81,6 +83,12 @@ async function delPicture() {
   upload.value!.clearFiles()
 }
 
+/** 取消 */
+async function cancel(formEl: FormInstance | undefined) {
+  if (!formEl) return
+  formEl.resetFields()
+  router.push('/')
+}
 /** 提交 */
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -116,7 +124,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             <div class="hr"></div>
             <div class="form-title">正文</div>
             <k-form-item label="">
-              <!-- <k-input v-model.trim="ruleForm.text" placeholder="请输入..." /> -->
               <div style="width: 100%; height: 300px; background-color: pink">
                 <MarkDown />
               </div>
@@ -177,7 +184,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
               <k-button main @click="submitForm(ruleFormRef)" style="width: 90px; font-size: 18px; height: 30px">
                 发 布
               </k-button>
-              <k-button style="width: 90px; font-size: 18px; height: 30px">取 消</k-button>
+              <k-button @click="cancel(ruleFormRef)" style="width: 90px; font-size: 18px; height: 30px">取 消</k-button>
             </k-form-item>
           </k-form>
         </div>
