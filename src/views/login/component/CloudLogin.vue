@@ -5,6 +5,7 @@ import type { FormInstance, FormRules } from 'element-plus'
 import { reactive, ref } from 'vue'
 import { useUser } from '@/store/modules/user'
 import { useRouter } from 'vue-router'
+import { fileHostUrl } from '@/views/home'
 
 const emits = defineEmits<{
   (e: 'goPage', page: 'register' | 'forget'): void
@@ -13,6 +14,7 @@ interface RuleForm {
   account: string
   password: string
 }
+
 const router = useRouter()
 const { setUserInfo } = useUser()
 
@@ -20,7 +22,7 @@ const { setUserInfo } = useUser()
 const isRememberStatus = ref<boolean>(false)
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  account: 'admin',
+  account: 'RPAadmin',
   password: '1',
 })
 const rules = reactive<FormRules<RuleForm>>({
@@ -42,6 +44,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   setToken(Token)
   const isAdminObj = await callServerFunc('TRPADM', 'GetRPAUser', {})
   const { IsAdmin } = isAdminObj?.data as any
+  // GetRPAUser
+  const userInfoRes = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true })
+  const { Phone, City, Company, DeveloperState, FullName, IsDeveloper, Sex, Signature, UserIcon }: any =
+    userInfoRes.data
   const userInfoObj = {
     id: ID,
     isLite: IsLite,
@@ -57,7 +63,17 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     isAdmin: IsAdmin === 1,
     loginStatus: true,
     rememberInfo: isRememberStatus.value,
+    phone: Phone,
+    city: City,
+    company: Company,
+    developerState: DeveloperState,
+    isDeveloper: IsDeveloper,
+    sex: Sex,
+    signature: Signature,
+    avatar: fileHostUrl + UserIcon,
+    fullName: FullName,
   }
+  console.log('userInfoObj--->', userInfoObj)
   setUserInfo(userInfoObj)
   router.push('/')
 }

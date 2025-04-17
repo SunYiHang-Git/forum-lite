@@ -6,6 +6,7 @@ import { KMessageBox } from '@ksware/ksw-ux'
 import { useRouter } from 'vue-router'
 import { clearLocalStorage, clearSessionStorage } from '@/utils/auth'
 import { storeToRefs } from 'pinia'
+import { helpDocumentUel, liteHomeUrl } from '@/views/home'
 const { clearUserInfoStore } = useUser()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
@@ -21,19 +22,19 @@ const menuList = ref([
   {
     name: 'home',
     label: '首页',
-    src: 'https://krpalite.com/',
+    src: liteHomeUrl,
     color: '#171717',
   },
   {
     name: 'document',
     label: '文档',
-    src: 'https://krpalite.com/HelpDoc/Conditional/IF%20Condition',
+    src: helpDocumentUel,
     color: '#171717',
   },
   {
     name: 'community',
     label: '社区',
-    src: 'http://192.168.104.11:8071/',
+    src: '',
     color: '#0A5CFF',
   },
 ])
@@ -61,8 +62,7 @@ const userDownList = ref([
   },
 ])
 const routerToPage = (name: string, src: string) => {
-  activeName.value = name
-  if (name === 'community') return
+  if (src === '') return
   window.open(src)
 }
 /** 退出登录 */

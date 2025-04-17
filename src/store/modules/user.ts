@@ -27,6 +27,24 @@ export interface IUserInfo {
   loginStatus: false
   /** 记住用户信息 */
   rememberInfo: boolean
+  /** 手机号 */
+  phone: string
+  /** 城市 */
+  city: string
+  /** 公司 */
+  company: string
+  /** 开发状态 */
+  developerState: 0 | 1 | 2 | 3
+  /** 全名 */
+  fullName: string
+  /** 是否是开发者 */
+  isDeveloper: 0 | 1
+  /** 签名 */
+  signature: string
+  /** 性别 */
+  sex: 0 | 1
+  /** 头像 */
+  avatar: string
 }
 /** userStore存储键 */
 export const USER_KEY = 'userInfo_Store'
@@ -49,6 +67,15 @@ export const useUser = defineStore(
       role: 0,
       loginStatus: false,
       rememberInfo: false,
+      phone: '',
+      city: '',
+      company: '',
+      developerState: 0,
+      isDeveloper: 0,
+      sex: 0,
+      signature: '',
+      avatar: '',
+      fullName: '',
     })
 
     /** 设置用户信息 */
@@ -73,8 +100,16 @@ export const useUser = defineStore(
         role: 0,
         loginStatus: false,
         rememberInfo: false,
+        phone: '',
+        city: '',
+        company: '',
+        developerState: 0,
+        isDeveloper: 0,
+        sex: 0,
+        signature: '',
+        avatar: '',
+        fullName: '',
       }
-      console.log('userInfo.value--->', userInfo.value)
     }
     /** 判断是否是管理员 */
     function isAdminByUser() {

@@ -45,6 +45,7 @@ const beforeAvatarUpload = (rawFile: any) => {
   console.log('rawFile.type--->', rawFile.type)
   if (!validTypes.includes(rawFile.type)) {
     KMessage.error('仅支持JPG,PNG格式！')
+
     return false
   }
   // 检查文件大小是否超过2MB
@@ -113,7 +114,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           >
             <div class="form-title">基础信息</div>
             <k-form-item label="标题" prop="title">
-              <k-input v-model.trim="ruleForm.title" placeholder="请输入帖子标题" />
+              <k-input
+                v-model.trim="ruleForm.title"
+                :placeholder="$t('forum.formTitle')"
+                maxlength="100"
+                show-word-limit
+              />
             </k-form-item>
             <k-form-item label="所属专栏" prop="column">
               <k-radio-group v-model="ruleForm.column">
@@ -124,7 +130,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             <div class="form-title">正文</div>
             <k-form-item label="">
               <div style="width: 100%; min-height: 300px; background-color: pink">
-                <TEditor v-model="ruleForm.text" />
+                <TEditor v-model="ruleForm.text" :placeholder="$t('forum.formContent')" />
               </div>
             </k-form-item>
             <div class="hr"></div>

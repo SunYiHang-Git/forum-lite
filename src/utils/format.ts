@@ -82,3 +82,26 @@ export const selectMaxData = (date1: string, date2: string) => {
   const time2 = moment(date2)
   return time1.isBefore(time2) ? date2 : date1
 }
+
+// base64转blob
+export const base64ToBlob = (base64Data: any) => {
+  const arr = base64Data.split(',')
+  const fileType = arr[0].match(/:(.*?);/)[1]
+  const bstr = atob(arr[1])
+  let l = bstr.length
+  const u8Arr = new Uint8Array(l)
+
+  while (l--) {
+    u8Arr[l] = bstr.charCodeAt(l)
+  }
+  return new Blob([u8Arr], {
+    type: fileType,
+  })
+}
+
+// blob转file
+export const blobToFile = (newBlob: any, fileName: string) => {
+  newBlob.lastModifiedDate = new Date()
+  newBlob.name = fileName
+  return newBlob
+}

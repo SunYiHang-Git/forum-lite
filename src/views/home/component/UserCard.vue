@@ -2,7 +2,9 @@
 import avatarSvg from '@/assets/svg/default-avatar.svg'
 import { useUser } from '@/store/modules/user'
 import { useRouter } from 'vue-router'
-const { userInfo } = useUser()
+import { storeToRefs } from 'pinia'
+// const { userInfo } = useUser()
+const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
 
 /** 发帖 */
@@ -15,11 +17,13 @@ const postArticle = async () => {
   <div class="user-card">
     <div class="user-box">
       <div class="avatar">
-        <img :src="avatarSvg" />
+        <img :src="userInfo.avatar" />
       </div>
       <div class="userInfo">
         <div class="name">{{ userInfo.userName || '你好' }}</div>
-        <div class="desc">欢迎登录...</div>
+        <div class="desc">
+          {{ userInfo.signature ? userInfo.signature : '欢迎登录...' }}
+        </div>
       </div>
       <div class="right-box dfc"><IconRight /></div>
     </div>
@@ -61,9 +65,13 @@ const postArticle = async () => {
     justify-content: start;
     align-items: center;
     gap: 8px;
+    width: 100%;
+    overflow: hidden;
     .avatar {
       width: 48px;
       height: 48px;
+      border-radius: 50%;
+      overflow: hidden;
       img {
         width: 100%;
         height: 100%;
@@ -71,6 +79,7 @@ const postArticle = async () => {
     }
     .userInfo {
       flex: 1;
+      overflow: hidden;
       .name {
         font-family: Alibaba PuHuiTi 3;
         font-size: 18px;
@@ -78,6 +87,9 @@ const postArticle = async () => {
         line-height: 24px;
         letter-spacing: 0px;
         color: #171717;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .desc {
         font-family: Alibaba PuHuiTi 3;
@@ -86,6 +98,9 @@ const postArticle = async () => {
         line-height: 22px;
         letter-spacing: 0px;
         color: #737373;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
     .right-box {

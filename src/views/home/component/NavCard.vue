@@ -3,44 +3,56 @@ import helpSvg from '@/assets/svg/help.svg'
 import interactionSvg from '@/assets/svg/interaction.svg'
 import noticeSvg from '@/assets/svg/notice.svg'
 import knowledgeSvg from '@/assets/svg/knowledge.svg'
+import { helpDocumentUel } from '@/views/home'
+import { ref } from 'vue'
+const navCardList = ref([
+  {
+    name: '知识分享',
+    desc: '传播智慧的桥梁',
+    src: '',
+    imgSvg: knowledgeSvg,
+  },
+  {
+    name: '互动解答',
+    desc: '交流思想的舞台',
+    src: '',
+    imgSvg: interactionSvg,
+  },
+  {
+    name: '官方公馆',
+    desc: '传递信息的窗口',
+    src: '',
+    imgSvg: noticeSvg,
+  },
+  {
+    name: '帮助文档',
+    desc: '指引操作的指南',
+    src: helpDocumentUel,
+    imgSvg: helpSvg,
+  },
+])
+
+/** 跳转 */
+function goUrl(src: string) {
+  const httpRegex = /^(http|https):\/\//
+  if (src === '') return
+  if (httpRegex.test(src)) {
+    console.log('src--->', src)
+    window.open(src)
+    return
+  }
+}
 </script>
 
 <template>
   <div class="nav-card">
-    <div class="nav-link">
+    <div v-for="(item, index) in navCardList" :key="index" @click="goUrl(item.src)" class="nav-link">
       <div class="nav-icon">
-        <img :src="knowledgeSvg" />
+        <img :src="item.imgSvg" />
       </div>
       <div class="nav-connect">
-        <div class="title">知识分享</div>
-        <div class="desc">传播智慧的桥梁</div>
-      </div>
-    </div>
-    <div class="nav-link">
-      <div class="nav-icon">
-        <img :src="interactionSvg" />
-      </div>
-      <div class="nav-connect">
-        <div class="title">互动解答</div>
-        <div class="desc">交流思想的舞台</div>
-      </div>
-    </div>
-    <div class="nav-link">
-      <div class="nav-icon">
-        <img :src="noticeSvg" />
-      </div>
-      <div class="nav-connect">
-        <div class="title">官方公馆</div>
-        <div class="desc">传递信息的窗口</div>
-      </div>
-    </div>
-    <div class="nav-link">
-      <div class="nav-icon">
-        <img :src="helpSvg" />
-      </div>
-      <div class="nav-connect">
-        <div class="title">帮助文档</div>
-        <div class="desc">指引操作的指南</div>
+        <div class="title">{{ item.name }}</div>
+        <div class="desc">{{ item.desc }}</div>
       </div>
     </div>
   </div>
@@ -60,6 +72,8 @@ import knowledgeSvg from '@/assets/svg/knowledge.svg'
     align-items: center;
     gap: 16px;
     height: 96px;
+    padding: 0 10px;
+    cursor: pointer;
     .nav-icon {
       display: flex;
       justify-content: center;

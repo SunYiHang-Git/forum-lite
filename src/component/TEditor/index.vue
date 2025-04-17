@@ -8,7 +8,7 @@
 
 <script setup>
 import { computed, reactive, watch, ref, nextTick, onMounted } from 'vue' //全屏
-
+import { base64ToBlob, blobToFile } from '@/utils/format'
 import tinymce from 'tinymce/tinymce'
 // import "tinymce/skins/content/default/content.css";
 import Editor from '@tinymce/tinymce-vue'
@@ -41,10 +41,16 @@ import 'tinymce/plugins/importcss' //引入自定义样式的css文件
 import 'tinymce/plugins/accordion' // 可折叠数据手风琴模式
 import 'tinymce/plugins/anchor' //锚点
 import 'tinymce/plugins/fullscreen'
+import { callServerFunc, getGuid } from '@ksware/micro-lib-web-temp'
+import { fileHostUrl } from '@/views/home'
 
 const emits = defineEmits(['update:modelValue', 'setHtml'])
 //这里我选择将数据定义在props里面，方便在不同的页面也可以配置出不同的编辑器，当然也可以直接在组件中直接定义
 const props = defineProps({
+  placeholder: {
+    type: String,
+    default: '请输入',
+  },
   minHeight: {
     // 修改默认高度
     type: Number,
@@ -92,6 +98,7 @@ const tinymceId = ref('vue-tinymce-' + +new Date() + ((Math.random() * 1000).toF
 
 //定义一个对象 init初始化
 const init = reactive({
+  placeholder: props.placeholder,
   selector: '#' + tinymceId.value, //富文本编辑器的id,
   language_url: '/tinymce/langs/zh_CN.js', // 语言包的路径，具体路径看自己的项目
   language: 'zh_CN',
@@ -146,31 +153,40 @@ const init = reactive({
   // setup: function (editor) {
   // },
   //图片上传  -实列 具体请根据官网补充-
-  images_upload_handler: function (blobInfo, progress) {
-    new Promise((resolve, reject) => {
-      let file = blobInfo.blob()
-      if (file.size / 1024 / 1024 > 200) {
+  images_upload_handler: function (blobInfo, success, failure, progress) {
+    return new Promise(async (resolve, reject) => {
+      const fileBlob = base64ToBlob('data:image/png;base64,' + blobInfo.base64())
+      const temFile = blobToFile(fileBlob, blobInfo.filename())
+      const fileObj = blobInfo.blob()
+      if (fileObj === undefined) {
+        // KMessage.error('请选择图片')
         reject({
-          message: '上传失败，图片大小请控制在 200M 以内',
+          message: '请选择图片',
           remove: true,
         })
+        return false
       }
-      const formData = new FormData()
-      formData.append('file', file)
-      console.log(formData)
-      axios
-        .post('/api/upload/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          onUploadProgress: (progressEvent) => {
-            progress(Math.round((progressEvent.loaded / progressEvent.total) * 100))
-          },
+      if (fileObj.size >= 2 * 1024 * 1024) {
+        // KMessage.error('到需要小于2MB!')
+        reject({
+          message: '上传失败，图片大小请控制在 2M 以内',
+          remove: true,
         })
-        .then((res) => {
-          resolve(res.data.url)
+        return false
+      }
+      const validTypes = ['image/png', 'image/jpeg']
+      if (!validTypes.includes(fileObj.type)) {
+        reject({
+          message: '仅支持JPG,PNG格式！',
+          remove: true,
         })
-        .catch()
+        return false
+      }
+      const params = { FileID: getGuid(), IsForum: true, FileType: '.' + temFile.name.split('.')[1] }
+      const imgRes = await callServerFunc('TRPADM', 'RPAUploadForumPic', params, { isUpload: true, file: temFile })
+      const ServerFile = imgRes.data.ImgUrl
+      const imgUrl = fileHostUrl + ServerFile
+      resolve(imgUrl)
     })
   },
 })

@@ -8,7 +8,7 @@ function handleClick(tabName: string) {
   console.log('tabName--->', tabName)
 }
 const filterBtnValue = ref('a')
-const filterBtnList = ref([
+const filterBtnList = [
   {
     label: '综合',
     name: 'a',
@@ -17,7 +17,7 @@ const filterBtnList = ref([
     label: '最新',
     name: 'b',
   },
-])
+]
 const tabTitleList = ref([
   { label: '全部', name: 'all' },
   { label: '平台功能', name: 'a' },
@@ -44,7 +44,7 @@ const handleCurrentChange = (val: number) => {
   <div class="tab-list">
     <k-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
       <div class="select-btn">
-        <k-slider-button @change="filterChangeBtn" :items="filterBtnList" :active="filterBtnValue"></k-slider-button>
+        <k-slider-button @change="filterChangeBtn" :items="filterBtnList" active="b"></k-slider-button>
       </div>
       <k-tab-pane v-for="(item, index) in tabTitleList" :label="item.label" :name="item.name">
         <div class="tab-div-content">
@@ -76,15 +76,19 @@ const handleCurrentChange = (val: number) => {
   min-height: 100%;
   background-color: #fff;
   padding: 0 32px;
+  .demo-tabs {
+    position: relative;
+  }
   .select-btn {
     position: absolute;
     display: flex;
-    right: 0;
+    right: 0px;
     top: 3px;
     height: 40px;
     width: 140px;
     box-sizing: border-box;
     padding: 0 15px;
+    z-index: 999;
     .k-slider-button {
       height: 32px;
       font-size: 12px;
