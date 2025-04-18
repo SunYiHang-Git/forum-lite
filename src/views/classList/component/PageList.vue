@@ -1,35 +1,45 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const { tableData } = defineProps<{
+  tableData: any[]
+}>()
+const router = useRouter()
+const handleDetail = (item: any) => {
+  router.push(`/detail/${item.id}`)
+  // const routePath = router.resolve({ name: 'detail', params: { id: item.id } })
+  // window.open(routePath.href, '_blank')
+}
+</script>
 
 <template>
   <div class="page-list">
     <div class="list-box">
-      <div class="lis-box" v-for="i in 10" :key="i">
+      <div class="lis-box" v-for="item in tableData" :key="item.id">
         <div class="title-box">
           <div class="tags">
             <div class="tag dfc">精华</div>
           </div>
-          <div class="title">如何申请成为RPA社区开发者</div>
+          <div class="title" @click="handleDetail(item)">{{ item.title }}</div>
         </div>
-        <div class="desc-box">
-          在需求概览页面，我想了解如何有效跟踪他人提交的需求。特别是当同事提交了新的需求时，我想知道如何将这些需求视为我自己的需求，并查看其详细信息。我希望了解是否有特定的功能或设置可以帮助我在需求概览中轻松跟踪和管理他人提交的需求，以便我可以更好地参与团队协作和项目管理。
-        </div>
+        <div class="desc-box">{{ item.title }}</div>
         <div class="user-info-box">
           <div class="left-user">
-            <div class="username">隔壁老王</div>
-            <div class="time">2022-02-15 16:17:32</div>
+            <div class="username">{{ item.userName }}</div>
+            <div class="time">{{ item.lastTime }}</div>
           </div>
           <div class="right-box">
             <div class="info-box-num">
-              <div class="icon dfc"><IconEye /></div>
-              <div class="num">112</div>
+              <div class="icon dfc"><IconMessageOne /></div>
+              <div class="num">{{ item.replyNum }}</div>
             </div>
             <div class="info-box-num">
               <div class="icon dfc"><IconEye /></div>
-              <div class="num">112</div>
+              <div class="num">{{ item.hot }}</div>
             </div>
             <div class="info-box-num">
-              <div class="icon dfc"><IconEye /></div>
-              <div class="num">112</div>
+              <div class="icon dfc"><IconCollect /></div>
+              <div class="num">{{ item.collectNum }}</div>
             </div>
           </div>
         </div>
@@ -69,6 +79,9 @@
         justify-content: start;
         gap: 4px;
         height: 25px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         .tags {
           height: 100%;
           width: fit-content;
@@ -92,6 +105,7 @@
           font-weight: 500;
           line-height: normal;
           color: #171717;
+          cursor: pointer;
         }
       }
       .desc-box {

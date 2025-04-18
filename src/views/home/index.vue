@@ -7,7 +7,36 @@ import NavCard from '@/views/home/component/NavCard.vue'
 import OfficialAnnouncement from '@/views/home/component/OfficialAnnouncement.vue'
 import InteractionAnswer from '@/views/home/component/InteractionAnswer.vue'
 import KnowledgeShare from '@/views/home/component/KnowledgeShare.vue'
+import { getArticleTypeListAPI, getHomeAllDataAPI } from '@/api/home'
 const searchValue = ref<string>('')
+/** 官方公告 */
+const noticeListData = ref<any[]>([])
+/** 回帖周榜 */
+const replyListData = ref<any[]>([])
+/** 获取官方公告 */
+const getNoticeList = async () => {
+  const { noticeList, replyList } = await getHomeAllDataAPI()
+  noticeListData.value = noticeList
+  replyListData.value = replyList
+}
+/** 首页分类 nav */
+const homeNavClassList = ref<any[]>([])
+
+/** 互动解答 Id */
+const interactionId = ref('')
+/** 知识分享 */
+const knowledgeId = ref('')
+/** 获取首页分类 */
+const getHomeClassList = async () => {
+  const { parentList } = await getArticleTypeListAPI()
+  homeNavClassList.value = parentList
+  const findInteraction = homeNavClassList.value.find((item) => item.postsTypeName === '互动解答')
+  const findKnow = homeNavClassList.value.find((item) => item.postsTypeName === '知识分享')
+  interactionId.value = findInteraction.postsTypeId
+  knowledgeId.value = findKnow.postsTypeId
+}
+getNoticeList()
+getHomeClassList()
 </script>
 
 <template>
@@ -19,20 +48,20 @@ const searchValue = ref<string>('')
             <Banner />
           </div>
           <div class="userInfo-box">
-            <UserCard />
+            <UserCard :list="homeNavClassList" />
           </div>
         </div>
         <div class="nav-box">
-          <NavCard />
+          <NavCard v-if="homeNavClassList.length > 0" :list="homeNavClassList" />
         </div>
         <div class="official-announcement">
-          <OfficialAnnouncement />
+          <OfficialAnnouncement :noticeList="noticeListData" :replyList="replyListData" />
         </div>
         <div class="interaction">
-          <InteractionAnswer />
+          <InteractionAnswer v-if="interactionId" :moreId="interactionId" />
         </div>
         <div class="knowledge-share">
-          <KnowledgeShare />
+          <KnowledgeShare v-if="knowledgeId" :moreId="knowledgeId" />
         </div>
       </div>
       <div class="footer">

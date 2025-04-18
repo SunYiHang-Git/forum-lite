@@ -3,8 +3,15 @@ import helpSvg from '@/assets/svg/help.svg'
 import interactionSvg from '@/assets/svg/interaction.svg'
 import noticeSvg from '@/assets/svg/notice.svg'
 import knowledgeSvg from '@/assets/svg/knowledge.svg'
-import { helpDocumentUel } from '@/views/home'
+import { helpDocumentUel, NavCardListObject } from '@/views/home'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const { list } = defineProps<{
+  list: any[]
+}>()
+
 const navCardList = ref([
   {
     name: '知识分享',
@@ -19,7 +26,7 @@ const navCardList = ref([
     imgSvg: interactionSvg,
   },
   {
-    name: '官方公馆',
+    name: '公告',
     desc: '传递信息的窗口',
     src: '',
     imgSvg: noticeSvg,
@@ -31,22 +38,30 @@ const navCardList = ref([
     imgSvg: helpSvg,
   },
 ])
-
+/** 获取首页分类 */
+const initHomeNavData = async () => {
+  navCardList.value.forEach((item) => {
+    const findItem = list.find(({ postsTypeName }) => postsTypeName === item.name)
+    if (!findItem) return
+    item.src = findItem.postsTypeId
+  })
+}
+initHomeNavData()
 /** 跳转 */
-function goUrl(src: string) {
+function goUrl(src: string, name: string) {
   const httpRegex = /^(http|https):\/\//
   if (src === '') return
   if (httpRegex.test(src)) {
-    console.log('src--->', src)
     window.open(src)
     return
   }
+  router.push({ path: '/class', query: { type: src } })
 }
 </script>
 
 <template>
   <div class="nav-card">
-    <div v-for="(item, index) in navCardList" :key="index" @click="goUrl(item.src)" class="nav-link">
+    <div v-for="(item, index) in navCardList" :key="index" @click="goUrl(item.src, item.name)" class="nav-link">
       <div class="nav-icon">
         <img :src="item.imgSvg" />
       </div>

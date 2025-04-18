@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import firstSvg from '@/assets/svg/first.svg'
+import secondSvg from '@/assets/svg/second.svg'
+import thirdSvg from '@/assets/svg/third.svg'
 import importantSvg from '@/assets/svg/important.svg'
+import { ref } from 'vue'
+
+const { noticeList, replyList } = defineProps<{
+  /** 公告 */
+  noticeList: any[]
+  /** 回帖 */
+  replyList: any[]
+}>()
 </script>
 
 <template>
@@ -11,18 +21,20 @@ import importantSvg from '@/assets/svg/important.svg'
         <k-button text class="more">更多</k-button>
       </div>
       <div class="announcement-list">
-        <div class="notice-lis" v-for="i in 5" :key="i">
-          <div class="tag-box">
-            <div class="tag">
-              <img :src="importantSvg" />
+        <div class="notice-lis" v-for="item in noticeList.slice(0, 5)" :key="item.id">
+          <div class="left-box">
+            <div class="tag-box">
+              <div class="tag">
+                <img :src="importantSvg" />
+              </div>
+              <div class="tag" v-for="(tag, index) in item.tag" :key="index">
+                <div class="tag-sign">{{ tag }}</div>
+              </div>
             </div>
-            <div class="tag">
-              <div class="tag-sign">发布更新</div>
-            </div>
-          </div>
-          <div class="lis-title-box">
-            <div class="title">
-              系统即将于今日(20222024777）发布..系统即将于今日(20222024777）发布..系统即将于今日(20222024777）发布..
+            <div class="lis-title-box">
+              <div class="title">
+                {{ item.title }}
+              </div>
             </div>
           </div>
           <div class="lis-time">2025-02-28 12:01</div>
@@ -32,15 +44,26 @@ import importantSvg from '@/assets/svg/important.svg'
     <div class="reply">
       <div class="reply-weekly-list">回帖周榜</div>
       <div class="list-box">
-        <div class="lis" v-for="i in 5" :key="i">
+        <div class="lis" v-for="(item, index) in replyList.splice(0, 5)" :key="item.id">
           <div class="reply-icon dfc">
-            <div class="icon dfc">
+            <div v-if="index === 0" class="icon dfc">
               <img :src="firstSvg" />
             </div>
+            <div v-if="index === 1" class="icon dfc">
+              <img :src="secondSvg" />
+            </div>
+            <div v-if="index === 2" class="icon dfc">
+              <img :src="thirdSvg" />
+            </div>
+            <div v-if="index > 2" class="icon dfc">
+              <div class="default-img dfc">{{ index + 1 }}</div>
+            </div>
           </div>
-          <div class="avatar dfc">avr</div>
-          <div class="username">王一婷</div>
-          <div class="reply-num">9999</div>
+          <div class="avatar dfc">
+            <img :src="item.userIcon" />
+          </div>
+          <div class="username">{{ item.userName }}</div>
+          <div class="reply-num">{{ item.replyNum }}</div>
         </div>
       </div>
     </div>
@@ -55,14 +78,21 @@ import importantSvg from '@/assets/svg/important.svg'
   gap: 16px;
   box-sizing: border-box;
   padding-bottom: 10px;
+  .dfc {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .announcement {
     flex: 1;
+    width: 100%;
     display: flex;
     flex-direction: column;
     padding: 24px;
     gap: 24px;
     box-sizing: border-box;
     border-radius: 12px;
+    overflow: hidden;
     .reply-header {
       display: flex;
       align-items: center;
@@ -74,7 +104,6 @@ import importantSvg from '@/assets/svg/important.svg'
         font-size: 24px;
         font-weight: 600;
         line-height: 32px;
-        color: #000000;
       }
       .more {
         font-size: 14px;
@@ -86,6 +115,7 @@ import importantSvg from '@/assets/svg/important.svg'
       justify-content: start;
       gap: 32px;
       width: 100%;
+      overflow: hidden;
       .notice-lis {
         display: flex;
         justify-content: start;
@@ -93,6 +123,16 @@ import importantSvg from '@/assets/svg/important.svg'
         width: 100%;
         height: 24px;
         gap: 8px;
+        overflow: hidden;
+        .left-box {
+          flex: 1;
+          display: flex;
+          justify-content: start;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
         .tag-box {
           display: flex;
           align-items: center;
@@ -124,9 +164,11 @@ import importantSvg from '@/assets/svg/important.svg'
         }
         .lis-title-box {
           flex: 1;
+          width: 100%;
           height: 100%;
+          overflow: hidden;
           .title {
-            width: 240px;
+            width: 80%;
             height: 20px;
             font-family: Alibaba PuHuiTi 3;
             font-size: 14px;
@@ -140,9 +182,12 @@ import importantSvg from '@/assets/svg/important.svg'
         }
         .lis-time {
           display: flex;
+          justify-content: end;
+          display: flex;
           align-items: center;
           height: 100%;
           width: fit-content;
+          min-width: 110px;
           font-family: Alibaba PuHuiTi 3;
           font-size: 12px;
           font-weight: normal;
@@ -152,7 +197,7 @@ import importantSvg from '@/assets/svg/important.svg'
     }
   }
   .reply {
-    width: 390px;
+    width: 350px;
     height: 352px;
     border-radius: 12px;
     display: flex;
@@ -182,19 +227,25 @@ import importantSvg from '@/assets/svg/important.svg'
         gap: 14px;
         width: 100%;
         height: 32px;
+        cursor: pointer;
         .reply-icon {
           width: 32px;
           height: 32px;
           .icon {
             width: 25px;
             height: 27px;
+            .default-img {
+              width: 100%;
+              height: 100%;
+              border-radius: 50%;
+              background-color: #f5f5f5;
+            }
           }
         }
         .avatar {
           width: 32px;
           height: 32px;
           border-radius: 50%;
-          background-color: red;
           overflow: hidden;
         }
         .username {

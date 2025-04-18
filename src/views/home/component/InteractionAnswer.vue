@@ -1,35 +1,67 @@
 <script setup lang="ts">
+import { getInteractionListAPI } from '@/api/home'
 import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+const { moreId } = defineProps<{
+  /** 父级专栏的 id */
+  moreId: string
+}>()
+
+function lookMore() {
+  router.push({ path: '/class', query: { type: moreId } })
+}
+/** 热门互动数据 */
+const hotDataList = ref<any[]>([])
+/** 最新互动数据 */
+const newDataList = ref<any[]>([])
+
+const getDataList = async () => {
+  const params = {
+    PageNum: '1',
+    PageSize: '5',
+    PostsTypePID: moreId,
+    CollectNum: true,
+  }
+  const newData: any = await getInteractionListAPI({ ...params, Order: 'CreateTime' })
+  newDataList.value = newData.list
+  const hotData: any = await getInteractionListAPI({ ...params, Order: 'Hot' })
+  hotDataList.value = hotData.list
+}
+getDataList()
 </script>
 
 <template>
   <div class="interaction-answer">
     <div class="header-title">
       <div class="title">互动解答</div>
-      <k-button text class="more">更多</k-button>
+      <k-button text class="more" @click="lookMore">更多</k-button>
     </div>
     <div class="interaction-card-box">
       <div class="interaction-card">
         <div class="sign-name">热门</div>
         <div class="card-list-box">
-          <div class="lis-data" v-for="(item, index) in 5" :key="index">
+          <div class="lis-data" v-for="(item, index) in hotDataList" :key="item.id">
             <div class="main-content-top">
-              <div class="icon dfc"><IconWarning /></div>
-              <div class="system dfc">操作系统</div>
-              <div class="hot-title">新版RPA社区版使用手册</div>
-              <div class="answer" v-if="index !== 0">n 个回答</div>
+              <div class="icon dfc"><IconMessageFill color="#999999" /></div>
+              <div class="system dfc">{{ item.typeName }}</div>
+              <div class="hot-title">{{ item.title }}</div>
+              <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回答</div>
             </div>
-            <div v-if="index === 0" class="hot-desc">
-              滑块验证码中获取了body 值后，
-              点击鼠标拖动slider的具体作，鼠标移动中的横坐标加上body值后，然后再鼠标弹起，还是位置不对
-            </div>
+            <div v-if="index === 0" class="hot-desc">{{ item.abstract }}</div>
             <div v-if="index === 0" class="hot-user-box">
               <div class="user-avatar dfc">
-                <k-image :src="RPA_LOGO" />
+                <k-image :src="item.userIcon" class="dfc" style="width: 100%; height: 100%">
+                  <template #error>
+                    <k-image :src="RPA_LOGO" style="width: 100%; height: 100%" />
+                  </template>
+                </k-image>
               </div>
-              <div class="user-name dfc">隔壁老王</div>
-              <div class="page-vies dfc">浏览 13222</div>
-              <div class="answer">n 个回答</div>
+              <div class="user-name dfc">{{ item.userName }}</div>
+              <div class="page-vies dfc">浏览 {{ item.hot }}</div>
+              <div class="answer">{{ item.replyNum }} 个回答</div>
             </div>
           </div>
         </div>
@@ -37,24 +69,25 @@ import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
       <div class="interaction-card">
         <div class="sign-name">最新</div>
         <div class="card-list-box">
-          <div class="lis-data" v-for="(item, index) in 5" :key="index">
+          <div class="lis-data" v-for="(item, index) in newDataList" :key="item.id">
             <div class="main-content-top">
-              <div class="icon dfc"><IconWarning /></div>
-              <div class="system dfc">操作系统</div>
-              <div class="hot-title">新版RPA社区版使用手册</div>
-              <div class="answer" v-if="index !== 0">n 个回答</div>
+              <div class="icon dfc"><IconMessageFill color="#999999" /></div>
+              <div class="system dfc">{{ item.typeName }}</div>
+              <div class="hot-title">{{ item.title }}</div>
+              <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回答</div>
             </div>
-            <div v-if="index === 0" class="hot-desc">
-              滑块验证码中获取了body 值后，
-              点击鼠标拖动slider的具体作，鼠标移动中的横坐标加上body值后，然后再鼠标弹起，还是位置不对
-            </div>
+            <div v-if="index === 0" class="hot-desc">{{ item.abstract }}</div>
             <div v-if="index === 0" class="hot-user-box">
               <div class="user-avatar dfc">
-                <k-image :src="RPA_LOGO" />
+                <k-image :src="item.userIcon" class="dfc" style="width: 100%; height: 100%">
+                  <template #error>
+                    <k-image :src="RPA_LOGO" style="width: 100%; height: 100%" />
+                  </template>
+                </k-image>
               </div>
-              <div class="user-name dfc">隔壁老王</div>
-              <div class="page-vies dfc">浏览 13222</div>
-              <div class="answer">n 个回答</div>
+              <div class="user-name dfc">{{ item.userName }}</div>
+              <div class="page-vies dfc">浏览 {{ item.hot }}</div>
+              <div class="answer">{{ item.replyNum }} 个回答</div>
             </div>
           </div>
         </div>
@@ -86,6 +119,11 @@ import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
     font-weight: normal;
   }
 }
+.dfc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .interaction-answer {
   display: flex;
   flex-direction: column;
@@ -115,6 +153,8 @@ import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
     height: 432px;
     .interaction-card {
       flex: 1;
+      width: 100%;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: start;

@@ -2,17 +2,48 @@
 import NavClass from './component/NavClass.vue'
 import TabList from './component/TabList.vue'
 import RightUser from './component/RightUser.vue'
+import { useRoute } from 'vue-router'
+import { getArticleTypeListAPI, getClassByIdAPI } from '@/api/home'
+import { ref } from 'vue'
+
+const route = useRoute()
+/** 互动解答信息 */
+const nowPageDataInfo = ref<any>({})
+/** 页面分配 */
+const pageClassList = ref<any[]>([])
+/** 获取 */
+/** 获取帖子分类 */
+const getArticleType = async (id: string) => {
+  const { parentList } = await getArticleTypeListAPI()
+  console.log('articleClass--->', parentList)
+  const findItem = parentList?.find((item: any) => item.postsTypeId === id)
+  if (!findItem) return
+  nowPageDataInfo.value = { ...findItem }
+  pageClassList.value = await getClassByIdAPI({ id })
+  const one = { postsTypeName: '全部', postsTypeId: 'all', postsTypeDesc: '全部数据' }
+  pageClassList.value.unshift(one)
+  pageClassList.value.forEach((item) => {
+    item.pid = id
+  })
+}
+
+/** 解析跳转路由参数 */
+function handleRouteQuery() {
+  const { type }: any = route.query
+  getArticleType(type)
+}
+handleRouteQuery()
 </script>
 
 <template>
   <div class="class-list-box">
     <div class="class-list">
       <div class="nav">
-        <NavClass />
+        <NavClass :params="nowPageDataInfo" />
       </div>
       <div class="main-box">
         <div class="main-list">
-          <TabList />
+          <TabList :params="pageClassList" />
         </div>
         <div class="user-right">
           <RightUser />

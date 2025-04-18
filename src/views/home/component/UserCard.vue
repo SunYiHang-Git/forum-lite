@@ -3,10 +3,34 @@ import avatarSvg from '@/assets/svg/default-avatar.svg'
 import { useUser } from '@/store/modules/user'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import { getUserASllTypeNumAPI } from '@/api/home'
+import { ref } from 'vue'
 // const { userInfo } = useUser()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
 
+const classTypeNumObj = ref<{
+  ArticleCount: number
+  QuestionCount: number
+  ReplyCount: number
+  CollectCount: number
+}>({
+  ArticleCount: 0,
+  QuestionCount: 0,
+  ReplyCount: 0,
+  CollectCount: 0,
+})
+
+/** 获取用户的类别数据量 */
+const getUserAllTypeData = async () => {
+  const loginId = userInfo.value.loginId
+  const { ArticleCount, QuestionCount, ReplyCount, CollectCount } = await getUserASllTypeNumAPI({
+    User: loginId,
+    CollectNum: true,
+  })
+  classTypeNumObj.value = { ArticleCount, QuestionCount, ReplyCount, CollectCount }
+}
+getUserAllTypeData()
 /** 发帖 */
 const postArticle = async () => {
   router.push('/post-article')
@@ -30,19 +54,19 @@ const postArticle = async () => {
     <div class="user-menu">
       <div class="menu-link">
         <div class="menu-title">提问</div>
-        <div class="menu-num">0</div>
+        <div class="menu-num">{{ classTypeNumObj.QuestionCount }}</div>
       </div>
       <div class="menu-link">
         <div class="menu-title">文章</div>
-        <div class="menu-num">0</div>
+        <div class="menu-num">{{ classTypeNumObj.ArticleCount }}</div>
       </div>
       <div class="menu-link">
         <div class="menu-title">回复</div>
-        <div class="menu-num">0</div>
+        <div class="menu-num">{{ classTypeNumObj.ReplyCount }}</div>
       </div>
       <div class="menu-link">
         <div class="menu-title">收藏</div>
-        <div class="menu-num">0</div>
+        <div class="menu-num">{{ classTypeNumObj.CollectCount }}</div>
       </div>
     </div>
     <k-button main style="width: 100%" @click="postArticle">发帖</k-button>

@@ -48,7 +48,13 @@ export const routeList = [
         path: '/post-article',
         name: 'post-article',
         component: () => import('@/views/Article/PostArticle.vue'),
-        meta: { title: '论坛分类', icon: 'el-icon-s-home' },
+        meta: { title: '论坛分类', icon: 'el-icon-s-home', reuseKey: (to) => to.fullPath },
+      },
+      {
+        path: '/detail/:id',
+        name: 'detail',
+        component: () => import('@/views/Article/ArticleDetail.vue'),
+        meta: { title: '帖子详情', icon: 'el-icon-s-home' },
       },
     ],
   },
@@ -62,7 +68,7 @@ export const routeList = [
 
 routeList.forEach((item) => {
   !item.meta && (item.meta = {})
-  item.meta.keepAlive === undefined && (item.meta.keepAlive = true)
+  // item.meta.keepAlive === undefined && (item.meta.keepAlive = true)
 })
 
 const router = createRouter({

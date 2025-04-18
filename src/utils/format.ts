@@ -105,3 +105,36 @@ export const blobToFile = (newBlob: any, fileName: string) => {
   newBlob.name = fileName
   return newBlob
 }
+/** 把对象的key 首字母转换为小写 */
+export function convertKeysToLowerCase(obj: object) {
+  if (typeof obj !== 'object' || obj === null) {
+    throw new Error('传入的参数必须是一个对象')
+  }
+
+  const result: any = {}
+
+  for (const [key, value] of Object.entries(obj)) {
+    // 提取键名并将其首字母转换为小写
+    const newKey = key.charAt(0).toLowerCase() + key.slice(1)
+
+    // 如果值是对象且不是null或Array，则递归处理
+    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+      result[newKey] = convertKeysToLowerCase(value)
+    } else {
+      result[newKey] = value
+    }
+  }
+
+  return result
+}
+
+/**
+ * 处理 url 反斜杠问题
+ *
+ * @param url string
+ * @returns
+ */
+export const handleUrlFormat = (url: string) => {
+  if (!url) return ''
+  return url.split('\\').join('/').split('\\').join('/')
+}

@@ -1,36 +1,43 @@
 <script setup lang="ts">
-import { KMessage } from '@ksware/ksw-ux'
+import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import type { FormInstance, FormRules, UploadInstance, UploadRawFile } from 'element-plus'
 import { reactive, ref } from 'vue'
 import TEditor from '@/component/TEditor/index.vue'
 import { useRouter } from 'vue-router'
+import { callServerFunc, getGuid } from '@ksware/micro-lib-web-temp'
+import { fileHostUrl } from '@/views/home/index'
+import { getArticleTypeListAPI } from '@/api/home'
 
 interface RuleForm {
   /** 标题 */
   title: string
   /** 所属专栏 */
-  column: string
+  type: string
   /** 正文 */
-  text: string
+  content: string
   /** 摘要 */
   abstract: string
   /** 标签 */
   tags: string[]
+  /** 封面 */
+  cover: string
 }
 
 const router = useRouter()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   title: '',
-  column: '',
-  text: '',
+  type: '',
+  content: '',
   abstract: '',
   tags: [],
+  cover: '',
 })
 const rules = reactive<FormRules<RuleForm>>({
   title: [{ required: true, message: '此为必填项', trigger: 'blur' }],
-  column: [{ required: true, message: '此为必填项', trigger: 'change' }],
-  text: [{ required: true, message: '此为必填项', trigger: 'change' }],
+  type: [{ required: true, message: '此为必选项', trigger: 'change' }],
+  content: [{ required: true, message: '此为必填项', trigger: 'blur' }],
+  cover: [{ required: true, message: '此为必填项', trigger: 'blur' }],
 })
 // 创建一个响应式变量用于存储图片的 Data URL
 const imageUrl = ref('')
@@ -39,10 +46,36 @@ const active = ref(0)
 
 const upload = ref<UploadInstance>()
 
+/** 专栏板块 option */
+const columnOptions = ref<any[]>([])
+/** 获取专栏 */
+const getHomeClassList = async () => {
+  const { parentList, sonList } = await getArticleTypeListAPI()
+  columnOptions.value = parentList.map(({ postsTypeId, postsTypeName }: any) => {
+    // const children = sonList.filter((item: any) => item.pid === postsTypeId)
+    const children = sonList
+      .filter((item: any) => item.pid === postsTypeId)
+      .map((item: any) => {
+        return { value: item.postsTypeId, label: item.postsTypeName }
+      })
+    return { value: postsTypeId, label: postsTypeName, children }
+  })
+  console.log('list--->', columnOptions.value)
+  // const findInteraction: any = homeNavClassList.find((item) => item.postsTypeName === '互动解答')
+  // const findKnow = homeNavClassList.find((item) => item.postsTypeName === '知识分享')
+  // interactionId.value = findInteraction.postsTypeId
+  // knowledgeId.value = findKnow.postsTypeId
+}
+getHomeClassList()
+const handleChange = (arr: any): void => {
+  if (!Array.isArray(arr)) return
+  const a = arr.at(-1)
+  ruleForm.type = a
+}
+
 /** 上传文件前 */
 const beforeAvatarUpload = (rawFile: any) => {
   const validTypes = ['image/png', 'image/jpeg']
-  console.log('rawFile.type--->', rawFile.type)
   if (!validTypes.includes(rawFile.type)) {
     KMessage.error('仅支持JPG,PNG格式！')
 
@@ -60,16 +93,13 @@ const appUploadFile = ref<any>(null)
 
 const httpRequestFile = async ({ file }: { file: UploadRawFile }) => {
   upload.value!.handleStart(file)
-  const reader = new FileReader()
-  reader.onload = (e: any) => {
-    const arrayBuffer = e.target.result
-    imageUrl.value = e.target.result
-    let newData: any = {}
-    // newData.file = arrayBufferToHex(arrayBuffer)
-    // appUploadFile.value = newData
-  }
-  // reader.readAsArrayBuffer(file)
-  reader.readAsDataURL(file)
+  const type = file.name.split('.')[1]
+  const params = { FileID: getGuid(), IsForum: true, FileType: '.' + type }
+  const { data }: any = await callServerFunc('TRPADM', 'RPAUploadForumPic', params, { isUpload: true, file: file })
+  const ServerFile = data.ImgUrl
+  const url = fileHostUrl + ServerFile
+  imageUrl.value = url.split('\\').join('/')
+  ruleForm.cover = imageUrl.value
 }
 const handleRemove = (_: UploadRawFile, uploadFiles: any[]) => {
   if (uploadFiles.length === 0) {
@@ -80,20 +110,38 @@ const handleRemove = (_: UploadRawFile, uploadFiles: any[]) => {
 /** 删除图片 */
 async function delPicture() {
   imageUrl.value = ''
-  upload.value!.clearFiles()
+  upload.value?.clearFiles()
 }
 
 /** 取消 */
 async function cancel(formEl: FormInstance | undefined) {
   if (!formEl) return
   formEl.resetFields()
-  router.push('/')
+  // router.push('/')
+  router.back()
 }
 /** 提交 */
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
-  console.log('ruleForm--->', ruleForm)
+  await KMessageBox.confirm('确认要发布帖子吗?', '发布提示', {
+    confirmButtonText: '确认',
+    cancelButtonText: '取消',
+    type: 'success',
+  })
+  const { title, content, type, abstract, tags, cover } = ruleForm
+  const params = {
+    postsID: getGuid(),
+    Title: title,
+    Content: content,
+    Type: type,
+    Abstract: abstract,
+    Cover: cover,
+    Tags: tags.join(','),
+  }
+  console.log('params--->', params)
+  await callServerFunc('TRPADM', 'RPAPublish', params)
+  router.back()
 }
 </script>
 
@@ -121,16 +169,20 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 show-word-limit
               />
             </k-form-item>
-            <k-form-item label="所属专栏" prop="column">
-              <k-radio-group v-model="ruleForm.column">
-                <k-radio v-for="i in 4" :key="i" border :value="`操作系统相关${i}`">操作系统相关{{ i }}</k-radio>
-              </k-radio-group>
+            <k-form-item label="板块/专栏" prop="type">
+              <el-cascader
+                v-model="ruleForm.type"
+                :options="columnOptions"
+                filterable
+                style="width: 100%"
+                @change="handleChange"
+              />
             </k-form-item>
             <div class="hr"></div>
             <div class="form-title">正文</div>
-            <k-form-item label="">
-              <div style="width: 100%; min-height: 300px; background-color: pink">
-                <TEditor v-model="ruleForm.text" :placeholder="$t('forum.formContent')" />
+            <k-form-item label="" prop="content">
+              <div style="width: 100%; min-height: 300px">
+                <TEditor v-model="ruleForm.content" :placeholder="$t('forum.formContent')" />
               </div>
             </k-form-item>
             <div class="hr"></div>
@@ -154,7 +206,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 :reserve-keyword="false"
               ></k-select>
             </k-form-item>
-            <k-form-item label="文章封面">
+            <k-form-item label="文章封面" prop="cover">
               <div class="upload-box">
                 <k-upload
                   v-if="!imageUrl"

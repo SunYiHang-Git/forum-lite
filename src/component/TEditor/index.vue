@@ -112,7 +112,7 @@ const init = reactive({
   menubar: 'edit view insert format tools table',
   paste_data_images: true, //允许粘贴图像
   image_dimensions: false, //去除宽高属性
-  plugins: props.plugins, //这里的数据是在props里面就定义好了的
+  plugins: props.plugins.replace('quickbars', ''), //这里的数据是在props里面就定义好了的
   toolbar: props.toolbar, //这里的数据是在props里面就定义好了的
   // 取消图片资源路径转换
   convert_urls: false,
@@ -135,7 +135,8 @@ const init = reactive({
   noneditable_class: 'mceNonEditable',
   toolbar_mode: 'wrap', // 工具栏模式 floating / sliding / scrolling / wrap
   // 默认样式
-  content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }p {margin:3px; line-height:24px;}',
+  content_style:
+    'body { font-family:Helvetica,Arial,sans-serif; font-size:16px,padding-left:0 !important }p {margin:0px; line-height:24px;}',
   image_advtab: true,
   importcss_append: true,
   paste_webkit_styles: 'all',
@@ -150,8 +151,6 @@ const init = reactive({
   autoresize_overflow_padding: 16,
   min_height: props.minHeight,
   content_css: '/tinymce/skins/content/default/content.css', //以css文件方式自定义可编辑区域的css样式，css文件需自己创建并引入
-  // setup: function (editor) {
-  // },
   //图片上传  -实列 具体请根据官网补充-
   images_upload_handler: function (blobInfo, success, failure, progress) {
     return new Promise(async (resolve, reject) => {
@@ -250,7 +249,15 @@ defineExpose({
 :deep(.tox-tinymce) {
   border: 1px solid #dcdfe6;
   border-radius: 4px;
-
+  .tox-sidebar-wrap {
+    .tox-edit-area {
+      .iframe {
+        body {
+          padding: 0 !important;
+        }
+      }
+    }
+  }
   .tox-statusbar {
     display: none;
   }

@@ -1,16 +1,24 @@
 <script setup lang="ts">
 import interactionSvg from '@/assets/svg/interaction.svg'
+import noticeSvg from '@/assets/svg/notice.svg'
+import knowledgeSvg from '@/assets/svg/knowledge.svg'
+
+const { params } = defineProps<{
+  params: any
+}>()
 </script>
 
 <template>
   <div class="nav-class">
     <div class="left-name dfc">
       <div class="icon dfc">
-        <img :src="interactionSvg" />
+        <img v-if="params.postsTypeName === '互动解答'" :src="interactionSvg" />
+        <img v-if="params.postsTypeName === '知识分享'" :src="knowledgeSvg" />
+        <img v-if="params.postsTypeName === '公告'" :src="noticeSvg" />
       </div>
       <div class="name-box">
-        <div class="name">互动解答</div>
-        <div class="desc">交流思想的舞台</div>
+        <div class="name">{{ params.postsTypeName }}</div>
+        <div class="desc">{{ params.postsTypeDesc }}</div>
       </div>
     </div>
     <div class="right-btn dfc">
@@ -36,8 +44,10 @@ import interactionSvg from '@/assets/svg/interaction.svg'
   height: 100%;
   box-sizing: border-box;
   padding: 24px 32px;
+  gap: 24px;
   background-color: #fff;
   .left-name {
+    flex: 1;
     justify-content: start;
     gap: 22px;
     .icon {
@@ -49,6 +59,7 @@ import interactionSvg from '@/assets/svg/interaction.svg'
       }
     }
     .name-box {
+      flex: 1;
       .name {
         font-family: Alibaba PuHuiTi 3;
         font-size: 24px;
@@ -58,6 +69,7 @@ import interactionSvg from '@/assets/svg/interaction.svg'
         color: #3d3d3d;
       }
       .desc {
+        width: 80%;
         margin-top: 8px;
         font-family: Alibaba PuHuiTi 3;
         font-size: 16px;
@@ -65,12 +77,16 @@ import interactionSvg from '@/assets/svg/interaction.svg'
         line-height: 20px;
         letter-spacing: 0px;
         color: #3d3d3d;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }
   .right-btn {
     justify-content: start;
     gap: 8px;
+    width: fit-content;
   }
 }
 </style>

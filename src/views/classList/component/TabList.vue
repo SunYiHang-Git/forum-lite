@@ -1,54 +1,92 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import PageList from './PageList.vue'
+import { getInteractionListAPI } from '@/api/home'
+
+const props = defineProps<{ params: any[] }>()
 
 const activeName = ref('all')
 
-function handleClick(tabName: string) {
-  console.log('tabName--->', tabName)
-}
-const filterBtnValue = ref('a')
 const filterBtnList = [
   {
     label: '综合',
-    name: 'a',
+    name: 'onFine',
   },
   {
-    label: '最新',
-    name: 'b',
+    label: '精品',
+    name: 'isFine',
   },
 ]
-const tabTitleList = ref([
-  { label: '全部', name: 'all' },
-  { label: '平台功能', name: 'a' },
-  { label: '函数', name: 'b' },
-  { label: '数据库', name: 'c' },
-])
-
-const filterChangeBtn = (name: string) => {
-  console.log('name--->', name)
-}
+const isFine = ref(0)
 
 /** 当前页 */
 const currentPage = ref(1)
 /** 总共页数 */
-const pageTotal = ref(100)
+const pageTotal = ref(0)
+/** 数据 */
+const tableDataList = ref<any[]>([])
+/** 子类id */
+const sonClassId = ref('')
+
+/** 获取互动解答数据 */
+const getInteractionListData = async () => {
+  if (props.params.length === 0) {
+    return
+  }
+  const pid = props.params[0].pid
+  const params = {
+    PageNum: currentPage.value + '',
+    PageSize: '20',
+    PostsTypePID: pid,
+    PostsType: sonClassId.value,
+    CollectNum: true,
+    isFine: isFine.value === 1 ? 1 : 0,
+  }
+  const { list, total } = await getInteractionListAPI(params)
+  tableDataList.value = list
+  pageTotal.value = total
+}
+
+const filterChangeBtn = (name: string) => {
+  if (name === 'isFine') {
+    isFine.value = 1
+  } else {
+    isFine.value = 0
+  }
+  getInteractionListData()
+}
+
+function handleClick(tabName: string) {
+  if (tabName === 'all') {
+    sonClassId.value = ''
+  } else {
+    sonClassId.value = tabName
+  }
+  getInteractionListData()
+}
 
 /** 切换分页 */
-const handleCurrentChange = (val: number) => {
-  console.log('val--->', val)
+const handleCurrentChange = () => {
+  getInteractionListData()
 }
+watch(
+  () => props.params.length,
+  () => {
+    sonClassId.value = ''
+    getInteractionListData()
+  },
+)
 </script>
 
 <template>
   <div class="tab-list">
-    <k-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+    <k-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
       <div class="select-btn">
-        <k-slider-button @change="filterChangeBtn" :items="filterBtnList" active="b"></k-slider-button>
+        <k-slider-button @change="filterChangeBtn" :items="filterBtnList" active="onFine"></k-slider-button>
       </div>
-      <k-tab-pane v-for="(item, index) in tabTitleList" :label="item.label" :name="item.name">
+      <k-tab-pane v-for="(item, index) in params" :key="index" :label="item.postsTypeName" :name="item.postsTypeId">
         <div class="tab-div-content">
-          <PageList />
+          <PageList :tableData="tableDataList" />
         </div>
       </k-tab-pane>
     </k-tabs>

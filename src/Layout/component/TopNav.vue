@@ -17,7 +17,7 @@ function getWindowUrl() {
   const a = window.location.href
   console.log('a--->', a)
 }
-getWindowUrl()
+// getWindowUrl()
 const menuList = ref([
   {
     name: 'home',
@@ -34,7 +34,7 @@ const menuList = ref([
   {
     name: 'community',
     label: '社区',
-    src: '',
+    src: '/home',
     color: '#0A5CFF',
   },
 ])
@@ -63,6 +63,10 @@ const userDownList = ref([
 ])
 const routerToPage = (name: string, src: string) => {
   if (src === '') return
+  if (name === 'community') {
+    router.push(src)
+    return
+  }
   window.open(src)
 }
 /** 退出登录 */
