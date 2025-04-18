@@ -173,6 +173,7 @@ export const getUserASllTypeNumAPI = async (params: any) => {
 /** 根据 Id 获取帖子详情 */
 export const getArticleInfoById = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAGetPostsDetail', params)
+  console.log('data--->', data)
   const table = new SQLTable(data.k_forum_list_position)
   const {
     Abstract,
@@ -210,6 +211,7 @@ export const getArticleInfoById = async (params: any) => {
     UserName,
     UserIcon,
     UserPostCount,
+    CollectNum,
   } = data
   const obj = {
     Abstract,
@@ -247,6 +249,7 @@ export const getArticleInfoById = async (params: any) => {
     UserName,
     UserIcon: handleUrlFormat(fileHostUrl + UserIcon),
     UserPostCount,
+    CollectNum,
   }
   return convertKeysToLowerCase(obj)
 }
@@ -290,6 +293,12 @@ function handleReplyList(table: any) {
 /** 获取所有回复帖子数量 */
 export const getAllReplyNumAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAGetReplyCount', params)
+  return data.ReplyCouunt
+}
+
+/** 添加评论 */
+export const addReplyForArticleAPI = async (params: any) => {
+  const { data } = await callServerFunc('TRPADM', 'RPAAddReply', params)
   console.log('data--->', data)
-  return
+  return data
 }
