@@ -1,37 +1,21 @@
 <script setup lang="ts">
-import { getInteractionListAPI } from '@/api/home'
 import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const { moreId } = defineProps<{
+const { moreId, hotDataList, newDataList } = defineProps<{
   /** 父级专栏的 id */
   moreId: string
+  /** 热门互动数据 */
+  hotDataList: any[]
+  /** 最新互动数据 */
+  newDataList: any[]
 }>()
 
 function lookMore() {
   router.push({ path: '/class', query: { type: moreId } })
 }
 
-/** 热门互动数据 */
-const hotDataList = ref<any[]>([])
-/** 最新互动数据 */
-const newDataList = ref<any[]>([])
-
-const getDataList = async () => {
-  const params = {
-    PageNum: '1',
-    PageSize: '4',
-    PostsTypePID: moreId,
-    CollectNum: true,
-  }
-  const newData: any = await getInteractionListAPI({ ...params, Order: 'CreateTime' })
-  newDataList.value = newData.list
-  const hotData: any = await getInteractionListAPI({ ...params, Order: 'Hot' })
-  hotDataList.value = hotData.list
-}
-getDataList()
 const goDetail = (item: any) => {
   router.push(`/detail/${item.id}`)
 }
@@ -49,7 +33,7 @@ const goDetail = (item: any) => {
         <div class="know-content">
           <div v-for="item in hotDataList" :key="item.id" class="lis-hot-know">
             <div class="lis-top">
-              <div class="icon dfc"><IconWarning /></div>
+              <div class="icon dfc"><IconDocDetailFill color="#B6AFAF" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
               <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
             </div>
@@ -70,7 +54,7 @@ const goDetail = (item: any) => {
         <div class="know-content">
           <div v-for="item in newDataList" :key="item.id" class="lis-hot-know">
             <div class="lis-top">
-              <div class="icon dfc"><IconWarning /></div>
+              <div class="icon dfc"><IconDocDetailFill color="#B6AFAF" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
               <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
             </div>
@@ -220,6 +204,7 @@ const goDetail = (item: any) => {
             text-overflow: ellipsis; /* 当文本溢出时显示省略号 */
             white-space: normal; /* 允许文本换行 */
             word-break: break-all; /* 强制断字以适应容器宽度 */
+            padding-left: 24px;
           }
           .hot-user-box {
             display: flex;

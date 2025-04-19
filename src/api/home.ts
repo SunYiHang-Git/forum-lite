@@ -11,8 +11,9 @@ export const getHomeAllDataAPI = async () => {
   const noticeList = handleNoticeListByTable(table1)
   const table2 = new SQLTable(data.k_forum_weeklyusers)
   const replyList = handleReplyByTable(table2)
-  //   const table3 = new SQLTable(data.k_forum_hotReplyposts)
-  return { noticeList, replyList }
+  const table3 = new SQLTable(data.k_forum_hotReplyposts)
+  const weekHotList = handleWeekHost(table3)
+  return { noticeList, replyList, weekHotList }
 }
 /** 抽离官方公告数据处理 */
 function handleNoticeListByTable(table: any) {
@@ -66,6 +67,19 @@ function handleReplyByTable(table: any) {
   return rows
 }
 /** 抽离本周热议数据处理 */
+function handleWeekHost(table: any) {
+  const rows = []
+  while (!table.eof()) {
+    const row = {
+      id: table.s('ID'),
+      title: table.s('Title'),
+      count: table.s('ReplyNum'),
+    }
+    rows.push(row)
+    table.next()
+  }
+  return rows
+}
 
 /** 获取互动解答数据接口 */
 export const getInteractionListAPI = async (params: any) => {
@@ -173,7 +187,6 @@ export const getUserASllTypeNumAPI = async (params: any) => {
 /** 根据 Id 获取帖子详情 */
 export const getArticleInfoById = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAGetPostsDetail', params)
-  console.log('data--获取帖子详情->', data)
   const table = new SQLTable(data.k_forum_list_position)
   const {
     Abstract,
@@ -297,7 +310,6 @@ function handleReplyList(table: any) {
 /** 获取所有回复帖子数量 */
 export const getAllReplyNumAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAGetReplyCount', params)
-  console.log('data--uuuuuuucc->', data)
   return data.ReplyCouunt
 }
 
@@ -328,6 +340,62 @@ export const setArticleAuditAPI = async (params: any) => {
 /** 删除帖子 */
 export const deleteArticleByIdAPI = async (params: any) => {
   const { data } = await callServerFunc('TRPADM', 'RPADelPosts', params)
-  console.log('data--->', data)
   return data
+}
+
+/** 获取首页互动解答,知识分享,官方公告展示数据 */
+export const getThirdTypeDataAPI = async () => {
+  const { data }: any = await callServerFunc(
+    'TRPADM',
+    'GetRPAIndexInfo',
+    {},
+    {
+      isShowLoading: true,
+    },
+  )
+  const table1 = new SQLTable(data.k_forum_answer_popular)
+  const table2 = new SQLTable(data.k_forum_answer_date)
+  const table3 = new SQLTable(data.k_forum_knowledge_popular)
+  const table4 = new SQLTable(data.k_forum_knowledge_date)
+  const table5 = new SQLTable(data.k_forum_notice)
+  const interHotList = handleInteractionData(table1)
+  const interNewList = handleInteractionData(table2)
+  const knowHotList = handleInteractionData(table3)
+  const knowNewList = handleInteractionData(table4)
+  const noteDataList = handleInteractionData(table5)
+  return { interHotList, interNewList, knowHotList, knowNewList, noteDataList }
+}
+/** 处理互动解答 */
+function handleInteractionData(table: any) {
+  const rows = []
+  while (!table.eof()) {
+    const tags = table.s('Tag').split(',').filter(Boolean)
+    const row = {
+      id: table.s('ID'),
+      type: table.s('Type'),
+      createTime: table.s('CreateTime'),
+      lastTime: table.s('LastTime'),
+      createUser: table.s('CreateUser'),
+      isFine: table.s('IsFine'),
+      isEnd: table.s('IsEnd'),
+      isTop: table.s('IsTop'),
+      title: table.s('Title'),
+      hot: table.s('Hot'),
+      collectNum: table.s('CollectNum'),
+      state: table.s('State'),
+      tag: tags,
+      abstract: table.s('Abstract'),
+      replyNum: table.s('ReplyNum'),
+      typeName: table.s('TypeName'),
+      typePid: table.s('TypePID'),
+      typePName: table.s('TypePName'),
+      sex: table.s('Sex'),
+      userIcon: handleUrlFormat(fileHostUrl + table.s('UserIcon')),
+      isAdmin: table.s('IsAdmin'),
+      userName: table.s('UserName'),
+    }
+    rows.push(row)
+    table.next()
+  }
+  return rows
 }

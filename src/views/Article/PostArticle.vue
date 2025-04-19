@@ -59,7 +59,6 @@ const getArticleInfo = async (id: string) => {
   ruleForm.tags = tag
   ruleForm.cover = cover
   imageUrl.value = cover
-  console.log('ruleForm--->', ruleForm)
 }
 /** pageTitle */
 const pageTitle = computed(() => (articleInfo.value?.id ? '编辑' : '发布'))
@@ -88,7 +87,6 @@ const getHomeClassList = async () => {
       })
     return { value: postsTypeId, label: postsTypeName, children }
   })
-  console.log('list--->', columnOptions.value)
   // const findInteraction: any = homeNavClassList.find((item) => item.postsTypeName === '互动解答')
   // const findKnow = homeNavClassList.find((item) => item.postsTypeName === '知识分享')
   // interactionId.value = findInteraction.postsTypeId

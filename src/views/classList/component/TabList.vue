@@ -44,7 +44,6 @@ const getInteractionListData = async () => {
   }
   const { list, total } = await getInteractionListAPI(params)
   tableDataList.value = list
-  console.log('tableDataList.value--->', tableDataList.value)
   pageTotal.value = total
 }
 

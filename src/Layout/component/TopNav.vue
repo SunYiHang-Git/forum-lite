@@ -16,7 +16,6 @@ const activeName = ref('community')
 // 获取 url
 function getWindowUrl() {
   const a = window.location.href
-  console.log('a--->', a)
 }
 // getWindowUrl()
 const menuList = ref([

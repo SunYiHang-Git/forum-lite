@@ -13,6 +13,7 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import TEditor from '@/component/TEditor/index.vue'
 import { KMessageBox } from '@ksware/ksw-ux'
+import RightHotCard from '@/views/Article/RightHotCard.vue'
 
 const router = useRouter()
 
@@ -239,7 +240,6 @@ const goEditPage = () => {
   router.push(`/article/${articleInfo.value.id}`)
 }
 const handleCommand = (command: string) => {
-  console.log('command--->', command)
   switch (command) {
     case 'top':
       onTop()
@@ -260,6 +260,14 @@ const handleCommand = (command: string) => {
       return
   }
 }
+
+const goTop = () => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'smooth',
+  })
+}
 </script>
 
 <template>
@@ -267,67 +275,74 @@ const handleCommand = (command: string) => {
     <div class="detail-box">
       <div class="left">
         <div class="flex-left">
-          <div class="collect-box">
-            <k-badge @click="handleCollect" :value="articleInfo.collectNum" type="info" class="item dfc">
-              <IconStar v-if="articleInfo.isCollect === 0" :size="26" />
-              <IconStarFill v-if="articleInfo.isCollect === 1" color="#FF8900" :size="26" />
-            </k-badge>
-          </div>
-          <div class="reply-box">
-            <k-badge @click="handleToBottom" :value="articleAllNum" type="info" class="item dfc">
-              <IconMessageOne :size="26" />
-              <!-- <router-link :to="{ hash: '#textareaTEditor' }"><IconMessageOne :size="26" /></router-link> -->
-            </k-badge>
-          </div>
-          <k-dropdown placement="left-start" trigger="click" @command="handleCommand">
-            <template #title>
-              <div class="more-box">
-                <IconMore
-                  :size="26"
-                  style="
-                    width: 42px;
-                    height: 42px;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background-color: #fff;
-                  "
-                />
-              </div>
-            </template>
-            <template #default>
-              <k-dropdown-item
-                v-for="item in dropDownItemList"
-                :key="item.command"
-                :style="styleDropdownItem"
-                :icon="item.icon"
-                :command="item.command"
-              >
-                <template #default v-if="item.command !== 'essence'">
-                  <!-- {{ item.name }} -->
-                  <span style="width: 80px">{{ item.name }}</span>
-                </template>
-                <template #default v-if="item.command === 'essence'">
-                  <span
+          <div class="flex-top">
+            <div class="collect-box">
+              <k-badge @click="handleCollect" :value="articleInfo.collectNum" type="info" class="item dfc">
+                <IconStar v-if="articleInfo.isCollect === 0" :size="26" />
+                <IconStarFill v-if="articleInfo.isCollect === 1" color="#FF8900" :size="26" />
+              </k-badge>
+            </div>
+            <div class="reply-box">
+              <k-badge @click="handleToBottom" :value="articleAllNum" type="info" class="item dfc">
+                <IconMessageOne :size="26" />
+                <!-- <router-link :to="{ hash: '#textareaTEditor' }"><IconMessageOne :size="26" /></router-link> -->
+              </k-badge>
+            </div>
+            <k-dropdown placement="left-start" trigger="click" @command="handleCommand">
+              <template #title>
+                <div class="more-box">
+                  <IconMore
+                    :size="26"
                     style="
+                      width: 42px;
+                      height: 42px;
+                      border-radius: 50%;
                       display: flex;
                       align-items: center;
                       justify-content: center;
-                      width: 14px;
-                      height: 14px;
-                      font-size: 10px;
-                      color: #c55902;
-                      background-color: #fff6d3;
+                      background-color: #fff;
                     "
-                  >
-                    精
-                  </span>
-                  <span style="width: 80px">{{ item.name }}</span>
-                </template>
-              </k-dropdown-item>
-            </template>
-          </k-dropdown>
+                  />
+                </div>
+              </template>
+              <template #default>
+                <k-dropdown-item
+                  v-for="item in dropDownItemList"
+                  :key="item.command"
+                  :style="styleDropdownItem"
+                  :icon="item.icon"
+                  :command="item.command"
+                >
+                  <template #default v-if="item.command !== 'essence'">
+                    <!-- {{ item.name }} -->
+                    <span style="width: 80px">{{ item.name }}</span>
+                  </template>
+                  <template #default v-if="item.command === 'essence'">
+                    <span
+                      style="
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 14px;
+                        height: 14px;
+                        font-size: 10px;
+                        color: #c55902;
+                        background-color: #fff6d3;
+                      "
+                    >
+                      精
+                    </span>
+                    <span style="width: 80px">{{ item.name }}</span>
+                  </template>
+                </k-dropdown-item>
+              </template>
+            </k-dropdown>
+          </div>
+          <div class="goTop">
+            <div @click="goTop" class="top-icon dfc">
+              <IconSortTop :size="20" />
+            </div>
+          </div>
         </div>
       </div>
       <div class="content">
@@ -400,7 +415,9 @@ const handleCommand = (command: string) => {
           </div>
         </div>
       </div>
-      <div class="right">right</div>
+      <div class="right">
+        <RightHotCard />
+      </div>
     </div>
   </div>
   <k-dialog v-model="showReplyDialog" :title="'回复: ' + dialogParams.userName" width="700">
@@ -431,6 +448,7 @@ const handleCommand = (command: string) => {
 .article-detail {
   display: flex;
   justify-content: center;
+  position: relative;
   width: 100%;
   min-height: 100%;
   background-color: #f5f5f5;
@@ -448,19 +466,37 @@ const handleCommand = (command: string) => {
     max-width: 1380px;
     .left {
       width: 200px;
-      height: fit-content;
-      min-height: 1px;
+      height: 100%;
       .flex-left {
         position: fixed;
         display: flex;
         flex-direction: column;
-        justify-content: start;
         align-items: end;
+        justify-content: space-between;
         padding-right: 10px;
         padding-top: 40px;
-        gap: 16px;
         width: 200px;
-        height: fit-content;
+        height: calc(100vh - 100px);
+        .flex-top {
+          display: flex;
+          flex-direction: column;
+          justify-content: start;
+          align-items: end;
+          gap: 16px;
+        }
+        .goTop {
+          width: 70px;
+          height: 50px;
+          .top-icon {
+            align-items: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            overflow: hidden;
+            background-color: #fff;
+            cursor: pointer;
+          }
+        }
       }
       .collect-box,
       .reply-box,
@@ -484,15 +520,14 @@ const handleCommand = (command: string) => {
     .right {
       width: 350px;
       height: fit-content;
-      overflow: hidden;
-      background-color: gray;
+      overflow-y: auto;
     }
     .content {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: start;
-
+      max-width: 980px;
       gap: 16px;
       width: 100%;
       box-sizing: border-box;

@@ -3,7 +3,6 @@ import firstSvg from '@/assets/svg/first.svg'
 import secondSvg from '@/assets/svg/second.svg'
 import thirdSvg from '@/assets/svg/third.svg'
 import importantSvg from '@/assets/svg/important.svg'
-import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const { noticeList, replyList } = defineProps<{

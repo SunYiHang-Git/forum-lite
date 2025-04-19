@@ -1,22 +1,19 @@
 <script setup lang="ts">
 import Footer from '@/views/home/Footer/index.vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import Banner from '@/views/home/component/Banner.vue'
 import UserCard from '@/views/home/component/UserCard.vue'
 import NavCard from '@/views/home/component/NavCard.vue'
 import OfficialAnnouncement from '@/views/home/component/OfficialAnnouncement.vue'
 import InteractionAnswer from '@/views/home/component/InteractionAnswer.vue'
 import KnowledgeShare from '@/views/home/component/KnowledgeShare.vue'
-import { getArticleTypeListAPI, getHomeAllDataAPI } from '@/api/home'
+import { getArticleTypeListAPI, getHomeAllDataAPI, getThirdTypeDataAPI } from '@/api/home'
 const searchValue = ref<string>('')
-/** 官方公告 */
-const noticeListData = ref<any[]>([])
 /** 回帖周榜 */
 const replyListData = ref<any[]>([])
 /** 获取官方公告 */
 const getNoticeList = async () => {
-  const { noticeList, replyList } = await getHomeAllDataAPI()
-  noticeListData.value = noticeList
+  const { replyList } = await getHomeAllDataAPI()
   replyListData.value = replyList
 }
 /** 首页分类 nav */
@@ -35,8 +32,31 @@ const getHomeClassList = async () => {
   interactionId.value = findInteraction.postsTypeId
   knowledgeId.value = findKnow.postsTypeId
 }
-getNoticeList()
-getHomeClassList()
+onMounted(() => {
+  getNoticeList()
+  getHomeClassList()
+})
+
+/** 热门互动数据 */
+const hotInteractionDataList = ref<any[]>([])
+/** 最新互动数据 */
+const newInteractionDataList = ref<any[]>([])
+/** 热门知识分享数据 */
+const hotKnowDataList = ref<any[]>([])
+/** 最新知识分享数据 */
+const newKnowDataList = ref<any[]>([])
+/** 官方公告 */
+const noticeNewList = ref<any[]>([])
+
+const getDataList = async () => {
+  const { interHotList, interNewList, knowHotList, knowNewList, noteDataList } = await getThirdTypeDataAPI()
+  hotInteractionDataList.value = interHotList
+  newInteractionDataList.value = interNewList
+  hotKnowDataList.value = knowHotList
+  newKnowDataList.value = knowNewList
+  noticeNewList.value = noteDataList
+}
+getDataList()
 </script>
 
 <template>
@@ -55,13 +75,17 @@ getHomeClassList()
           <NavCard v-if="homeNavClassList.length > 0" :list="homeNavClassList" />
         </div>
         <div class="official-announcement">
-          <OfficialAnnouncement :noticeList="noticeListData" :replyList="replyListData" />
+          <OfficialAnnouncement :noticeList="noticeNewList" :replyList="replyListData" />
         </div>
         <div class="interaction">
-          <InteractionAnswer v-if="interactionId" :moreId="interactionId" />
+          <InteractionAnswer
+            :moreId="interactionId"
+            :hotDataList="hotInteractionDataList"
+            :newDataList="newInteractionDataList"
+          />
         </div>
         <div class="knowledge-share">
-          <KnowledgeShare v-if="knowledgeId" :moreId="knowledgeId" />
+          <KnowledgeShare :moreId="interactionId" :hotDataList="hotKnowDataList" :newDataList="newKnowDataList" />
         </div>
       </div>
       <div class="footer">

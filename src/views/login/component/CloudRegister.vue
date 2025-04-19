@@ -81,7 +81,6 @@ const sendCodeBtnText = computed(() => {
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
-  console.log('ruleForm--->', ruleForm)
   const data = {
     PhoneTo: ruleForm.phone,
     PhoneCode: ruleForm.code,
