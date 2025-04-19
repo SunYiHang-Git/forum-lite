@@ -4,6 +4,7 @@ import secondSvg from '@/assets/svg/second.svg'
 import thirdSvg from '@/assets/svg/third.svg'
 import importantSvg from '@/assets/svg/important.svg'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const { noticeList, replyList } = defineProps<{
   /** 公告 */
@@ -11,6 +12,10 @@ const { noticeList, replyList } = defineProps<{
   /** 回帖 */
   replyList: any[]
 }>()
+const router = useRouter()
+const goDetail = (item: any) => {
+  router.push(`/detail/${item.id}`)
+}
 </script>
 
 <template>
@@ -32,7 +37,7 @@ const { noticeList, replyList } = defineProps<{
               </div>
             </div>
             <div class="lis-title-box">
-              <div class="title">
+              <div class="title" @click="goDetail(item)">
                 {{ item.title }}
               </div>
             </div>
@@ -168,8 +173,9 @@ const { noticeList, replyList } = defineProps<{
           height: 100%;
           overflow: hidden;
           .title {
-            width: 80%;
-            height: 20px;
+            width: 100%;
+            height: 25px;
+            line-height: 25px;
             font-family: Alibaba PuHuiTi 3;
             font-size: 14px;
             font-weight: normal;
@@ -178,6 +184,7 @@ const { noticeList, replyList } = defineProps<{
             overflow: hidden;
             text-overflow: ellipsis;
             text-wrap: nowrap;
+            cursor: pointer;
           }
         }
         .lis-time {

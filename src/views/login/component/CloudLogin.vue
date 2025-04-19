@@ -73,7 +73,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     avatar: fileHostUrl + UserIcon,
     fullName: FullName,
   }
-  console.log('userInfoObj--->', userInfoObj)
   setUserInfo(userInfoObj)
   router.push('/')
 }

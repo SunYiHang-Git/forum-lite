@@ -15,7 +15,6 @@ const pageClassList = ref<any[]>([])
 /** 获取帖子分类 */
 const getArticleType = async (id: string) => {
   const { parentList } = await getArticleTypeListAPI()
-  console.log('articleClass--->', parentList)
   const findItem = parentList?.find((item: any) => item.postsTypeId === id)
   if (!findItem) return
   nowPageDataInfo.value = { ...findItem }
@@ -25,6 +24,7 @@ const getArticleType = async (id: string) => {
   pageClassList.value.forEach((item) => {
     item.pid = id
   })
+  console.log('pageClassList.value--->', pageClassList.value)
 }
 
 /** 解析跳转路由参数 */

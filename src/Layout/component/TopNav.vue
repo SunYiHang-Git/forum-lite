@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router'
 import { clearLocalStorage, clearSessionStorage } from '@/utils/auth'
 import { storeToRefs } from 'pinia'
 import { helpDocumentUel, liteHomeUrl } from '@/views/home'
+import { MD5 } from '@ksware/micro-lib-web-temp'
 const { clearUserInfoStore } = useUser()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
@@ -94,14 +95,6 @@ function handleCommand(name: string) {
   }
 }
 
-function xxx() {
-  console.log('userInfo-2222-->', userInfo.value)
-}
-
-onMounted(() => {
-  //
-})
-
 /** 去登录 */
 function goLogin() {
   router.push({ path: '/login', query: { type: 'login' } })
@@ -113,7 +106,7 @@ function goRegister() {
 
 /** 发帖 */
 const postArticle = async () => {
-  router.push('/post-article')
+  router.push('/article/' + MD5('add'))
 }
 </script>
 
@@ -123,7 +116,7 @@ const postArticle = async () => {
       <div class="logo">
         <img :src="logoSvg" />
       </div>
-      <div class="logo-title" @click="xxx">K-RPA Lite 社区</div>
+      <div class="logo-title">K-RPA Lite 社区</div>
     </div>
     <div class="top-menu">
       <k-button

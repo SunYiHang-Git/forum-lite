@@ -31,6 +31,10 @@ const getDataList = async () => {
   hotDataList.value = hotData.list
 }
 getDataList()
+
+const goDetail = (item: any) => {
+  router.push(`/detail/${item.id}`)
+}
 </script>
 
 <template>
@@ -47,7 +51,7 @@ getDataList()
             <div class="main-content-top">
               <div class="icon dfc"><IconMessageFill color="#999999" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title">{{ item.title }}</div>
+              <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
               <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回答</div>
             </div>
             <div v-if="index === 0" class="hot-desc">{{ item.abstract }}</div>
@@ -73,7 +77,7 @@ getDataList()
             <div class="main-content-top">
               <div class="icon dfc"><IconMessageFill color="#999999" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title">{{ item.title }}</div>
+              <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
               <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回答</div>
             </div>
             <div v-if="index === 0" class="hot-desc">{{ item.abstract }}</div>
@@ -92,9 +96,9 @@ getDataList()
           </div>
         </div>
       </div>
-      <div class="interaction-card">
+      <!-- <div class="interaction-card">
         <div class="sign-name">标签</div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -279,6 +283,7 @@ getDataList()
               font-size: 16px;
               font-weight: normal;
               color: #171717;
+              cursor: pointer;
             }
             .answer {
               font-family: Alibaba PuHuiTi 3;

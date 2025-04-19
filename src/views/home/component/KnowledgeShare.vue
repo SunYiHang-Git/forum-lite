@@ -32,6 +32,9 @@ const getDataList = async () => {
   hotDataList.value = hotData.list
 }
 getDataList()
+const goDetail = (item: any) => {
+  router.push(`/detail/${item.id}`)
+}
 </script>
 
 <template>
@@ -48,7 +51,7 @@ getDataList()
             <div class="lis-top">
               <div class="icon dfc"><IconWarning /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title">{{ item.title }}</div>
+              <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
             </div>
             <div class="lis-desc">{{ item.abstract }}</div>
             <div class="hot-user-box">
@@ -69,7 +72,7 @@ getDataList()
             <div class="lis-top">
               <div class="icon dfc"><IconWarning /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title">{{ item.title }}</div>
+              <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
             </div>
             <div class="lis-desc">{{ item.abstract }}</div>
             <div class="hot-user-box">
@@ -199,6 +202,7 @@ getDataList()
               font-size: 16px;
               font-weight: normal;
               color: #171717;
+              cursor: pointer;
             }
           }
           .lis-desc {

@@ -45,8 +45,8 @@ export const routeList = [
         meta: { title: '论坛分类', icon: 'el-icon-s-home' },
       },
       {
-        path: '/post-article',
-        name: 'post-article',
+        path: '/article/:id',
+        name: 'article',
         component: () => import('@/views/Article/PostArticle.vue'),
         meta: { title: '论坛分类', icon: 'el-icon-s-home', reuseKey: (to) => to.fullPath },
       },
@@ -75,6 +75,16 @@ const router = createRouter({
   // history: createMemoryHistory(),
   history: createWebHashHistory(),
   routes: routeList,
+  scrollBehavior(to, from, savedPosition) {
+    if (to.hash) {
+      return {
+        el: to.hash,
+        top: 60, // 顶部栏高度补偿
+        behavior: 'smooth',
+      }
+    }
+    return savedPosition || { top: 0 }
+  },
 })
 
 initGlobalVariable('routerInstance', router)

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import type { FormInstance, FormRules, UploadInstance, UploadRawFile } from 'element-plus'
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import TEditor from '@/component/TEditor/index.vue'
-import { useRouter } from 'vue-router'
-import { callServerFunc, getGuid } from '@ksware/micro-lib-web-temp'
+import { useRoute, useRouter } from 'vue-router'
+import { callServerFunc, getGuid, MD5 } from '@ksware/micro-lib-web-temp'
 import { fileHostUrl } from '@/views/home/index'
-import { getArticleTypeListAPI } from '@/api/home'
+import { getArticleInfoById, getArticleTypeListAPI } from '@/api/home'
 
 interface RuleForm {
   /** 标题 */
@@ -24,6 +24,7 @@ interface RuleForm {
 }
 
 const router = useRouter()
+const route = useRoute()
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   title: '',
@@ -43,7 +44,34 @@ const rules = reactive<FormRules<RuleForm>>({
 const imageUrl = ref('')
 
 const active = ref(0)
-
+/** 帖子详情 */
+const articleInfo = ref<any>({})
+/** 获取帖子详情 */
+const getArticleInfo = async (id: string) => {
+  const params = { PostsID: id }
+  const data = await getArticleInfoById(params)
+  articleInfo.value = data
+  const { title, type, content, abstract, tag, cover } = articleInfo.value
+  ruleForm.title = title
+  ruleForm.type = type
+  ruleForm.content = content
+  ruleForm.abstract = abstract
+  ruleForm.tags = tag
+  ruleForm.cover = cover
+  imageUrl.value = cover
+  console.log('ruleForm--->', ruleForm)
+}
+/** pageTitle */
+const pageTitle = computed(() => (articleInfo.value?.id ? '编辑' : '发布'))
+const pageSubmitText = computed(() => (articleInfo.value?.id ? '修改发布' : '发布'))
+function getRouteId() {
+  const { id } = route.params
+  if (id === MD5('add')) {
+    return
+  }
+  getArticleInfo(id as string)
+}
+getRouteId()
 const upload = ref<UploadInstance>()
 
 /** 专栏板块 option */
@@ -117,14 +145,14 @@ async function delPicture() {
 async function cancel(formEl: FormInstance | undefined) {
   if (!formEl) return
   formEl.resetFields()
-  // router.push('/')
   router.back()
 }
 /** 提交 */
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
-  await KMessageBox.confirm('确认要发布帖子吗?', '发布提示', {
+  const { id } = articleInfo.value
+  await KMessageBox.confirm(`确认要${pageSubmitText.value}帖子吗?`, `${pageSubmitText.value}提示`, {
     confirmButtonText: '确认',
     cancelButtonText: '取消',
     type: 'success',
@@ -139,8 +167,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     Cover: cover,
     Tags: tags.join(','),
   }
-  console.log('params--->', params)
-  await callServerFunc('TRPADM', 'RPAPublish', params)
+  if (!id) {
+    // 发布
+    await callServerFunc('TRPADM', 'RPAPublish', params)
+  } else {
+    params.postsID = id
+    await callServerFunc('TRPADM', 'RPAEditPostsContent', params)
+  }
   router.back()
 }
 </script>
@@ -148,7 +181,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 <template>
   <div class="post-article-box">
     <div class="article-box djc">
-      <div class="header-title">发帖</div>
+      <div class="header-title">{{ pageTitle }}</div>
       <div class="main-box">
         <div class="form-box">
           <k-form
@@ -238,10 +271,12 @@ const submitForm = async (formEl: FormInstance | undefined) => {
               </div>
             </k-form-item>
             <k-form-item>
-              <k-button main @click="submitForm(ruleFormRef)" style="width: 90px; font-size: 18px; height: 30px">
-                发 布
+              <k-button main @click="submitForm(ruleFormRef)" style="width: 100px; font-size: 16px; height: 30px">
+                {{ pageSubmitText }}
               </k-button>
-              <k-button @click="cancel(ruleFormRef)" style="width: 90px; font-size: 18px; height: 30px">取 消</k-button>
+              <k-button @click="cancel(ruleFormRef)" style="width: 100px; font-size: 16px; height: 30px">
+                取 消
+              </k-button>
             </k-form-item>
           </k-form>
         </div>

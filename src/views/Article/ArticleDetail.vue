@@ -1,8 +1,20 @@
 <script setup lang="ts">
-import { addReplyForArticleAPI, getAllReplyNumAPI, getArticleInfoById, getReplyListAPI } from '@/api/home'
-import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import {
+  addReplyForArticleAPI,
+  deleteArticleByIdAPI,
+  getAllReplyNumAPI,
+  getArticleInfoById,
+  getReplyListAPI,
+  setArticleAuditAPI,
+  setArticleMenuStatusAPI,
+  setCollectArticleAPI,
+} from '@/api/home'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import TEditor from '@/component/TEditor/index.vue'
+import { KMessageBox } from '@ksware/ksw-ux'
+
+const router = useRouter()
 
 const replyValue = ref<string>('')
 const replyValueDialog = ref<string>('')
@@ -53,11 +65,11 @@ async function initWindow() {
   await getArticleInfo(ArticleId.value)
 }
 initWindow()
-/** 去评论 */
+/** 去评论的位置 */
 const handleToBottom = () => {
   const { scrollHeight, scrollTop, clientHeight } = document.documentElement
   window.scrollTo({
-    top: 150, // 滚动条总高度
+    top: scrollHeight, // 滚动条总高度
     left: 0,
     behavior: 'smooth',
   })
@@ -71,14 +83,20 @@ const addReply = async () => {
 }
 const showReplyDialog = ref(false)
 
+/** 显示删除原因弹窗 */
+const showDeleteDialog = ref(false)
+/** 删除原因 */
+const delReasonValue = ref('')
+
 /** 弹窗取消 */
 const dialogCancel = () => {
   showReplyDialog.value = false
   replyValueDialog.value = ''
+  initWindow()
 }
 
 const dialogParams = ref<any>({})
-
+/** 弹框回复帖子 */
 const dialogReply = async () => {
   showReplyDialog.value = true
   const { PostsID, PID, InitialID } = dialogParams.value
@@ -92,6 +110,7 @@ const dialogReply = async () => {
   dialogCancel()
   initWindow()
 }
+/** 显示回复弹框 */
 const replyShowDialog = (item: any) => {
   showReplyDialog.value = true
   dialogParams.value = {
@@ -101,82 +120,221 @@ const replyShowDialog = (item: any) => {
     userName: item.userName,
   }
 }
+
+/** 收藏/取消收藏帖子 */
+const handleCollect = async () => {
+  const { isCollect, id } = articleInfo.value
+  await KMessageBox.confirm(`是否确定要${isCollect ? '取消' : ''}收藏?`, `${isCollect ? '取消' : ''}收藏`, {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+  const collectValue = isCollect ? 0 : 1
+  const params = { Value: collectValue, PostsID: id }
+  await setCollectArticleAPI(params)
+  articleInfo.value.isCollect = collectValue
+  articleInfo.value.collectNum = articleInfo.value.collectNum + (collectValue ? 1 : -1)
+}
+
+const styleDropdownItem = {
+  width: '140px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '8px',
+}
+
+const dropDownItemList = computed(() => {
+  return [
+    {
+      name: '编辑',
+      icon: 'IconEdit',
+      command: 'edit',
+    },
+    {
+      name: articleInfo.value.isFine ? '取消精选' : '精选',
+      icon: '',
+      command: 'essence',
+    },
+    {
+      name: articleInfo.value.isTop ? '取消置顶' : '置顶',
+      icon: 'IconSortTop',
+      command: 'top',
+    },
+    {
+      name: '锁定',
+      icon: 'IconLocked',
+      command: 'lock',
+    },
+    {
+      name: '删除',
+      icon: 'IconDelete',
+      command: 'delete',
+    },
+  ]
+})
+/** 置顶 */
+const onTop = async () => {
+  const { isTop, id } = articleInfo.value
+  const topValue = isTop ? 0 : 1
+  await KMessageBox.confirm(`是否确定要${topValue ? '' : '取消'}置顶?`, `${topValue ? '' : '取消'}置顶`, {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+  const params = { PostsID: id, Field: 'IsTop', Value: topValue }
+  await setArticleMenuStatusAPI(params)
+  articleInfo.value.isTop = topValue
+}
+
+/** 生精 */
+const onEssence = async () => {
+  const { isFine, id } = articleInfo.value
+  const fineValue = isFine ? 0 : 1
+  await KMessageBox.confirm(`是否确定要${fineValue ? '' : '取消'}升精?`, `${fineValue ? '' : '取消'}升精`, {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+  const params = { PostsID: id, Field: 'IsFine', Value: fineValue }
+  await setArticleMenuStatusAPI(params)
+  articleInfo.value.isFine = fineValue
+}
+
+/** 锁定 */
+const onAuditArticle = async () => {
+  await KMessageBox.confirm(`是否确定要锁定该帖子?`, `锁定提示`, {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+  await setArticleAuditAPI({ PostsID: articleInfo.value.id })
+}
+
+/** 删除帖子 */
+const showDelDialog = async () => {
+  await KMessageBox.confirm(`是否确定要删除该帖子?`, `删除提示`, {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning',
+  })
+  showDeleteDialog.value = true
+}
+/** 取消删除 */
+const cancelDelArticle = () => {
+  showDeleteDialog.value = false
+  delReasonValue.value = ''
+}
+/*  确认删除帖子**/
+const confirmDelArticle = async () => {
+  const { id } = articleInfo.value
+  const params = { PostsID: id, Reason: delReasonValue.value, SyncData: false }
+  await deleteArticleByIdAPI(params)
+  cancelDelArticle()
+  router.go(-1)
+}
+
+/** 去编辑页面 */
+const goEditPage = () => {
+  router.push(`/article/${articleInfo.value.id}`)
+}
+const handleCommand = (command: string) => {
+  console.log('command--->', command)
+  switch (command) {
+    case 'top':
+      onTop()
+      return
+    case 'essence':
+      onEssence()
+      return
+    case 'lock':
+      onAuditArticle()
+      return
+    case 'delete':
+      showDelDialog()
+      return
+    case 'edit':
+      goEditPage()
+      return
+    default:
+      return
+  }
+}
 </script>
 
 <template>
   <div class="article-detail">
     <div class="detail-box">
       <div class="left">
-        <div class="collect-box">
-          <k-badge :value="articleInfo.collectNum" type="info" class="item dfc">
-            <IconStar :size="26" />
-          </k-badge>
-        </div>
-        <div class="reply-box">
-          <k-badge @click="handleToBottom" :value="articleAllNum" type="info" class="item dfc">
-            <IconMessageOne :size="26" />
-          </k-badge>
-        </div>
-
-        <k-dropdown placement="left-start" trigger="click">
-          <template #title>
-            <div class="more-box">
-              <IconMore
-                :size="26"
-                style="
-                  width: 42px;
-                  height: 42px;
-                  border-radius: 50%;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  background-color: #fff;
-                "
-              />
-            </div>
-          </template>
-          <template #default>
-            <k-dropdown-item style="width: 100px; display: flex; align-items: center; gap: 8px">
-              <IconEdit />
-              编辑
-            </k-dropdown-item>
-            <k-dropdown-item style="width: 100px; display: flex; align-items: center; gap: 8px">
-              <span
-                style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  width: 14px;
-                  height: 14px;
-                  font-size: 10px;
-                  color: #c55902;
-                  background-color: #fff6d3;
-                "
+        <div class="flex-left">
+          <div class="collect-box">
+            <k-badge @click="handleCollect" :value="articleInfo.collectNum" type="info" class="item dfc">
+              <IconStar v-if="articleInfo.isCollect === 0" :size="26" />
+              <IconStarFill v-if="articleInfo.isCollect === 1" color="#FF8900" :size="26" />
+            </k-badge>
+          </div>
+          <div class="reply-box">
+            <k-badge @click="handleToBottom" :value="articleAllNum" type="info" class="item dfc">
+              <IconMessageOne :size="26" />
+              <!-- <router-link :to="{ hash: '#textareaTEditor' }"><IconMessageOne :size="26" /></router-link> -->
+            </k-badge>
+          </div>
+          <k-dropdown placement="left-start" trigger="click" @command="handleCommand">
+            <template #title>
+              <div class="more-box">
+                <IconMore
+                  :size="26"
+                  style="
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background-color: #fff;
+                  "
+                />
+              </div>
+            </template>
+            <template #default>
+              <k-dropdown-item
+                v-for="item in dropDownItemList"
+                :key="item.command"
+                :style="styleDropdownItem"
+                :icon="item.icon"
+                :command="item.command"
               >
-                精
-              </span>
-              精华
-            </k-dropdown-item>
-            <k-dropdown-item style="width: 100px; display: flex; align-items: center; gap: 8px">
-              <IconSortTop />
-              置顶
-            </k-dropdown-item>
-            <k-dropdown-item style="width: 100px; display: flex; align-items: center; gap: 8px">
-              <IconLocked />
-              锁定
-            </k-dropdown-item>
-            <k-dropdown-item style="width: 100px; display: flex; align-items: center; gap: 8px">
-              <IconDelete />
-              删除
-            </k-dropdown-item>
-          </template>
-        </k-dropdown>
+                <template #default v-if="item.command !== 'essence'">
+                  <!-- {{ item.name }} -->
+                  <span style="width: 80px">{{ item.name }}</span>
+                </template>
+                <template #default v-if="item.command === 'essence'">
+                  <span
+                    style="
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      width: 14px;
+                      height: 14px;
+                      font-size: 10px;
+                      color: #c55902;
+                      background-color: #fff6d3;
+                    "
+                  >
+                    精
+                  </span>
+                  <span style="width: 80px">{{ item.name }}</span>
+                </template>
+              </k-dropdown-item>
+            </template>
+          </k-dropdown>
+        </div>
       </div>
       <div class="content">
         <div class="content-box">
           <div class="title ove">{{ articleInfo.title }}</div>
           <div class="tags-box">
-            <div class="tag" v-for="item in 8" :key="item">操作系统</div>
+            <div class="tag" v-for="(item, index) in articleInfo.tag" :key="index">{{ item }}</div>
           </div>
           <div class="user-box dfc">
             <div class="userInfo dfc">
@@ -235,7 +393,7 @@ const replyShowDialog = (item: any) => {
             </div>
           </div>
         </div>
-        <div class="to-reply-box">
+        <div id="textareaTEditor" class="to-reply-box">
           <TEditor v-model="replyValue" :placeholder="$t('forum.formContent')" />
           <div class="submit-box">
             <k-button main @click="addReply">发 表</k-button>
@@ -253,6 +411,17 @@ const replyShowDialog = (item: any) => {
       <div class="btn-box">
         <k-button @click="dialogCancel">取 消</k-button>
         <k-button main @click="dialogReply">确 定</k-button>
+      </div>
+    </div>
+  </k-dialog>
+  <k-dialog v-model="showDeleteDialog" title="删除原因" width="700">
+    <div class="delete-box-reason">
+      <div class="textarea-box">
+        <k-input v-model="delReasonValue" type="textarea" :rows="7" show-word-limit :maxlength="500" />
+      </div>
+      <div class="btn-row">
+        <k-button @click="cancelDelArticle">取 消</k-button>
+        <k-button @click="confirmDelArticle" main>删 除</k-button>
       </div>
     </div>
   </k-dialog>
@@ -278,15 +447,21 @@ const replyShowDialog = (item: any) => {
     width: 100%;
     max-width: 1380px;
     .left {
-      display: flex;
-      flex-direction: column;
-      justify-content: start;
-      align-items: end;
-      padding-right: 10px;
-      padding-top: 40px;
-      gap: 16px;
       width: 200px;
       height: fit-content;
+      min-height: 1px;
+      .flex-left {
+        position: fixed;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: end;
+        padding-right: 10px;
+        padding-top: 40px;
+        gap: 16px;
+        width: 200px;
+        height: fit-content;
+      }
       .collect-box,
       .reply-box,
       .more-box {
@@ -317,6 +492,7 @@ const replyShowDialog = (item: any) => {
       display: flex;
       flex-direction: column;
       justify-content: start;
+
       gap: 16px;
       width: 100%;
       box-sizing: border-box;
@@ -590,6 +766,28 @@ const replyShowDialog = (item: any) => {
     align-items: center;
     width: 100%;
     margin-top: 15px;
+  }
+}
+.delete-box-reason {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: start;
+  width: 100%;
+  max-height: 70vh;
+  .textarea-box {
+    flex: 1;
+    height: 100%;
+    min-height: 100px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  .btn-row {
+    display: flex;
+    justify-content: end;
+    width: 100%;
+    padding-right: 25px;
+    height: 35px;
   }
 }
 </style>

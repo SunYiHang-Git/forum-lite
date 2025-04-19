@@ -173,7 +173,7 @@ export const getUserASllTypeNumAPI = async (params: any) => {
 /** 根据 Id 获取帖子详情 */
 export const getArticleInfoById = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAGetPostsDetail', params)
-  console.log('data--->', data)
+  console.log('data--获取帖子详情->', data)
   const table = new SQLTable(data.k_forum_list_position)
   const {
     Abstract,
@@ -212,6 +212,8 @@ export const getArticleInfoById = async (params: any) => {
     UserIcon,
     UserPostCount,
     CollectNum,
+    IsCollect,
+    IsTop,
   } = data
   const obj = {
     Abstract,
@@ -222,7 +224,7 @@ export const getArticleInfoById = async (params: any) => {
     CreateUser,
     FineCount,
     Hot,
-    ID,
+    Id: ID,
     IsAdmin,
     IsAudit,
     IsEnd,
@@ -250,6 +252,8 @@ export const getArticleInfoById = async (params: any) => {
     UserIcon: handleUrlFormat(fileHostUrl + UserIcon),
     UserPostCount,
     CollectNum,
+    IsCollect: IsCollect ?? 0,
+    IsTop: IsTop ?? 0,
   }
   return convertKeysToLowerCase(obj)
 }
@@ -293,12 +297,37 @@ function handleReplyList(table: any) {
 /** 获取所有回复帖子数量 */
 export const getAllReplyNumAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAGetReplyCount', params)
+  console.log('data--uuuuuuucc->', data)
   return data.ReplyCouunt
 }
 
 /** 添加评论 */
 export const addReplyForArticleAPI = async (params: any) => {
   const { data } = await callServerFunc('TRPADM', 'RPAAddReply', params)
+  return data
+}
+
+/** 收藏帖子 */
+export const setCollectArticleAPI = async (params: any) => {
+  const { data } = await callServerFunc('TRPADM', 'RPASetCollect', params)
+  return data
+}
+
+/** 设置帖子的状态帖子--置顶, 等 */
+export const setArticleMenuStatusAPI = async (params: any) => {
+  const { data } = await callServerFunc('TRPADM', 'RPASetPosts', params)
+  return data
+}
+
+/** 锁定帖子---审核 */
+export const setArticleAuditAPI = async (params: any) => {
+  const { data } = await callServerFunc('TRPADM', 'RPAAuditPost', params)
+  return data
+}
+
+/** 删除帖子 */
+export const deleteArticleByIdAPI = async (params: any) => {
+  const { data } = await callServerFunc('TRPADM', 'RPADelPosts', params)
   console.log('data--->', data)
   return data
 }

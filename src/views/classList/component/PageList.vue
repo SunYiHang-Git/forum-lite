@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import topSvg from '@/assets/svg/top.svg'
 
 const { tableData } = defineProps<{
   tableData: any[]
@@ -18,7 +19,8 @@ const handleDetail = (item: any) => {
       <div class="lis-box" v-for="item in tableData" :key="item.id">
         <div class="title-box">
           <div class="tags">
-            <div class="tag dfc">精华</div>
+            <div v-if="item.isTop === '1'" class="img-box dfc"><img :src="topSvg" /></div>
+            <div v-if="item.isFine === '1'" class="tag dfc">精华</div>
           </div>
           <div class="title" @click="handleDetail(item)">{{ item.title }}</div>
         </div>
@@ -83,20 +85,32 @@ const handleDetail = (item: any) => {
         overflow: hidden;
         text-overflow: ellipsis;
         .tags {
+          display: flex;
+          align-items: center;
+          justify-content: start;
+          gap: 4px;
           height: 100%;
           width: fit-content;
           .tag {
-            height: 100%;
+            height: 20px;
             box-sizing: border-box;
             padding: 0 5px;
             font-family: Alibaba PuHuiTi 3;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
-            line-height: 150%;
             letter-spacing: 0em;
             color: #cc6402;
             background-color: #fff6d3;
             border-radius: 4px;
+          }
+          .img-box {
+            height: 25px;
+            width: 25px;
+            overflow: hidden;
+            img {
+              width: 100%;
+              height: 100%;
+            }
           }
         }
         .title {
@@ -131,6 +145,7 @@ const handleDetail = (item: any) => {
         font-size: 14px;
         font-weight: normal;
         color: #afabb3;
+        padding-left: 8px;
         .left-user {
           display: flex;
           justify-content: start;

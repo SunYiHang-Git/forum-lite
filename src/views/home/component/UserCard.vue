@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { getUserASllTypeNumAPI } from '@/api/home'
 import { ref } from 'vue'
+import { MD5 } from '@ksware/micro-lib-web-temp'
 // const { userInfo } = useUser()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
@@ -33,7 +34,7 @@ const getUserAllTypeData = async () => {
 getUserAllTypeData()
 /** 发帖 */
 const postArticle = async () => {
-  router.push('/post-article')
+  router.push('/article/' + MD5('add'))
 }
 </script>
 

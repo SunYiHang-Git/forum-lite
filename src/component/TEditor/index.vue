@@ -51,6 +51,10 @@ const props = defineProps({
     type: String,
     default: '请输入',
   },
+  modelValue: {
+    type: String,
+    default: '',
+  },
   minHeight: {
     // 修改默认高度
     type: Number,
@@ -199,12 +203,14 @@ const myValue = computed({
     emits('update:modelValue', val)
   },
 })
-
 //监听富文本中的数据变化
 watch(
   () => myValue.value,
   () => {
     emits('setHtml', tinymce.activeEditor.getContent({ format: 'text' }), myValue.value)
+  },
+  {
+    deep: true,
   },
 )
 
