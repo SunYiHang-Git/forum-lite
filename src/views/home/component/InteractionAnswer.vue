@@ -3,13 +3,15 @@ import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-const { moreId, hotDataList, newDataList } = defineProps<{
+const { moreId, hotDataList, newDataList, isFetchData } = defineProps<{
   /** 父级专栏的 id */
   moreId: string
   /** 热门互动数据 */
   hotDataList: any[]
   /** 最新互动数据 */
   newDataList: any[]
+  /** 是否已经请求过了 */
+  isFetchData?: boolean
 }>()
 
 function lookMore() {
@@ -30,7 +32,8 @@ const goDetail = (item: any) => {
     <div class="interaction-card-box">
       <div class="interaction-card">
         <div class="sign-name">热门</div>
-        <div class="card-list-box">
+        <k-skeleton v-if="!isFetchData" :rows="5" animated />
+        <div class="card-list-box" v-else>
           <div class="lis-data" v-for="(item, index) in hotDataList" :key="item.id">
             <div class="main-content-top">
               <div class="icon dfc"><IconMessageFill color="#999999" /></div>
@@ -56,7 +59,8 @@ const goDetail = (item: any) => {
       </div>
       <div class="interaction-card">
         <div class="sign-name">最新</div>
-        <div class="card-list-box">
+        <k-skeleton v-if="!isFetchData" :rows="5" animated />
+        <div class="card-list-box" v-else>
           <div class="lis-data" v-for="(item, index) in newDataList" :key="item.id">
             <div class="main-content-top">
               <div class="icon dfc"><IconMessageFill color="#999999" /></div>

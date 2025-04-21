@@ -15,6 +15,7 @@ const replyListData = ref<any[]>([])
 const getNoticeList = async () => {
   const { replyList } = await getHomeAllDataAPI()
   replyListData.value = replyList
+  console.log('replyList--->', replyList)
 }
 /** 首页分类 nav */
 const homeNavClassList = ref<any[]>([])
@@ -23,6 +24,7 @@ const homeNavClassList = ref<any[]>([])
 const interactionId = ref('')
 /** 知识分享 */
 const knowledgeId = ref('')
+
 /** 获取首页分类 */
 const getHomeClassList = async () => {
   const { parentList } = await getArticleTypeListAPI()
@@ -47,7 +49,7 @@ const hotKnowDataList = ref<any[]>([])
 const newKnowDataList = ref<any[]>([])
 /** 官方公告 */
 const noticeNewList = ref<any[]>([])
-
+const isFetchHome = ref(false)
 const getDataList = async () => {
   const { interHotList, interNewList, knowHotList, knowNewList, noteDataList } = await getThirdTypeDataAPI()
   hotInteractionDataList.value = interHotList
@@ -55,6 +57,7 @@ const getDataList = async () => {
   hotKnowDataList.value = knowHotList
   newKnowDataList.value = knowNewList
   noticeNewList.value = noteDataList
+  isFetchHome.value = true
 }
 getDataList()
 </script>
@@ -75,17 +78,23 @@ getDataList()
           <NavCard v-if="homeNavClassList.length > 0" :list="homeNavClassList" />
         </div>
         <div class="official-announcement">
-          <OfficialAnnouncement :noticeList="noticeNewList" :replyList="replyListData" />
+          <OfficialAnnouncement :isFetchData="isFetchHome" :noticeList="noticeNewList" :replyList="replyListData" />
         </div>
         <div class="interaction">
           <InteractionAnswer
+            :isFetchData="isFetchHome"
             :moreId="interactionId"
             :hotDataList="hotInteractionDataList"
             :newDataList="newInteractionDataList"
           />
         </div>
         <div class="knowledge-share">
-          <KnowledgeShare :moreId="interactionId" :hotDataList="hotKnowDataList" :newDataList="newKnowDataList" />
+          <KnowledgeShare
+            :isFetchData="isFetchHome"
+            :moreId="interactionId"
+            :hotDataList="hotKnowDataList"
+            :newDataList="newKnowDataList"
+          />
         </div>
       </div>
       <div class="footer">

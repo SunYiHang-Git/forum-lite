@@ -21,8 +21,8 @@ import TopNav from './component/TopNav.vue'
   justify-content: center;
   max-width: 99vw;
   min-height: 100vh;
-  overflow-y: auto;
   .el-container {
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -35,8 +35,11 @@ import TopNav from './component/TopNav.vue'
       padding: 0;
     }
     .el-main {
+      min-height: calc(100vh - 60px);
+      flex: 1;
       padding: 0;
       width: 100%;
+      overflow: visible;
     }
   }
 }

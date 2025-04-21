@@ -9,6 +9,7 @@ import {
 import { createRouter, createWebHashHistory } from 'vue-router'
 // import { getWindowUrlObj } from './postMessage'
 import Layout from '@/Layout/index.vue'
+import { getUrlParamByName } from '@/utils/auth'
 
 export const routeList = [
   {
@@ -26,6 +27,13 @@ export const routeList = [
     name: '登录页面',
     // 单个路由组件，即，要显示的网页内容
     component: () => import('@/views/login/index.vue'),
+  },
+  {
+    // 路由地址，同主框架里面增加菜单的路由地址
+    path: '/xxx',
+    name: '登录页面',
+    component: () => import('@/views/classList/index.vue'),
+    meta: { title: '论坛分类', icon: 'el-icon-s-home' },
   },
   {
     path: '/',
@@ -48,7 +56,7 @@ export const routeList = [
         path: '/article/:id',
         name: 'article',
         component: () => import('@/views/Article/PostArticle.vue'),
-        meta: { title: '论坛分类', icon: 'el-icon-s-home', reuseKey: (to) => to.fullPath },
+        meta: { title: '论坛详情', icon: 'el-icon-s-home' },
       },
       {
         path: '/detail/:id',
@@ -100,7 +108,16 @@ router.beforeEach((to, from, next) => {
   //     return
   //   }
   // }
+
   if (!getToken() && to.path !== '/login') {
+    const urlToken = getUrlParamByName('Token')
+    if (urlToken) {
+      setToken(urlToken)
+      const url = location.href.replace(/token=[a-z0-9]{32}/i, '')
+      history.replaceState({}, undefined, url)
+      next('/home')
+      return
+    }
     next('/login' + `?toFullPath=${to.path}`)
     return
   }

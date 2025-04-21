@@ -24,7 +24,6 @@ const getArticleType = async (id: string) => {
   pageClassList.value.forEach((item) => {
     item.pid = id
   })
-  console.log('pageClassList.value--->', pageClassList.value)
 }
 
 /** 解析跳转路由参数 */
@@ -61,7 +60,7 @@ handleRouteQuery()
   justify-content: flex-start; // 子元素从顶部开始排列
   min-height: calc(100vh - 60px);
   background-color: #f9f9f9;
-  overflow: hidden;
+  // overflow: hidden;
   .dfc {
     display: flex;
     justify-content: center;
@@ -93,12 +92,11 @@ handleRouteQuery()
       min-height: calc(100vh - 226px);
       max-width: 100%;
       padding-bottom: 20px;
-      overflow: hidden;
+      // overflow-x: hidden;
     }
     .user-right {
       width: 400px;
       padding-bottom: 20px;
-      overflow: hidden;
     }
   }
 }

@@ -5,11 +5,13 @@ import thirdSvg from '@/assets/svg/third.svg'
 import importantSvg from '@/assets/svg/important.svg'
 import { useRouter } from 'vue-router'
 
-const { noticeList, replyList } = defineProps<{
+const { noticeList, replyList, isFetchData } = defineProps<{
   /** 公告 */
   noticeList: any[]
   /** 回帖 */
   replyList: any[]
+  /** 是否已经请求过了 */
+  isFetchData?: boolean
 }>()
 const router = useRouter()
 const goDetail = (item: any) => {
@@ -25,7 +27,8 @@ const goDetail = (item: any) => {
         <k-button text class="more">更多</k-button>
       </div>
       <div class="announcement-list">
-        <div class="notice-lis" v-for="item in noticeList.slice(0, 5)" :key="item.id">
+        <k-skeleton v-if="!isFetchData" :rows="5" animated />
+        <div v-else class="notice-lis" v-for="item in noticeList.slice(0, 5)" :key="item.id">
           <div class="left-box">
             <div class="tag-box">
               <div class="tag">
@@ -47,7 +50,8 @@ const goDetail = (item: any) => {
     </div>
     <div class="reply">
       <div class="reply-weekly-list">回帖周榜</div>
-      <div class="list-box">
+      <k-skeleton v-if="!isFetchData" :rows="5" />
+      <div class="list-box" v-else>
         <div class="lis" v-for="(item, index) in replyList.splice(0, 5)" :key="item.id">
           <div class="reply-icon dfc">
             <div v-if="index === 0" class="icon dfc">

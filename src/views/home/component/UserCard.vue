@@ -30,6 +30,7 @@ const getUserAllTypeData = async () => {
     CollectNum: true,
   })
   classTypeNumObj.value = { ArticleCount, QuestionCount, ReplyCount, CollectCount }
+  console.log('userInfo--->', userInfo)
 }
 getUserAllTypeData()
 /** 发帖 */

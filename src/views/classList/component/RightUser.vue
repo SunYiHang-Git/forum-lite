@@ -34,12 +34,17 @@ getNoticeList()
 
 <style lang="scss" scoped>
 .right-user {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: start;
   gap: 16px;
   width: 100%;
   .user-box {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
     width: 100%;
     min-height: 172px;
     border-radius: 12px;

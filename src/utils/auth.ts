@@ -60,3 +60,22 @@ export const removeSessionStorageByKey = (key: string) => {
 export const clearSessionStorage = () => {
   sessionStorage.clear()
 }
+
+// 获取浏览器地址参数，如果name = true  则返回全部参数对象
+export function getUrlParamByName(name: string | boolean = '') {
+  const result: any = {}
+  // 分割字符串
+  const str = location.hash.substring(location.hash.lastIndexOf('?') + 1).split('&')
+  // 遍历数组中的每一个元素
+  for (let i = 0; i < str.length; i++) {
+    const keyvalue = str[i].split('=')
+    const key = keyvalue[0]
+    const value = keyvalue[1]
+    result[key] = value
+    // 兼容大小写
+    result[(key || '').toUpperCase()] = value
+  }
+  if (name === true) return result
+  // 兼容大小写
+  return result[name as string] || result[String(name).toUpperCase()]
+}
