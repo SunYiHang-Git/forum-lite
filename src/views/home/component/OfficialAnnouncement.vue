@@ -97,6 +97,7 @@ const goDetail = (item: any) => {
     box-sizing: border-box;
     border-radius: 12px;
     overflow: hidden;
+    background-color: #fff;
     .reply-header {
       display: flex;
       align-items: center;
@@ -133,6 +134,7 @@ const goDetail = (item: any) => {
           display: flex;
           justify-content: start;
           align-items: center;
+          gap: 10px;
           width: 100%;
           height: 100%;
           overflow: hidden;

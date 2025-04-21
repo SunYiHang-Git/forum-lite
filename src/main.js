@@ -12,6 +12,7 @@ import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createApp } from 'vue'
 import VXETable from 'vxe-table'
+import '@/component/Vditor/vditor.less'
 
 import AppContainer from '@/component/AppContainer.vue'
 import FontIcon from '@/component/icon/FontIcon.vue'

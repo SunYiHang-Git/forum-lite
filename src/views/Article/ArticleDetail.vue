@@ -15,20 +15,7 @@ import Vditor from '@/component/Vditor/index.vue'
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import RightHotCard from '@/views/Article/RightHotCard.vue'
 import { marked } from 'marked'
-/**
- * 将 Markdown 转换为 HTML。
- *
- * @param {string} markdown - 要转换的 Markdown 内容。
- * @returns {string} 转换后的 HTML 字符串。
- */
-function convertMarkdownToHtml(markdown: string): any {
-  if (!markdown) return markdown
-  // 使用 marked 解析 Markdown 为 HTML
-  let html = marked(markdown)
-
-  // 返回转换后的 HTML
-  return html
-}
+import { convertMarkdownToHtml } from '@/utils/format'
 
 const router = useRouter()
 
@@ -77,8 +64,8 @@ const getReplyData = async () => {
 }
 
 async function initWindow() {
-  await getReplyData()
   await getArticleInfo(ArticleId.value)
+  await getReplyData()
 }
 initWindow()
 /** 去评论的位置 */
@@ -114,7 +101,6 @@ const delReasonValue = ref('')
 const dialogCancel = () => {
   showReplyDialog.value = false
   replyValueDialog.value = ''
-  initWindow()
 }
 
 const dialogParams = ref<any>({})
@@ -387,7 +373,7 @@ const goTop = () => {
             <div class="publish-time">发布于 {{ articleInfo.lastTime }}</div>
             <div class="show-num">{{ articleInfo.hot }} 浏览</div>
           </div>
-          <div class="content-box-text" :innerHTML="convertMarkdownToHtml(articleInfo.content)"></div>
+          <div class="content-box-text markdown-body" :innerHTML="convertMarkdownToHtml(articleInfo.content)"></div>
         </div>
         <div class="comment-box">
           <div class="reply-num-box">{{ articleAllNum }} 条回复</div>
@@ -403,7 +389,7 @@ const goTop = () => {
                 <div class="is-author" v-if="articleInfo.createUser === item.userId">作者</div>
                 <div class="reply-time">{{ item.time }}</div>
               </div>
-              <div class="reply-text-box" :innerHTML="item.content"></div>
+              <div class="reply-text-box" :innerHTML="convertMarkdownToHtml(item.content)"></div>
               <div class="reply-to-article" @click="replyShowDialog(item)">
                 <IconMessageOne />
                 回复

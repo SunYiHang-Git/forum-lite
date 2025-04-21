@@ -79,7 +79,7 @@ function goUrl(src: string, name: string) {
   height: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0;
+  gap: 10px;
   justify-items: center;
   .nav-link {
     display: flex;
@@ -88,6 +88,9 @@ function goUrl(src: string, name: string) {
     gap: 16px;
     height: 96px;
     padding: 0 10px;
+    border-radius: 12px;
+    width: 100%;
+    background-color: #fff;
     cursor: pointer;
     .nav-icon {
       display: flex;

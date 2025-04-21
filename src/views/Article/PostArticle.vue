@@ -7,6 +7,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { callServerFunc, getGuid, MD5 } from '@ksware/micro-lib-web-temp'
 import { fileHostUrl } from '@/views/home/index'
 import { getArticleInfoById, getArticleTypeListAPI } from '@/api/home'
+import { htmlToMarkdown } from '@/utils/format'
 
 interface RuleForm {
   /** 标题 */
@@ -54,7 +55,9 @@ const getArticleInfo = async (id: string) => {
   const { title, type, content, abstract, tag, cover } = articleInfo.value
   ruleForm.title = title
   ruleForm.type = type
-  ruleForm.content = content
+  ruleForm.content = htmlToMarkdown(content)
+  console.log('content--->', content)
+  console.log('ruleForm.content--->', htmlToMarkdown(ruleForm.content))
   ruleForm.abstract = abstract
   ruleForm.tags = tag
   ruleForm.cover = cover

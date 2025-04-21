@@ -103,6 +103,7 @@ getDataList()
   justify-content: center;
   width: 100%;
   height: 100%;
+  background-color: #f9f9f9;
   .dfc {
     display: flex;
     justify-content: center;
@@ -118,6 +119,7 @@ getDataList()
       gap: 24px;
       width: 100%;
       padding-top: 40px;
+      margin-bottom: 80px;
       box-sizing: border-box;
       .header {
         width: 100%;
@@ -145,9 +147,11 @@ getDataList()
       .nav-box {
         width: 100%;
         height: 96px;
+        border-radius: 10px;
       }
       .official-announcement {
         width: 100%;
+        border-radius: 12px;
       }
       .header-title {
         display: flex;

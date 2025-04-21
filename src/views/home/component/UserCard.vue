@@ -85,6 +85,7 @@ const postArticle = async () => {
   padding: 24px 32px;
   box-sizing: border-box;
   gap: 24px;
+  background-color: #fff;
   .user-box {
     display: flex;
     justify-content: start;

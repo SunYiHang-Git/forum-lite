@@ -19,7 +19,7 @@ import TopNav from './component/TopNav.vue'
 .layout {
   display: flex;
   justify-content: center;
-  width: 100vw;
+  max-width: 99vw;
   min-height: 100vh;
   overflow-y: auto;
   .el-container {
@@ -35,8 +35,8 @@ import TopNav from './component/TopNav.vue'
       padding: 0;
     }
     .el-main {
-      width: 100%;
       padding: 0;
+      width: 100%;
     }
   }
 }

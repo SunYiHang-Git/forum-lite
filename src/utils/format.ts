@@ -1,5 +1,8 @@
 import dayjs from 'dayjs'
 import moment from 'moment'
+import { marked } from 'marked'
+import DOMPurify from 'dompurify'
+import TurndownService from 'turndown'
 
 /**
  * 使用定点表示法将数值转为字符串。如果结果为 "0.00"，就转为 "0"。 参考 Number.prototype.toFixed。
@@ -137,4 +140,49 @@ export function convertKeysToLowerCase(obj: object) {
 export const handleUrlFormat = (url: string) => {
   if (!url) return ''
   return url.split('\\').join('/').split('\\').join('/')
+}
+
+/**
+ * 将 Markdown 转换为 HTML。
+ *
+ * @param {string} markdown - 要转换的 Markdown 内容。
+ * @returns {string} 转换后的 HTML 字符串。
+ */
+export function convertMarkdownToHtml(markdown: any): any {
+  if (!markdown) return markdown
+  // 使用 marked 解析 Markdown 为 HTML
+  let html
+  try {
+    html = marked(markdown)
+  } catch (error) {
+    html = markdown
+  }
+  // 使用 DOMPurify 清理 HTML 以防止 XSS 攻击
+  const cleanHtml = DOMPurify.sanitize(html)
+  return cleanHtml
+}
+// 创建 TurndownService 实例
+const turndownService = new TurndownService()
+export function htmlToMarkdown(html: string) {
+  if (isMarkdown(html)) {
+    return html
+  }
+  return turndownService.turndown(html)
+}
+// 判断是否为 Markdown 格式的简单方法
+export function isMarkdown(str: string): boolean {
+  const markdownPatterns = [
+    /^#+\s/, // 标题
+    /^- \s/, // 无序列表
+    /^\d+\. \s/, // 有序列表
+    /^\*\*/, // 加粗
+    /^\*/, // 斜体
+    /^```/, // 代码块
+  ]
+  for (const pattern of markdownPatterns) {
+    if (pattern.test(str.trim())) {
+      return true
+    }
+  }
+  return false
 }

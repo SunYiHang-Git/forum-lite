@@ -94,6 +94,7 @@ const goDetail = (item: any) => {
   align-items: center;
   width: 100%;
   height: 32px;
+  z-index: 99;
   .title {
     font-family: Alibaba PuHuiTi 3;
     font-size: 24px;
@@ -130,8 +131,8 @@ const goDetail = (item: any) => {
     transform: translateX(-50%);
     width: 100vw;
     height: 568px;
-    background-color: #f5f5f5;
-    z-index: -1;
+    background-color: #f3f3f3;
+    z-index: 1;
   }
   .interaction-card-box {
     display: grid;
@@ -139,6 +140,7 @@ const goDetail = (item: any) => {
     gap: 16px;
     width: 100%;
     height: 432px;
+    z-index: 99;
     .interaction-card {
       flex: 1;
       width: 100%;
