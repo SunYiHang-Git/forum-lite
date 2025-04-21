@@ -140,7 +140,6 @@ getDataList()
           height: 232px;
           border-radius: 12px;
           opacity: 1;
-          background-color: #f3ecec;
         }
       }
       .nav-box {

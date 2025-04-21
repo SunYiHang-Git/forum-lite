@@ -2,7 +2,7 @@
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import type { FormInstance, FormRules, UploadInstance, UploadRawFile } from 'element-plus'
 import { computed, reactive, ref } from 'vue'
-import TEditor from '@/component/TEditor/index.vue'
+import Vditor from '@/component/Vditor/index.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { callServerFunc, getGuid, MD5 } from '@ksware/micro-lib-web-temp'
 import { fileHostUrl } from '@/views/home/index'
@@ -213,7 +213,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             <div class="form-title">正文</div>
             <k-form-item label="" prop="content">
               <div style="width: 100%; min-height: 300px">
-                <TEditor v-model="ruleForm.content" :placeholder="$t('forum.formContent')" />
+                <Vditor v-model="ruleForm.content" :placeholder="$t('forum.formContent')" />
               </div>
             </k-form-item>
             <div class="hr"></div>

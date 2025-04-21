@@ -9,11 +9,26 @@ import {
   setArticleMenuStatusAPI,
   setCollectArticleAPI,
 } from '@/api/home'
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import TEditor from '@/component/TEditor/index.vue'
-import { KMessageBox } from '@ksware/ksw-ux'
+import Vditor from '@/component/Vditor/index.vue'
+import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import RightHotCard from '@/views/Article/RightHotCard.vue'
+import { marked } from 'marked'
+/**
+ * 将 Markdown 转换为 HTML。
+ *
+ * @param {string} markdown - 要转换的 Markdown 内容。
+ * @returns {string} 转换后的 HTML 字符串。
+ */
+function convertMarkdownToHtml(markdown: string): any {
+  if (!markdown) return markdown
+  // 使用 marked 解析 Markdown 为 HTML
+  let html = marked(markdown)
+
+  // 返回转换后的 HTML
+  return html
+}
 
 const router = useRouter()
 
@@ -78,9 +93,15 @@ const handleToBottom = () => {
 
 /** 评论 */
 const addReply = async () => {
+  await nextTick()
+  if (!replyValue.value) {
+    KMessage.warning('不能发布空内容!')
+    return
+  }
   const params = { Content: replyValue.value, PostsID: ArticleId.value }
   await addReplyForArticleAPI(params)
   replyValue.value = ''
+  initWindow()
 }
 const showReplyDialog = ref(false)
 
@@ -99,7 +120,12 @@ const dialogCancel = () => {
 const dialogParams = ref<any>({})
 /** 弹框回复帖子 */
 const dialogReply = async () => {
-  showReplyDialog.value = true
+  await nextTick()
+  if (!replyValueDialog.value) {
+    KMessage.warning('不能回复空内容!')
+    return
+  }
+  showReplyDialog.value = false
   const { PostsID, PID, InitialID } = dialogParams.value
   const params = {
     PostsID,
@@ -361,7 +387,7 @@ const goTop = () => {
             <div class="publish-time">发布于 {{ articleInfo.lastTime }}</div>
             <div class="show-num">{{ articleInfo.hot }} 浏览</div>
           </div>
-          <div class="content-box-text" :innerHTML="articleInfo.content"></div>
+          <div class="content-box-text" :innerHTML="convertMarkdownToHtml(articleInfo.content)"></div>
         </div>
         <div class="comment-box">
           <div class="reply-num-box">{{ articleAllNum }} 条回复</div>
@@ -409,7 +435,7 @@ const goTop = () => {
           </div>
         </div>
         <div id="textareaTEditor" class="to-reply-box">
-          <TEditor v-model="replyValue" :placeholder="$t('forum.formContent')" />
+          <Vditor v-model="replyValue" :placeholder="$t('forum.formContent')" />
           <div class="submit-box">
             <k-button main @click="addReply">发 表</k-button>
           </div>
@@ -423,7 +449,7 @@ const goTop = () => {
   <k-dialog v-model="showReplyDialog" :title="'回复: ' + dialogParams.userName" width="700">
     <div class="reply-dialog-box">
       <div class="reply-dialog-edit">
-        <TEditor v-model="replyValueDialog" :placeholder="$t('forum.formContent')" />
+        <Vditor v-model="replyValueDialog" :placeholder="$t('forum.formContent')" />
       </div>
       <div class="btn-box">
         <k-button @click="dialogCancel">取 消</k-button>
