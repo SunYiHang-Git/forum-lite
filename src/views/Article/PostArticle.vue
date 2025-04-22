@@ -111,8 +111,8 @@ const beforeAvatarUpload = (rawFile: any) => {
     return false
   }
   // 检查文件大小是否超过2MB
-  if (rawFile.size / 1024 / 1024 > 1) {
-    KMessage.error('文件大小不能超过1MB！')
+  if (rawFile.size / 1024 / 1024 > 2) {
+    KMessage.error('文件大小不能超过2MB！')
     return false
   }
   upload.value!.clearFiles()

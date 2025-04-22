@@ -83,6 +83,7 @@ handleRouteQuery()
     .main-box {
       flex: 1;
       display: flex;
+      justify-content: space-between;
       gap: 16px;
       min-height: calc(100vh - 226px);
       width: 100%;
@@ -90,9 +91,8 @@ handleRouteQuery()
     .main-list {
       flex: 1;
       min-height: calc(100vh - 226px);
-      max-width: 100%;
       padding-bottom: 20px;
-      // overflow-x: hidden;
+      overflow-x: hidden;
     }
     .user-right {
       width: 400px;

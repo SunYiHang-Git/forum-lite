@@ -464,6 +464,7 @@ const goTop = () => {
   width: 100%;
   min-height: calc(100vh - 60px);
   background-color: #f5f5f5;
+  padding-top: 20px;
   .dfc {
     display: flex;
     align-content: center;
@@ -530,9 +531,10 @@ const goTop = () => {
       }
     }
     .right {
+      position: sticky;
+      top: 0;
       width: 350px;
       height: fit-content;
-      overflow-y: auto;
     }
     .content {
       flex: 1;
@@ -542,6 +544,7 @@ const goTop = () => {
       max-width: 980px;
       gap: 16px;
       width: 100%;
+      border-radius: 12px;
       box-sizing: border-box;
       overflow: hidden;
       .ove {

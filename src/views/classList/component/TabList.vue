@@ -40,10 +40,11 @@ const getInteractionListData = async () => {
     PostsTypePID: pid,
     PostsType: sonClassId.value,
     CollectNum: true,
-    isFine: isFine.value === 1 ? 1 : 0,
+    isFine: isFine.value === 1 ? '1' : '0',
   }
   const { list, total } = await getInteractionListAPI(params)
   tableDataList.value = list
+  console.log('tableDataList.value--->', tableDataList.value)
   pageTotal.value = total
 }
 

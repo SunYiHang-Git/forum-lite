@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia'
 import { getUserASllTypeNumAPI } from '@/api/home'
 import { ref } from 'vue'
 import { MD5 } from '@ksware/micro-lib-web-temp'
-// const { userInfo } = useUser()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
 
@@ -30,7 +29,6 @@ const getUserAllTypeData = async () => {
     CollectNum: true,
   })
   classTypeNumObj.value = { ArticleCount, QuestionCount, ReplyCount, CollectCount }
-  console.log('userInfo--->', userInfo)
 }
 getUserAllTypeData()
 /** 发帖 */

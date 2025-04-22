@@ -82,7 +82,7 @@ function handleWeekHost(table: any) {
   return rows
 }
 
-/** 获取互动解答数据接口 */
+/** 获取互动解答,知识分享数据接口 */
 export const getInteractionListAPI = async (params: any) => {
   const res: any = await callServerFunc('TRPADM', 'RPAGetPosts', params)
   const table = new SQLTable(res.data.k_forum_postslist)

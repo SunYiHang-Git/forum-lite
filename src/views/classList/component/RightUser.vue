@@ -44,11 +44,11 @@ getNoticeList()
   .user-box {
     position: sticky;
     top: 0;
-    z-index: 9999;
     width: 100%;
     min-height: 172px;
     border-radius: 12px;
     background-color: #fff;
+    z-index: 3;
   }
   .banner-box {
     width: 100%;
