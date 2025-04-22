@@ -19,7 +19,7 @@ import TopNav from './component/TopNav.vue'
 .layout {
   display: flex;
   justify-content: center;
-  max-width: 99vw;
+  max-width: 100vw;
   min-height: 100vh;
   .el-container {
     height: 100%;

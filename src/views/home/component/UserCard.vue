@@ -35,6 +35,11 @@ getUserAllTypeData()
 const postArticle = async () => {
   router.push('/article/' + MD5('add'))
 }
+
+/* 去我的**/
+function goUserPage() {
+  router.push('/user')
+}
 </script>
 
 <template>
@@ -49,7 +54,7 @@ const postArticle = async () => {
           {{ userInfo.signature ? userInfo.signature : '欢迎登录...' }}
         </div>
       </div>
-      <div class="right-box dfc"><IconRight /></div>
+      <div class="right-box" @click="goUserPage"><IconRight /></div>
     </div>
     <div class="user-menu">
       <div class="menu-link">
@@ -129,9 +134,13 @@ const postArticle = async () => {
       }
     }
     .right-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 16px;
       height: 16px;
       font-size: 24px;
+      cursor: pointer;
     }
   }
   .user-menu {

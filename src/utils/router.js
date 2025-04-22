@@ -49,13 +49,19 @@ export const routeList = [
         path: '/article/:id',
         name: 'article',
         component: () => import('@/views/Article/PostArticle.vue'),
-        meta: { title: '论坛详情', icon: 'el-icon-s-home' },
+        meta: { title: '发/编辑帖子', icon: 'el-icon-s-home' },
       },
       {
         path: '/detail/:id',
         name: 'detail',
         component: () => import('@/views/Article/ArticleDetail.vue'),
         meta: { title: '帖子详情', icon: 'el-icon-s-home' },
+      },
+      {
+        path: '/user',
+        name: 'user',
+        component: () => import('@/views/User/index.vue'),
+        meta: { title: '我的', icon: 'el-icon-s-home' },
       },
     ],
   },
@@ -114,7 +120,7 @@ router.beforeEach((to, from, next) => {
   //   next('/login' + `?toRedirectPath=${to.fullPath}`)
   //   return
   // }
-
+  /** 校验进入页面的权限 */
   // if (permNameList.includes(to.path)) {
   //   if (!isAdminRolePermission()) {
   //     KMessage.error('没有权限进入该页面!')
