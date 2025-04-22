@@ -48,6 +48,7 @@ export function getDateMonthList(startTime: string, endTime: string): string[] {
  * @returns {number} 天数 number
  */
 export const maturityDays = (yyyymmdd: string): number => {
+  if (!yyyymmdd) return 0
   const regex1 = /^\d{4}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/
   const regex2 = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/
   const today = moment().startOf('day')

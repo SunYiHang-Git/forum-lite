@@ -7,7 +7,16 @@ import NavCard from '@/views/home/component/NavCard.vue'
 import OfficialAnnouncement from '@/views/home/component/OfficialAnnouncement.vue'
 import InteractionAnswer from '@/views/home/component/InteractionAnswer.vue'
 import KnowledgeShare from '@/views/home/component/KnowledgeShare.vue'
-import { getArticleTypeListAPI, getHomeAllDataAPI, getThirdTypeDataAPI } from '@/api/home'
+import { getArticleTypeListAPI, getHomeAllDataAPI, getRPAUserAPI, getThirdTypeDataAPI } from '@/api/home'
+import { storeToRefs } from 'pinia'
+import { useUser } from '@/store/modules/user'
+const { userInfo } = storeToRefs(useUser())
+async function makeTokenLogin() {
+  const { loginId } = userInfo.value
+  if (loginId) return
+  await getRPAUserAPI()
+}
+makeTokenLogin()
 const searchValue = ref<string>('')
 /** 回帖周榜 */
 const replyListData = ref<any[]>([])
@@ -15,7 +24,6 @@ const replyListData = ref<any[]>([])
 const getNoticeList = async () => {
   const { replyList } = await getHomeAllDataAPI()
   replyListData.value = replyList
-  console.log('replyList--->', replyList)
 }
 /** 首页分类 nav */
 const homeNavClassList = ref<any[]>([])

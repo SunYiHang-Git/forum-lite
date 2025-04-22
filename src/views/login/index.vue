@@ -5,13 +5,18 @@ import { useRoute, useRouter } from 'vue-router'
 import { ref, watch } from 'vue'
 const route = useRoute()
 const router = useRouter()
+/** 登录, 注册, 重置的类型 */
 const type = ref('login')
+
+/** 去哪个页面 */
+const toPage = ref('/')
 /** 获取 */
 function getParams() {
   type.value = (route.query?.type ?? 'login') as string
+  toPage.value = (route.query?.toRedirectPath ?? '/') as string
+  console.log('toPage.value--->', toPage.value)
 }
 getParams()
-
 watch(
   () => router,
   () => {
@@ -39,7 +44,7 @@ watch(
         </div>
         <div class="login-form-box">
           <div class="main">
-            <CloudPage :type="type" />
+            <CloudPage :type="type" :toPage="toPage" />
           </div>
         </div>
       </div>

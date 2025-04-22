@@ -29,13 +29,6 @@ export const routeList = [
     component: () => import('@/views/login/index.vue'),
   },
   {
-    // 路由地址，同主框架里面增加菜单的路由地址
-    path: '/xxx',
-    name: '登录页面',
-    component: () => import('@/views/classList/index.vue'),
-    meta: { title: '论坛分类', icon: 'el-icon-s-home' },
-  },
-  {
     path: '/',
     name: 'layout',
     component: Layout,
@@ -109,18 +102,18 @@ router.beforeEach((to, from, next) => {
   //   }
   // }
 
-  if (!getToken() && to.path !== '/login') {
-    const urlToken = getUrlParamByName('Token')
-    if (urlToken) {
-      setToken(urlToken)
-      const url = location.href.replace(/token=[a-z0-9]{32}/i, '')
-      history.replaceState({}, undefined, url)
-      next('/home')
-      return
-    }
-    next('/login' + `?toFullPath=${to.path}`)
+  const urlToken = getUrlParamByName('Token')
+  if (urlToken) {
+    setToken(urlToken)
+    const url = location.href.replace(/token=[a-z0-9]{32}/i, '')
+    history.replaceState({}, undefined, url)
+    next('/home')
     return
   }
+  // if (!getToken() && to.path !== '/login') {
+  //   next('/login' + `?toRedirectPath=${to.fullPath}`)
+  //   return
+  // }
 
   // if (permNameList.includes(to.path)) {
   //   if (!isAdminRolePermission()) {

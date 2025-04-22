@@ -9,6 +9,7 @@ import { fileHostUrl } from '@/views/home'
 
 const emits = defineEmits<{
   (e: 'goPage', page: 'register' | 'forget'): void
+  (e: 'loginSuccess'): void
 }>()
 interface RuleForm {
   account: string
@@ -42,11 +43,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAUserLogin', params)
   const { ID, IsLite, LncDate, LoginID, PassWord, Token, User, UserID, UserName, IsForumLogin } = data
   setToken(Token)
-  const isAdminObj = await callServerFunc('TRPADM', 'GetRPAUser', {})
-  const { IsAdmin } = isAdminObj?.data as any
-  // GetRPAUser
   const userInfoRes = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true })
-  const { Phone, City, Company, DeveloperState, FullName, IsDeveloper, Sex, Signature, UserIcon }: any =
+  const { IsAdmin, Phone, City, Company, DeveloperState, FullName, IsDeveloper, Sex, Signature, UserIcon }: any =
     userInfoRes.data
   const userInfoObj = {
     id: ID,
@@ -74,7 +72,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     fullName: FullName,
   }
   setUserInfo(userInfoObj)
-  router.push('/')
+  // router.push('/')
+  emits('loginSuccess')
 }
 
 /** 忘记密码 */

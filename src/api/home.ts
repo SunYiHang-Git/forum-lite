@@ -1,6 +1,7 @@
 //
 
-import { convertKeysToLowerCase, handleUrlFormat } from '@/utils/format'
+import { useUser } from '@/store/modules/user'
+import { convertKeysToLowerCase, handleUrlFormat, maturityDays } from '@/utils/format'
 import { fileHostUrl } from '@/views/home'
 import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 
@@ -398,4 +399,57 @@ function handleInteractionData(table: any) {
     table.next()
   }
   return rows
+}
+
+/** 获取用户信息 */
+export const getRPAUserAPI = async () => {
+  const { setUserInfo } = useUser()
+  const userInfoRes = await callServerFunc('TRPADM', 'GetRPAUser', {})
+  const {
+    IsLite,
+    IsAdmin,
+    IsForumLogin,
+    LncDate,
+    LoginID,
+    Token,
+    PassWord,
+    Phone,
+    City,
+    Company,
+    DeveloperState,
+    FullName,
+    IsDeveloper,
+    Sex,
+    Signature,
+    UserIcon,
+    User,
+    UserID,
+    UserName,
+  }: any = userInfoRes.data
+  const userInfoObj = {
+    id: LoginID,
+    isLite: IsLite,
+    isForumLogin: IsForumLogin,
+    remainDays: maturityDays(LncDate),
+    loginId: LoginID,
+    passWord: PassWord,
+    token: Token,
+    user: User,
+    userId: UserID,
+    userName: UserName,
+    role: IsAdmin,
+    isAdmin: IsAdmin === 1,
+    loginStatus: true,
+    rememberInfo: false,
+    phone: Phone,
+    city: City,
+    company: Company,
+    developerState: DeveloperState,
+    isDeveloper: IsDeveloper,
+    sex: Sex,
+    signature: Signature,
+    avatar: fileHostUrl + UserIcon,
+    fullName: FullName,
+  }
+  setUserInfo(userInfoObj)
 }

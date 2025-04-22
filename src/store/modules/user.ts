@@ -9,7 +9,7 @@ export interface IUserInfo {
   /** isForumLogin */
   isForumLogin: boolean
   /** 密码 */
-  password: string
+  passWord: string
   /** 剩余天数 */
   remainDays: number
   /** 登录ID */
@@ -56,7 +56,7 @@ export const useUser = defineStore(
       id: '',
       isLite: true,
       isForumLogin: true,
-      password: '',
+      passWord: '',
       remainDays: 0,
       loginId: '',
       token: '',
@@ -89,7 +89,7 @@ export const useUser = defineStore(
         id: '',
         isLite: true,
         isForumLogin: true,
-        password: '',
+        passWord: '',
         remainDays: 0,
         loginId: '',
         token: '',
