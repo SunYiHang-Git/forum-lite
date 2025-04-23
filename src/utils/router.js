@@ -63,6 +63,12 @@ export const routeList = [
         component: () => import('@/views/User/index.vue'),
         meta: { title: '我的', icon: 'el-icon-s-home' },
       },
+      {
+        path: '/user-info',
+        name: 'userInfo',
+        component: () => import('@/views/User/InforMation.vue'),
+        meta: { title: '编辑资料', icon: 'el-icon-s-home' },
+      },
     ],
   },
   // 模版页面,用户管理页面

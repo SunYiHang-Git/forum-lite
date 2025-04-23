@@ -17,7 +17,9 @@ export interface IUserInfo {
   /** Token */
   token: string
   user: string
+  /** 账号 */
   userId: string
+  /** 昵称 */
   userName: string
   /** 是否是市场管理员 */
   isAdmin: boolean
@@ -41,8 +43,8 @@ export interface IUserInfo {
   isDeveloper: 0 | 1
   /** 签名 */
   signature: string
-  /** 性别 */
-  sex: 0 | 1
+  /** 性别 0=保密, 1=男, 2=女 */
+  sex: 0 | 1 | 2
   /** 头像 */
   avatar: string
 }

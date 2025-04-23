@@ -4,8 +4,9 @@ import MakeCenter from '@/views/User/components/MakeCenter.vue'
 import HotCard from '@/views/classList/component/HotCard.vue'
 import TabList from '@/views/classList/component/TabList.vue'
 import { computed, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 const route = useRoute()
+const router = useRouter()
 
 const tabList = ref([
   {
@@ -57,6 +58,10 @@ const breadcrumbs = ref<any[]>([])
 //   breadcrumbs.value.unshift({ label: 'home', path: '/' })
 //   console.log('breadcrumbs.value--->', breadcrumbs.value)
 // }
+
+const handleEditInfo = () => {
+  router.push('/user-info')
+}
 </script>
 
 <template>
@@ -76,7 +81,7 @@ const breadcrumbs = ref<any[]>([])
           <div class="info-box">来自珠海 | 社区菜鸟 | 2022-01-01加入</div>
           <div class="desc">这个人很懒</div>
         </div>
-        <K-button main>编辑资料</K-button>
+        <K-button main @click="handleEditInfo">编辑资料</K-button>
       </div>
     </div>
     <div class="my-article-big-box">

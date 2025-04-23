@@ -12,12 +12,6 @@ const { clearUserInfoStore } = useUser()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
 const searchValue = ref<string>('')
-const activeName = ref('community')
-// 获取 url
-function getWindowUrl() {
-  const a = window.location.href
-}
-// getWindowUrl()
 const menuList = ref([
   {
     name: 'home',
@@ -55,12 +49,16 @@ const userDownList = ref([
   {
     label: '账号资料',
     name: 'accountInformation',
+    click: accountInfo,
   },
   {
     label: '退出',
     name: 'exit',
   },
 ])
+function accountInfo() {
+  router.push('/user-info')
+}
 const routerToPage = (name: string, src: string) => {
   if (src === '') return
   if (name === 'community') {
@@ -149,7 +147,7 @@ const postArticle = async () => {
         </template>
         <template #default>
           <k-dropdown-item v-for="(item, index) in userDownList" :key="index" :command="item.name">
-            <div style="width: 100%; display: flex; justify-content: center">
+            <div @click="item.click" style="width: 100%; display: flex; justify-content: center">
               {{ item.label }}
             </div>
           </k-dropdown-item>
