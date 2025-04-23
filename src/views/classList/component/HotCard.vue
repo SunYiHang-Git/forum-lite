@@ -18,15 +18,28 @@ const goDetail = (item: any) => {
     <div class="NewAnnouncement">
       <div v-for="item in list" :key="item.id" class="lis-name">
         <div v-if="icon" class="icon">
-          <component :is="icon" color="#999999" />
+          <component :is="item.icon ?? icon" color="#999999" />
         </div>
-        <div class="title" @click="goDetail(item)">{{ item.title }}</div>
+        <div v-if="item.icon" class="icon">
+          <div class="dfc" style="width: 100%; height: 100%; border-radius: 50%; background-color: #eff6ff">
+            <component :is="item.icon ?? icon" :color="item.iconColor ?? '#999999'" />
+          </div>
+        </div>
+        <div class="title" @click="goDetail(item)">
+          {{ item.title }}
+          <span style="font-size: 16px; font-weight: 600">{{ item.icon }}</span>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+.dfc {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .hot-box-card {
   display: flex;
   flex-direction: column;

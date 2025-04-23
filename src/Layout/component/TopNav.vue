@@ -37,6 +37,7 @@ const userDownList = ref([
   {
     label: '我的主页',
     name: 'myHome',
+    click: myHome,
   },
   {
     label: '我的发表',
@@ -56,8 +57,13 @@ const userDownList = ref([
     name: 'exit',
   },
 ])
+/** 账号资料 */
 function accountInfo() {
   router.push('/user-info')
+}
+/** 我的主页 */
+function myHome() {
+  router.push('/user')
 }
 const routerToPage = (name: string, src: string) => {
   if (src === '') return

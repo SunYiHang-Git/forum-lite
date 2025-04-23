@@ -1,12 +1,80 @@
 <script setup lang="ts">
-import { getArticleTypeListAPI, getClassByIdAPI } from '@/api/home'
+import { getArticleTypeListAPI, getClassByIdAPI, getUserASllTypeNumAPI } from '@/api/home'
+import { useUser } from '@/store/modules/user'
 import MakeCenter from '@/views/User/components/MakeCenter.vue'
 import HotCard from '@/views/classList/component/HotCard.vue'
 import TabList from '@/views/classList/component/TabList.vue'
+import { storeToRefs } from 'pinia'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+const { userInfo } = storeToRefs(useUser())
 const route = useRoute()
 const router = useRouter()
+/** 个人成就数据 */
+const personList = ref<any>([])
+
+const cardDataInfo = ref<any>({})
+/** 获取卡片数据 */
+const getCardData = async () => {
+  const res = await getUserASllTypeNumAPI({ User: userInfo.value.loginId, CollectNum: true })
+  const {
+    ArticleCount,
+    ByCollectCount,
+    CollectNum,
+    MonthByCollectCount,
+    MonthByReplyCount,
+    MonthPostCount,
+    MonthReplyCount,
+    PostCount,
+    QuestionCount,
+    RegisterTime,
+    ReplyCount,
+    City,
+    Signature,
+  } = res
+  cardDataInfo.value = {
+    ArticleCount,
+    ByCollectCount,
+    CollectNum,
+    MonthByCollectCount,
+    MonthByReplyCount,
+    MonthPostCount,
+    MonthReplyCount,
+    PostCount,
+    QuestionCount,
+    RegisterTime,
+    ReplyCount,
+    City,
+    Signature,
+  }
+  personList.value = [
+    {
+      title: '本月发布',
+      value: MonthPostCount,
+      icon: 'IconEdit',
+      iconColor: '#2158E8',
+    },
+    {
+      title: '本月被收藏',
+      value: MonthByCollectCount,
+      icon: 'IconStar',
+      iconColor: '#2158E8',
+    },
+    {
+      title: '本月被评论',
+      value: MonthByReplyCount,
+      icon: 'IconMessageOne',
+      iconColor: '#2158E8',
+    },
+    {
+      title: '本月评论',
+      value: MonthReplyCount,
+      icon: 'IconMessageOne',
+      iconColor: '#2158E8',
+    },
+  ]
+}
+getCardData()
 
 const tabList = ref([
   {
@@ -75,11 +143,13 @@ const handleEditInfo = () => {
         </k-breadcrumb>
       </div>
       <div class="user-info-top">
-        <div class="avatar dfc">头像</div>
+        <div class="avatar dfc">
+          <img :src="userInfo.avatar" />
+        </div>
         <div class="username-desc-box djc">
-          <div class="user-name">是的发烧发烧</div>
-          <div class="info-box">来自珠海 | 社区菜鸟 | 2022-01-01加入</div>
-          <div class="desc">这个人很懒</div>
+          <div class="user-name">{{ userInfo.userName }}</div>
+          <div class="info-box">来自{{ cardDataInfo.City }} | 社区菜鸟 | {{ cardDataInfo.RegisterTime }} 加入</div>
+          <div class="desc">{{ cardDataInfo.Signature }}</div>
         </div>
         <K-button main @click="handleEditInfo">编辑资料</K-button>
       </div>
@@ -96,8 +166,8 @@ const handleEditInfo = () => {
         <TabList :params="pageClassList" />
       </div>
       <div class="right-aside-box djc">
-        <MakeCenter />
-        <HotCard title="个人成就" :list="[]" />
+        <MakeCenter :params="cardDataInfo" />
+        <HotCard title="个人成就" :list="personList" />
       </div>
     </div>
   </div>
@@ -149,7 +219,12 @@ const handleEditInfo = () => {
         width: 86px;
         height: 86px;
         border-radius: 50%;
+        overflow: hidden;
         background-color: pink;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
       .username-desc-box {
         flex: 1;

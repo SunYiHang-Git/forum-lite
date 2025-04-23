@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import { getUserASllTypeNumAPI } from '@/api/home'
 import MakeCenterSvg from '@/assets/svg/make-center.svg'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+
+const { params } = defineProps<{
+  params: any
+}>()
 </script>
 
 <template>
@@ -12,16 +19,16 @@ import MakeCenterSvg from '@/assets/svg/make-center.svg'
     </div>
     <div class="bottom">
       <div class="post">
-        <div class="num">88</div>
+        <div class="num">{{ params.ArticleCount + params.QuestionCount }}</div>
         <div class="type-name">帖子</div>
       </div>
       <div class="collect">
-        <div class="num">88</div>
-        <div class="type-name">帖子</div>
+        <div class="num">{{ params.ByCollectCount }}</div>
+        <div class="type-name">被收藏</div>
       </div>
       <div class="comment">
-        <div class="num">88</div>
-        <div class="type-name">帖子</div>
+        <div class="num">{{ params.ReplyCount }}</div>
+        <div class="type-name">评论</div>
       </div>
     </div>
   </div>
