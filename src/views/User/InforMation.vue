@@ -10,6 +10,7 @@ import { CheckPhoneCodeAPI, RPAApplyDeveloperAPI, SetRPAUserInfoAPI, SetRPAUserN
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import { MD5 } from '@ksware/micro-lib-web-temp'
 import { cityList } from '@/utils/city'
+import Breadcrumb from '@/component/Breadcrumb/index.vue'
 const { userInfo } = storeToRefs(useUser())
 const { setUserInfo } = useUser()
 
@@ -167,7 +168,9 @@ const props = {
 <template>
   <div class="information-box">
     <div class="information">
-      <div class="breadcrumb">面包屑</div>
+      <div class="breadcrumb">
+        <Breadcrumb />
+      </div>
       <div class="page-title">编辑资料</div>
       <div class="information-card">
         <div class="title">个人资料</div>
@@ -301,8 +304,7 @@ const props = {
       display: flex;
       align-items: center;
       width: 100%;
-      height: 22px;
-      background-color: rgb(231, 231, 231);
+      height: 30px;
     }
     .page-title {
       font-size: 20px;

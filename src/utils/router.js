@@ -1,15 +1,6 @@
-import {
-  getSessionValue,
-  getToken,
-  initGlobalVariable,
-  isInset,
-  setSessionValue,
-  setToken,
-} from '@ksware/micro-lib-web-temp'
+import { initGlobalVariable } from '@ksware/micro-lib-web-temp'
 import { createRouter, createWebHashHistory } from 'vue-router'
-// import { getWindowUrlObj } from './postMessage'
 import Layout from '@/Layout/index.vue'
-import { getUrlParamByName } from '@/utils/auth'
 
 export const routeList = [
   {
@@ -75,7 +66,7 @@ export const routeList = [
         path: '',
         name: 'article',
         component: () => import('@/views/Article/PostArticle.vue'),
-        meta: { title: '发/编辑帖子', icon: 'el-icon-s-home', breadcrumb: '发表帖子' },
+        meta: { title: '发/编辑帖子', icon: 'el-icon-s-home' },
       },
     ],
   },
@@ -111,13 +102,6 @@ export const routeList = [
       },
     ],
   },
-
-  // 模版页面,用户管理页面
-  // {
-  //   path: '/userMgrJson',
-  //   name: '用户管理',
-  //   component: () => import('@/views/demo/userMgr_table.vue'),
-  // },
 ]
 
 routeList.forEach((item) => {
@@ -142,52 +126,5 @@ const router = createRouter({
 })
 
 initGlobalVariable('routerInstance', router)
-let isFirst = false
-const permNameList = ['/application']
-// 路由执行前加载缓存数据
-router.beforeEach((to, from, next) => {
-  // if (!getToken() && isInset) {
-  //   const { token } = getWindowUrlObj()
-  //   if (token) {
-  //     setToken(token)
-  //     next('/')
-  //     return
-  //   }
-  // }
 
-  const urlToken = getUrlParamByName('Token')
-  if (urlToken) {
-    setToken(urlToken)
-    const url = location.href.replace(/token=[a-z0-9]{32}/i, '')
-    history.replaceState({}, undefined, url)
-    next('/home')
-    return
-  }
-  // if (!getToken() && to.path !== '/login') {
-  //   next('/login' + `?toRedirectPath=${to.fullPath}`)
-  //   return
-  // }
-  /** 校验进入页面的权限 */
-  // if (permNameList.includes(to.path)) {
-  //   if (!isAdminRolePermission()) {
-  //     KMessage.error('没有权限进入该页面!')
-  //     next('/store')
-  //     return
-  //   }
-  // }
-
-  // 开发模式生效，刷新浏览器 继续打开之前打开的路由，方便调试
-  if (import.meta.env.DEV && !isInset) {
-    if (to.fullPath === '/') {
-      const lastRoutePath = getSessionValue('last_route_path')
-      if (lastRoutePath && lastRoutePath !== '/login') {
-        next(lastRoutePath)
-        return
-      }
-    } else {
-      setSessionValue('last_route_path', to.fullPath)
-    }
-  }
-  next()
-})
 export default router

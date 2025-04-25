@@ -14,7 +14,6 @@ const toPage = ref('/')
 function getParams() {
   type.value = (route.query?.type ?? 'login') as string
   toPage.value = (route.query?.toRedirectPath ?? '/') as string
-  console.log('toPage.value--->', toPage.value)
 }
 getParams()
 watch(

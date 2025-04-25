@@ -14,7 +14,7 @@ import { useRoute, useRouter } from 'vue-router'
 import Vditor from '@/component/Vditor/index.vue'
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import RightHotCard from '@/views/Article/RightHotCard.vue'
-import { marked } from 'marked'
+import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import { convertMarkdownToHtml } from '@/utils/format'
 
 const router = useRouter()
@@ -360,6 +360,9 @@ const goTop = () => {
       </div>
       <div class="content">
         <div class="content-box">
+          <div class="bread-box">
+            <Breadcrumb />
+          </div>
           <div class="title ove">{{ articleInfo.title }}</div>
           <div class="tags-box">
             <div class="tag" v-for="(item, index) in articleInfo.tag" :key="index">{{ item }}</div>
@@ -561,6 +564,12 @@ const goTop = () => {
         width: 100%;
         padding: 32px;
         background-color: #fff;
+        .bread-box {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          height: 30px;
+        }
       }
       .title {
         width: 100%;

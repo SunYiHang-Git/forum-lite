@@ -38,9 +38,9 @@ handleRouteQuery()
 <template>
   <div class="class-list-box">
     <div class="class-list">
-      <!-- <div style="width: 100%; height: 30px">
+      <div style="width: 100%; height: 30px">
         <Breadcrumb />
-      </div> -->
+      </div>
       <div class="nav">
         <NavClass :activeCardName="activeCardName" />
       </div>

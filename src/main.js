@@ -19,7 +19,7 @@ import FontIcon from '@/component/icon/FontIcon.vue'
 import SvgIcon from '@/component/icon/SvgIcon.vue'
 import router from '@/utils/router'
 import i18n from '@/i18n'
-
+import '@/permission.ts'
 import App from './App.vue'
 
 const app = createApp(App)
