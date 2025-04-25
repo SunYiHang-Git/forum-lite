@@ -27,7 +27,7 @@ const goDetail = (item: any) => {
         </div>
         <div class="title" @click="goDetail(item)">
           {{ item.title }}
-          <span style="font-size: 16px; font-weight: 600">{{ item.icon }}</span>
+          <span style="font-size: 16px; font-weight: 600">{{ item.value }}</span>
         </div>
       </div>
     </div>

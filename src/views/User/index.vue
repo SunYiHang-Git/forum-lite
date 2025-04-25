@@ -3,10 +3,12 @@ import { getArticleTypeListAPI, getClassByIdAPI, getUserASllTypeNumAPI } from '@
 import { useUser } from '@/store/modules/user'
 import MakeCenter from '@/views/User/components/MakeCenter.vue'
 import HotCard from '@/views/classList/component/HotCard.vue'
-import TabList from '@/views/classList/component/TabList.vue'
+import TabList from '@/component/TabPaneList/index.vue'
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { RPAGetUserIndexLiteAPI } from '@/api/user'
+import { KMessage } from '@ksware/ksw-ux'
 const { userInfo } = storeToRefs(useUser())
 const route = useRoute()
 const router = useRouter()
@@ -76,56 +78,94 @@ const getCardData = async () => {
 }
 getCardData()
 
+const activeName = ref('question')
+/** 数据总页数 */
+const pageTotal = ref(0)
+/** 当前页 */
+const currentPage = ref(1)
+/** 父专栏 id */
+const postsTypeId = ref('')
+/** tab 切换 Type */
+const tabType = ref<'1' | '0'>('0')
+/** 是否显示分页 */
+const showPagination = ref(true)
+const parentInfo = ref<any>({})
+
+/** 获取父专栏信息 */
+const getFatherInfo = async () => {
+  const { parentList } = await getArticleTypeListAPI()
+  const findInteraction = parentList.find((item) => item.postsTypeName === '互动解答')
+  const findKnow = parentList.find((item) => item.postsTypeName === '知识分享')
+  parentInfo.value = { question: findInteraction, article: findKnow }
+  if (findInteraction) {
+    postsTypeId.value = findInteraction.postsTypeId
+    getMyPostArticle()
+  }
+}
+getFatherInfo()
+
 const tabList = ref([
   {
     label: '提问',
-    name: 'a',
+    name: 'question',
+    tableList: [],
   },
   {
     label: '文章',
-    name: 'b',
+    name: 'article',
+    tableList: [],
   },
   {
     label: '收藏',
-    name: 'c',
+    name: 'collect',
+    tableList: [],
   },
 ])
 
-const activeName = ref('a')
-
-const handleClick = (name: string) => {
-  console.log('name--->', name)
-}
-const pageClassList = ref<any[]>([])
-/** 获取 */
-/** 获取帖子分类 */
-const getArticleType = async (id: string) => {
-  const { parentList } = await getArticleTypeListAPI()
-  const findItem = parentList?.find((item: any) => item.postsTypeId === id)
+/** 获取我的发表 */
+async function getMyPostArticle() {
+  const params: any = { Type: tabType.value, User: userInfo.value.loginId, CollectNum: true }
+  if (activeName.value !== 'collect') {
+    params.PostsTypePID = postsTypeId.value
+    params.PageNum = currentPage.value
+    params.PageSize = 20
+  }
+  const { list, total }: any = await RPAGetUserIndexLiteAPI(params)
+  pageTotal.value = total
+  const findItem = tabList.value.find(({ name }) => name === activeName.value)
   if (!findItem) return
-  //   nowPageDataInfo.value = { ...findItem }
-  pageClassList.value = await getClassByIdAPI({ id })
-  const one = { postsTypeName: '全部', postsTypeId: 'all', postsTypeDesc: '全部数据' }
-  pageClassList.value.unshift(one)
-  pageClassList.value.forEach((item) => {
-    item.pid = id
-  })
-  console.log('pageClassList.value--->', pageClassList.value)
+  findItem.tableList = list
 }
-getArticleType('AA7CBEAA4FDC4F64AF2C1A62797FE95E')
 
+const tabClick = async (name: string) => {
+  activeName.value = name
+  tabType.value = '0'
+  showPagination.value = true
+  switch (name) {
+    case 'question':
+      const { postsTypeId: pid1 } = parentInfo.value.question
+      postsTypeId.value = pid1
+      break
+    case 'article':
+      const { postsTypeId: pid2 } = parentInfo.value.article
+      postsTypeId.value = pid2
+      break
+    case 'collect':
+      tabType.value = '1'
+      showPagination.value = false
+      break
+    default:
+      break
+  }
+  await getMyPostArticle()
+}
+
+/** 切换页面 */
+const changePage = async (page: number) => {
+  currentPage.value = page
+  await getMyPostArticle()
+}
 const breadcrumbs = ref<any[]>([])
-
-// const buildBreadcrumbs = () => {
-//     const matched = route.matched.filter((record) => record.meta && record.meta.title)
-//     breadcrumbs.value = matched.map((record) => ({
-//       label: record.name,
-//       routeName: record.path,
-//     }))
-//   breadcrumbs.value.unshift({ label: 'user', path: '/user' })
-//   breadcrumbs.value.unshift({ label: 'home', path: '/' })
-//   console.log('breadcrumbs.value--->', breadcrumbs.value)
-// }
 
 const handleEditInfo = () => {
   router.push('/user-info')
@@ -156,14 +196,14 @@ const handleEditInfo = () => {
     </div>
     <div class="my-article-big-box">
       <div class="left-list-box">
-        <!-- <k-tabs v-model="activeName" @tab-click="handleClick">
-          <k-tab-pane v-for="(item, index) in tabList" :key="index" :label="item.label" :name="item.name">
-            <div class="k-tabPane-box">
-              <PageList :tableData="[]" />
-            </div>
-          </k-tab-pane>
-        </k-tabs> -->
-        <TabList :params="pageClassList" />
+        <TabList
+          :active="activeName"
+          :pageTotal="pageTotal"
+          :tabList="tabList"
+          :showPagination="showPagination"
+          @tabClick="tabClick"
+          @changePage="changePage"
+        />
       </div>
       <div class="right-aside-box djc">
         <MakeCenter :params="cardDataInfo" />
@@ -263,6 +303,7 @@ const handleEditInfo = () => {
       background-color: #fff;
       border-radius: 12px;
       padding: 16px 32px;
+      overflow-x: hidden;
       .k-tabs {
         width: 100%;
         min-height: calc(100vh - 302px);

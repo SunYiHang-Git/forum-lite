@@ -116,7 +116,8 @@ export const getInteractionListAPI = async (params: any) => {
     rows.push(row)
     table.next()
   }
-  const total = res.data.total || 90
+  console.log('res.data--->', res.data)
+  const total = res.data.DataCount || 0
   return { list: rows, total }
 }
 
@@ -181,7 +182,7 @@ export const getClassByIdAPI = async (params: any) => {
 
 /** 获取用户的提问, 文章, 回复, 收藏 的数据 */
 export const getUserASllTypeNumAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserHomeLite', params)
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserHome', params)
   return data
 }
 

@@ -28,7 +28,7 @@ const tableDataList = ref<any[]>([])
 /** 子类id */
 const sonClassId = ref('')
 
-/** 获取互动解答数据 */
+/** 获取互动解答,知识分享数据接口 */
 const getInteractionListData = async () => {
   if (props.params.length === 0) {
     return
@@ -44,7 +44,6 @@ const getInteractionListData = async () => {
   }
   const { list, total } = await getInteractionListAPI(params)
   tableDataList.value = list
-  console.log('tableDataList.value--->', tableDataList.value)
   pageTotal.value = total
 }
 
@@ -63,6 +62,7 @@ function handleClick(tabName: string) {
   } else {
     sonClassId.value = tabName
   }
+  currentPage.value = 1
   getInteractionListData()
 }
 

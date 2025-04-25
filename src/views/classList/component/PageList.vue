@@ -1,10 +1,18 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import topSvg from '@/assets/svg/top.svg'
-
-const { tableData } = defineProps<{
-  tableData: any[]
-}>()
+interface ITableData {
+  [key: string]: any
+}
+const props = withDefaults(
+  defineProps<{
+    tableData: ITableData[]
+    showUsername?: boolean
+  }>(),
+  {
+    showUsername: true,
+  },
+)
 const router = useRouter()
 const handleDetail = (item: any) => {
   router.push(`/detail/${item.id}`)
@@ -16,7 +24,7 @@ const handleDetail = (item: any) => {
 <template>
   <div class="page-list">
     <div class="list-box">
-      <div class="lis-box" v-for="item in tableData" :key="item.id">
+      <div class="lis-box" v-for="item in props.tableData" :key="item.id">
         <div class="title-box">
           <div class="tags">
             <div v-if="item.isTop === '1'" class="img-box dfc"><img :src="topSvg" /></div>
@@ -24,10 +32,10 @@ const handleDetail = (item: any) => {
           </div>
           <div class="title" @click="handleDetail(item)">{{ item.title }}</div>
         </div>
-        <div class="desc-box">{{ item.title }}</div>
+        <div class="desc-box">{{ item.abstract }}</div>
         <div class="user-info-box">
           <div class="left-user">
-            <div class="username">{{ item.userName }}</div>
+            <div class="username" v-if="props.showUsername">{{ item.userName }}</div>
             <div class="time">{{ item.lastTime }}</div>
           </div>
           <div class="right-box">
@@ -65,6 +73,7 @@ const handleDetail = (item: any) => {
   }
   .list-box {
     width: 100%;
+    overflow: hidden;
     .lis-box {
       display: flex;
       flex-direction: column;
@@ -75,6 +84,7 @@ const handleDetail = (item: any) => {
       box-sizing: border-box;
       padding: 20px 0;
       border-bottom: 1px solid #e5e5e5;
+      overflow: hidden;
       .title-box {
         display: flex;
         align-items: center;
@@ -124,12 +134,15 @@ const handleDetail = (item: any) => {
       }
       .desc-box {
         width: 100%;
+        min-width: 200px;
+        min-height: 2px;
         font-family: Alibaba PuHuiTi 3;
         font-size: 14px;
         font-weight: normal;
         line-height: 22px;
         letter-spacing: 0px;
         color: #525252;
+        padding-left: 5px;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
