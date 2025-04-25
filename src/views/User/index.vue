@@ -8,7 +8,7 @@ import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { RPAGetUserIndexLiteAPI } from '@/api/user'
-import { KMessage } from '@ksware/ksw-ux'
+import Breadcrumb from '@/component/Breadcrumb/index.vue'
 const { userInfo } = storeToRefs(useUser())
 const route = useRoute()
 const router = useRouter()
@@ -127,7 +127,7 @@ async function getMyPostArticle() {
   const params: any = { Type: tabType.value, User: userInfo.value.loginId, CollectNum: true }
   if (activeName.value !== 'collect') {
     params.PostsTypePID = postsTypeId.value
-    params.PageNum = currentPage.value
+    params.PageNum = (currentPage.value - 1) * 20
     params.PageSize = 20
   }
   const { list, total }: any = await RPAGetUserIndexLiteAPI(params)
@@ -165,7 +165,6 @@ const changePage = async (page: number) => {
   currentPage.value = page
   await getMyPostArticle()
 }
-const breadcrumbs = ref<any[]>([])
 
 const handleEditInfo = () => {
   router.push('/user-info')
@@ -176,11 +175,7 @@ const handleEditInfo = () => {
   <div class="user-box">
     <div class="user-top">
       <div class="breadcrumb">
-        <k-breadcrumb separator="/">
-          <k-breadcrumb-item v-for="(crumb, index) in breadcrumbs" :key="index" :to="{ path: crumb.path }">
-            {{ crumb.label }}
-          </k-breadcrumb-item>
-        </k-breadcrumb>
+        <Breadcrumb />
       </div>
       <div class="user-info-top">
         <div class="avatar dfc">
@@ -246,7 +241,7 @@ const handleEditInfo = () => {
       align-items: center;
       width: 100%;
       height: 22px;
-      background-color: rgb(231, 231, 231);
+      overflow: hidden;
     }
     .user-info-top {
       display: flex;
@@ -260,7 +255,6 @@ const handleEditInfo = () => {
         height: 86px;
         border-radius: 50%;
         overflow: hidden;
-        background-color: pink;
         img {
           width: 100%;
           height: 100%;

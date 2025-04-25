@@ -51,6 +51,7 @@ getRouteId()
 const replyArticleList = ref<any[]>([])
 /** 获取帖子的回复数据 */
 const getReplyData = async () => {
+  // TODO 获取帖子回复数量问题
   const params = { PostsID: ArticleId.value, PageNum: '0', PageSize: '200', iSort: 1 }
   const { firstList, secondList } = await getReplyListAPI(params)
   firstList.forEach((item: any) => {

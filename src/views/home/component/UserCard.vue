@@ -44,7 +44,7 @@ function goUserPage() {
 
 <template>
   <div class="user-card">
-    <div class="user-box">
+    <div class="user-box" style="cursor: pointer" @click="goUserPage">
       <div class="avatar">
         <img :src="userInfo.avatar" />
       </div>
@@ -54,7 +54,7 @@ function goUserPage() {
           {{ userInfo.signature ? userInfo.signature : '欢迎登录...' }}
         </div>
       </div>
-      <div class="right-box" @click="goUserPage"><IconRight /></div>
+      <div class="right-box"><IconRight /></div>
     </div>
     <div class="user-menu">
       <div class="menu-link">

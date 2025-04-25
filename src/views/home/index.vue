@@ -10,6 +10,7 @@ import KnowledgeShare from '@/views/home/component/KnowledgeShare.vue'
 import { getArticleTypeListAPI, getHomeAllDataAPI, getRPAUserAPI, getThirdTypeDataAPI } from '@/api/home'
 import { storeToRefs } from 'pinia'
 import { useUser } from '@/store/modules/user'
+import { INTERACTION_ID, KNOWLEDGE_ID } from '@/const/home'
 const { userInfo } = storeToRefs(useUser())
 async function makeTokenLogin() {
   const { loginId } = userInfo.value
@@ -29,22 +30,21 @@ const getNoticeList = async () => {
 const homeNavClassList = ref<any[]>([])
 
 /** 互动解答 Id */
-const interactionId = ref('')
+const interactionId = ref(INTERACTION_ID)
 /** 知识分享 */
-const knowledgeId = ref('')
+const knowledgeId = ref(KNOWLEDGE_ID)
 
 /** 获取首页分类 */
-const getHomeClassList = async () => {
-  const { parentList } = await getArticleTypeListAPI()
-  homeNavClassList.value = parentList
-  const findInteraction = homeNavClassList.value.find((item) => item.postsTypeName === '互动解答')
-  const findKnow = homeNavClassList.value.find((item) => item.postsTypeName === '知识分享')
-  interactionId.value = findInteraction.postsTypeId
-  knowledgeId.value = findKnow.postsTypeId
-}
+// const getHomeClassList = async () => {
+//   const { parentList } = await getArticleTypeListAPI()
+//   homeNavClassList.value = parentList
+//   const findInteraction = homeNavClassList.value.find((item) => item.postsTypeName === '互动解答')
+//   const findKnow = homeNavClassList.value.find((item) => item.postsTypeName === '知识分享')
+//   interactionId.value = findInteraction.postsTypeId
+//   knowledgeId.value = findKnow.postsTypeId
+// }
 onMounted(() => {
   getNoticeList()
-  getHomeClassList()
 })
 
 /** 热门互动数据 */
@@ -83,7 +83,7 @@ getDataList()
           </div>
         </div>
         <div class="nav-box">
-          <NavCard v-if="homeNavClassList.length > 0" :list="homeNavClassList" />
+          <NavCard />
         </div>
         <div class="official-announcement">
           <OfficialAnnouncement :isFetchData="isFetchHome" :noticeList="noticeNewList" :replyList="replyListData" />
@@ -91,18 +91,13 @@ getDataList()
         <div class="interaction">
           <InteractionAnswer
             :isFetchData="isFetchHome"
-            :moreId="interactionId"
+            :moreId="INTERACTION_ID"
             :hotDataList="hotInteractionDataList"
             :newDataList="newInteractionDataList"
           />
         </div>
         <div class="knowledge-share">
-          <KnowledgeShare
-            :isFetchData="isFetchHome"
-            :moreId="interactionId"
-            :hotDataList="hotKnowDataList"
-            :newDataList="newKnowDataList"
-          />
+          <KnowledgeShare :isFetchData="isFetchHome" :hotDataList="hotKnowDataList" :newDataList="newKnowDataList" />
         </div>
       </div>
       <div class="footer">

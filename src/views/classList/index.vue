@@ -5,31 +5,32 @@ import RightUser from './component/RightUser.vue'
 import { useRoute } from 'vue-router'
 import { getArticleTypeListAPI, getClassByIdAPI } from '@/api/home'
 import { ref } from 'vue'
+import Breadcrumb from '@/component/Breadcrumb/index.vue'
+import { INTERACTION_ID, KNOWLEDGE_ID, NOTICE_ID } from '@/const/home'
 
 const route = useRoute()
-/** 互动解答信息 */
-const nowPageDataInfo = ref<any>({})
-/** 页面分配 */
-const pageClassList = ref<any[]>([])
-/** 获取 */
-/** 获取帖子分类 */
-const getArticleType = async (id: string) => {
-  const { parentList } = await getArticleTypeListAPI()
-  const findItem = parentList?.find((item: any) => item.postsTypeId === id)
-  if (!findItem) return
-  nowPageDataInfo.value = { ...findItem }
-  pageClassList.value = await getClassByIdAPI({ id })
-  const one = { postsTypeName: '全部', postsTypeId: 'all', postsTypeDesc: '全部数据' }
-  pageClassList.value.unshift(one)
-  pageClassList.value.forEach((item) => {
-    item.pid = id
-  })
-}
-
+/** 父专栏 name */
+const activeCardName = ref('knowledge')
+/** 父专栏 ID */
+const activePid = ref(KNOWLEDGE_ID)
 /** 解析跳转路由参数 */
 function handleRouteQuery() {
-  const { type }: any = route.query
-  getArticleType(type)
+  console.log('route.name--->', route.name)
+  const name = route.name
+  activeCardName.value = name as string
+  switch (name) {
+    case 'knowledge':
+      activePid.value = KNOWLEDGE_ID
+      break
+    case 'interaction':
+      activePid.value = INTERACTION_ID
+      break
+    case 'notice':
+      activePid.value = NOTICE_ID
+      break
+    default:
+      break
+  }
 }
 handleRouteQuery()
 </script>
@@ -37,12 +38,15 @@ handleRouteQuery()
 <template>
   <div class="class-list-box">
     <div class="class-list">
+      <!-- <div style="width: 100%; height: 30px">
+        <Breadcrumb />
+      </div> -->
       <div class="nav">
-        <NavClass :params="nowPageDataInfo" />
+        <NavClass :activeCardName="activeCardName" />
       </div>
       <div class="main-box">
         <div class="main-list">
-          <TabList :params="pageClassList" />
+          <TabList :pid="activePid" />
         </div>
         <div class="user-right">
           <RightUser />

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { ref } from 'vue'
 import PageList from './PageList.vue'
-import { getInteractionListAPI } from '@/api/home'
+import { getClassByIdAPI, getInteractionListAPI } from '@/api/home'
 
-const props = defineProps<{ params: any[] }>()
+const props = defineProps<{ pid: string }>()
 
 const activeName = ref('all')
 
@@ -19,6 +19,9 @@ const filterBtnList = [
 ]
 const isFine = ref(0)
 
+/** 页面分配 */
+const pageClassList = ref<any[]>([])
+
 /** 当前页 */
 const currentPage = ref(1)
 /** 总共页数 */
@@ -30,14 +33,10 @@ const sonClassId = ref('')
 
 /** 获取互动解答,知识分享数据接口 */
 const getInteractionListData = async () => {
-  if (props.params.length === 0) {
-    return
-  }
-  const pid = props.params[0].pid
   const params = {
-    PageNum: currentPage.value + '',
+    PageNum: (currentPage.value - 1) * 20 + '',
     PageSize: '20',
-    PostsTypePID: pid,
+    PostsTypePID: props.pid,
     PostsType: sonClassId.value,
     CollectNum: true,
     isFine: isFine.value === 1 ? '1' : '0',
@@ -46,6 +45,15 @@ const getInteractionListData = async () => {
   tableDataList.value = list
   pageTotal.value = total
 }
+
+/** 获取 tablist 数据 */
+const gatTabList = async () => {
+  pageClassList.value = await getClassByIdAPI({ id: props.pid })
+  const one = { postsTypeName: '全部', postsTypeId: 'all', postsTypeDesc: '全部数据' }
+  pageClassList.value.unshift(one)
+  await getInteractionListData()
+}
+gatTabList()
 
 const filterChangeBtn = (name: string) => {
   if (name === 'isFine') {
@@ -70,13 +78,6 @@ function handleClick(tabName: string) {
 const handleCurrentChange = () => {
   getInteractionListData()
 }
-watch(
-  () => props.params.length,
-  () => {
-    sonClassId.value = ''
-    getInteractionListData()
-  },
-)
 </script>
 
 <template>
@@ -85,7 +86,12 @@ watch(
       <div class="select-btn">
         <k-slider-button @change="filterChangeBtn" :items="filterBtnList" active="onFine"></k-slider-button>
       </div>
-      <k-tab-pane v-for="(item, index) in params" :key="index" :label="item.postsTypeName" :name="item.postsTypeId">
+      <k-tab-pane
+        v-for="(item, index) in pageClassList"
+        :key="index"
+        :label="item.postsTypeName"
+        :name="item.postsTypeId"
+      >
         <div class="tab-div-content">
           <PageList :tableData="tableDataList" />
         </div>

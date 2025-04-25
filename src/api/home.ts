@@ -116,7 +116,6 @@ export const getInteractionListAPI = async (params: any) => {
     rows.push(row)
     table.next()
   }
-  console.log('res.data--->', res.data)
   const total = res.data.DataCount || 0
   return { list: rows, total }
 }

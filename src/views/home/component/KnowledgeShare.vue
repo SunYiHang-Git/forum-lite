@@ -3,9 +3,7 @@ import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const { moreId, hotDataList, newDataList, isFetchData } = defineProps<{
-  /** 父级专栏的 id */
-  moreId: string
+const { hotDataList, newDataList, isFetchData } = defineProps<{
   /** 热门互动数据 */
   hotDataList: any[]
   /** 最新互动数据 */
@@ -15,7 +13,7 @@ const { moreId, hotDataList, newDataList, isFetchData } = defineProps<{
 }>()
 
 function lookMore() {
-  router.push({ path: '/class', query: { type: moreId } })
+  router.push('/class/knowledge')
 }
 
 const goDetail = (item: any) => {

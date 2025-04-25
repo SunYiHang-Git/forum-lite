@@ -23,7 +23,7 @@ const { setUserInfo } = useUser()
 const isRememberStatus = ref<boolean>(false)
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  account: 'RPAadmin',
+  account: '13213728520',
   password: '1',
 })
 const rules = reactive<FormRules<RuleForm>>({

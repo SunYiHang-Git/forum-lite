@@ -17,6 +17,10 @@ const router = useRouter()
 const goDetail = (item: any) => {
   router.push(`/detail/${item.id}`)
 }
+
+function lookMore() {
+  router.push('/class/notice')
+}
 </script>
 
 <template>
@@ -24,7 +28,7 @@ const goDetail = (item: any) => {
     <div class="announcement">
       <div class="reply-header">
         <div class="title-note">官方公告</div>
-        <k-button text class="more">更多</k-button>
+        <k-button text class="more" @click="lookMore">更多</k-button>
       </div>
       <div class="announcement-list">
         <k-skeleton v-if="!isFetchData" :rows="5" animated />

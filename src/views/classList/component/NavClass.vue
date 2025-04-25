@@ -1,25 +1,23 @@
 <script setup lang="ts">
-import interactionSvg from '@/assets/svg/interaction.svg'
-import noticeSvg from '@/assets/svg/notice.svg'
-import knowledgeSvg from '@/assets/svg/knowledge.svg'
+import { NavCardList } from '@/const/home'
 
-const { params } = defineProps<{
-  params: any
+const { activeCardName } = defineProps<{
+  activeCardName: string
 }>()
 </script>
 
 <template>
   <div class="nav-class">
     <div class="left-name dfc">
-      <div class="icon dfc">
-        <img v-if="params.postsTypeName === '互动解答'" :src="interactionSvg" />
-        <img v-if="params.postsTypeName === '知识分享'" :src="knowledgeSvg" />
-        <img v-if="params.postsTypeName === '公告'" :src="noticeSvg" />
-      </div>
-      <div class="name-box">
-        <div class="name">{{ params.postsTypeName }}</div>
-        <div class="desc">{{ params.postsTypeDesc }}</div>
-      </div>
+      <template v-for="(item, index) in NavCardList" :key="index">
+        <div class="icon dfc" v-if="item.name === activeCardName">
+          <img :src="item.imgSvg" />
+        </div>
+        <div v-if="item.name === activeCardName" class="name-box">
+          <div class="name">{{ item.label }}</div>
+          <div class="desc">{{ item.desc }}</div>
+        </div>
+      </template>
     </div>
     <div class="right-btn dfc">
       <div class="search-box">

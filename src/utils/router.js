@@ -29,48 +29,89 @@ export const routeList = [
     component: () => import('@/views/login/index.vue'),
   },
   {
-    path: '/',
-    name: 'layout',
+    path: '/home',
+    name: 'homeLayout',
     component: Layout,
     children: [
       {
-        path: '/home',
+        path: '',
         name: 'Home',
         component: () => import('@/views/home/index.vue'),
-        meta: { title: '金智维rpa论坛', icon: 'el-icon-s-home' },
+        meta: { title: '金智维rpa论坛', icon: 'el-icon-s-home', breadcrumb: '社区首页' },
       },
+    ],
+  },
+  {
+    path: '/class',
+    name: 'classLayout',
+    component: Layout,
+    children: [
       {
-        path: '/class',
-        name: 'Class',
+        path: 'knowledge',
+        name: 'knowledge',
         component: () => import('@/views/classList/index.vue'),
-        meta: { title: '论坛分类', icon: 'el-icon-s-home' },
+        meta: { title: '论坛分类', icon: 'el-icon-s-home', breadcrumb: '知识分享' },
       },
       {
-        path: '/article/:id',
+        path: 'interaction',
+        name: 'interaction',
+        component: () => import('@/views/classList/index.vue'),
+        meta: { title: '论坛分类', icon: 'el-icon-s-home', breadcrumb: '互动解答' },
+      },
+      {
+        path: 'notice',
+        name: 'notice',
+        component: () => import('@/views/classList/index.vue'),
+        meta: { title: '论坛分类', icon: 'el-icon-s-home', breadcrumb: '官方公告' },
+      },
+    ],
+  },
+  {
+    path: '/article/:id',
+    name: 'articleLayout',
+    component: Layout,
+    children: [
+      {
+        path: '',
         name: 'article',
         component: () => import('@/views/Article/PostArticle.vue'),
-        meta: { title: '发/编辑帖子', icon: 'el-icon-s-home' },
+        meta: { title: '发/编辑帖子', icon: 'el-icon-s-home', breadcrumb: '发表帖子' },
       },
+    ],
+  },
+  {
+    path: '/detail/:id',
+    name: 'detailLayout',
+    component: Layout,
+    children: [
       {
-        path: '/detail/:id',
+        path: '',
         name: 'detail',
         component: () => import('@/views/Article/ArticleDetail.vue'),
-        meta: { title: '帖子详情', icon: 'el-icon-s-home' },
+        meta: { title: '帖子详情', icon: 'el-icon-s-home', breadcrumb: '帖子详情' },
       },
+    ],
+  },
+  {
+    path: '/user',
+    name: 'userLayout',
+    component: Layout,
+    children: [
       {
-        path: '/user',
+        path: '',
         name: 'user',
         component: () => import('@/views/User/index.vue'),
-        meta: { title: '我的', icon: 'el-icon-s-home' },
+        meta: { title: '我的', icon: 'el-icon-s-home', breadcrumb: '我的主页' },
       },
       {
         path: '/user-info',
         name: 'userInfo',
         component: () => import('@/views/User/InforMation.vue'),
-        meta: { title: '编辑资料', icon: 'el-icon-s-home' },
+        meta: { title: '编辑资料', icon: 'el-icon-s-home', breadcrumb: '用户资料' },
       },
     ],
   },
+
   // 模版页面,用户管理页面
   // {
   //   path: '/userMgrJson',
