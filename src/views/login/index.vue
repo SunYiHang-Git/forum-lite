@@ -3,6 +3,7 @@ import imgBg from '@/assets/images/login_bg.png'
 import CloudPage from './component/index.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ref, watch } from 'vue'
+import LoginRPAImg from './component/LoginRPAImg.vue'
 const route = useRoute()
 const router = useRouter()
 /** 登录, 注册, 重置的类型 */
@@ -29,7 +30,7 @@ watch(
 </script>
 
 <template>
-  <div class="login-big-box dfc">
+  <div class="login-big-box">
     <div class="login-box">
       <div class="title-box">
         <div class="k">K</div>
@@ -38,7 +39,7 @@ watch(
       <div class="content dfc">
         <div class="login-bg">
           <div class="bg">
-            <img :src="imgBg" />
+            <LoginRPAImg />
           </div>
         </div>
         <div class="login-form-box">
@@ -61,8 +62,10 @@ watch(
   display: flex;
   justify-content: center;
   width: 100vw;
-  height: 100vh;
+  min-width: 1200px;
+  min-height: 100vh;
   background-color: gradient(238deg, rgba(239, 246, 255, 0.5) 2%, rgba(245, 243, 255, 0.5) 100%), #ffffff;
+  overflow: auto;
 }
 .login-box {
   display: flex;
@@ -72,6 +75,7 @@ watch(
   min-width: 800px;
   width: 100%;
   height: 100%;
+
   .title-box {
     display: flex;
     justify-content: start;
@@ -79,6 +83,10 @@ watch(
     gap: 10px;
     width: fit-content;
     height: 50px;
+    width: 100%;
+    @media (max-width: 960px) {
+      padding-left: 40px;
+    }
     .k {
       width: 24px;
       height: 24px;
@@ -110,6 +118,9 @@ watch(
     height: 100%;
     padding: 30px;
     box-sizing: border-box;
+    @media (max-width: 960px) {
+      display: none; // 当屏幕宽度小于960px时，隐藏login-bg
+    }
     .bg {
       max-width: 23.75rem;
       min-width: 10rem;
@@ -130,12 +141,17 @@ watch(
     height: 100%;
     box-sizing: border-box;
     padding-left: 20px;
+    @media (max-width: 960px) {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
     .main {
       width: 380px;
       height: 540px;
       border-radius: 16px;
       background-color: #fff;
-      margin-bottom: 2rem;
       box-shadow: 0px 7px 29px 0px rgba(100, 100, 111, 0.2);
       overflow: hidden;
     }

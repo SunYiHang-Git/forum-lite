@@ -122,6 +122,7 @@ const goDetail = (item: any) => {
   gap: 24px;
   position: relative;
   width: 100%;
+  min-width: 1200px;
   height: 568px;
   box-sizing: border-box;
   padding: 40px 0;
@@ -132,6 +133,7 @@ const goDetail = (item: any) => {
     left: 50%;
     transform: translateX(-50%);
     width: 100vw;
+    min-width: 1280px;
     height: 568px;
     background-color: #f3f3f3;
     z-index: 1;

@@ -234,7 +234,7 @@ const handleEditInfo = () => {
   }
   .user-top {
     width: 100%;
-    max-width: 1380px;
+    max-width: 1200px;
     min-width: 960px;
     .breadcrumb {
       display: flex;
@@ -288,7 +288,7 @@ const handleEditInfo = () => {
     justify-content: space-between;
     gap: 16px;
     align-items: start;
-    max-width: 1380px;
+    max-width: 1200px;
     min-width: 960px;
     width: 100%;
     .left-list-box {

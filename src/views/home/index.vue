@@ -202,6 +202,7 @@ getDataList()
         left: 50%;
         transform: translateX(-50%);
         width: 100vw;
+        min-width: 1280px;
         height: 426px;
       }
     }

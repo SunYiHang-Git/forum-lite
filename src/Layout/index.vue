@@ -21,15 +21,19 @@ import TopNav from './component/TopNav.vue'
   justify-content: center;
   max-width: 100vw;
   min-height: 100vh;
+  min-width: 1280px;
+  box-sizing: border-box;
+  overflow: auto;
   .el-container {
+    width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
-    width: 100%;
     .el-header {
-      max-width: 1200px;
+      width: 100%;
+      min-width: 1200px;
       width: 100%;
       height: 60px;
       padding: 0;
@@ -40,6 +44,7 @@ import TopNav from './component/TopNav.vue'
       padding: 0;
       width: 100%;
       overflow: visible;
+      // overflow-x: hidden;
     }
   }
 }
