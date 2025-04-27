@@ -2,6 +2,7 @@ import { getToken, setToken } from '@ksware/micro-lib-web-temp'
 import router from './utils/router'
 import { getUrlParamByName } from '@/utils/auth'
 import { useRouterInfo, type IBreadcrumbs } from '@/store/modules/useRouterInfo'
+import { useUser } from './store/modules/user'
 
 const toRouterList = ['/home', '/login']
 const permNameList = ['/application']
@@ -9,16 +10,25 @@ const permNameList = ['/application']
 // 路由执行前加载缓存数据
 router.beforeEach((to, from, next) => {
   const urlToken = getUrlParamByName('Token')
-  console.log('urlToken--->', urlToken)
+  /** url 携带 token */
   if (urlToken) {
     setToken(urlToken)
     const url = location.href.replace(/token=[a-z0-9]{32}/i, '')
-    console.log('url--->', url)
     history.replaceState({}, '', url)
     next('/home')
     return
   }
+  /** 没有 token */
   if (!getToken() && to.path !== '/login') {
+    const { userInfo, exitLogin } = useUser()
+    /** 记住登录状态 */
+    if (userInfo.token && userInfo.rememberInfo) {
+      setToken(userInfo.token)
+      next(to.path)
+      return
+    }
+    /** 没有记住登录状态 */
+    exitLogin() // 清空信息
     next('/login' + `?toRedirectPath=${to.fullPath}`)
     return
   }
@@ -43,5 +53,7 @@ router.beforeEach((to, from, next) => {
       setBreadcrumbList(obj)
     }
   }
+  const title = to.meta && to.meta.title ? to.meta.title : 'RPA Lite 论坛'
+  document.title = title as string
   next()
 })

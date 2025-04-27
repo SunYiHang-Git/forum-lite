@@ -16,7 +16,6 @@ interface RuleForm {
   password: string
 }
 
-const router = useRouter()
 const { setUserInfo } = useUser()
 
 /** 是否记住状态 */
@@ -72,7 +71,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     fullName: FullName,
   }
   setUserInfo(userInfoObj)
-  // router.push('/')
   emits('loginSuccess')
 }
 

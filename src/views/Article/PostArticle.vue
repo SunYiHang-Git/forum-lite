@@ -63,11 +63,15 @@ const getArticleInfo = async (id: string) => {
 /** pageTitle */
 const pageTitle = computed(() => (articleInfo.value?.id ? '编辑' : '发布'))
 const pageSubmitText = computed(() => (articleInfo.value?.id ? '修改发布' : '发布'))
+
+/** 初始化,判断是发布还是编辑 */
 function getRouteId() {
   const { id } = route.params
   if (id === MD5('add')) {
+    // 发布
     return
   }
+  // 编辑
   getArticleInfo(id as string)
 }
 getRouteId()

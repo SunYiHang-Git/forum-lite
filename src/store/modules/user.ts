@@ -28,7 +28,7 @@ export interface IUserInfo {
   role: 0 | 1 | 2 | 3
   /** 登录状态 */
   loginStatus: false
-  /** 记住用户信息 */
+  /** 记住登录状态 */
   rememberInfo: boolean
   /** 手机号 */
   phone: string

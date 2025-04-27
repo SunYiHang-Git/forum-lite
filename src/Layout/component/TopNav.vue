@@ -87,15 +87,13 @@ async function layout() {
   clearSessionStorage()
   clearBreadcrumbList()
   await nextTick()
-  // TODO 是否清楚路由
-  // router.replace('/login')
+  router.replace('/login')
 }
 function handleCommand(name: string) {
   switch (name) {
     case 'exit':
       layout()
       return
-
     default:
       return
   }
@@ -112,7 +110,7 @@ function goRegister() {
 
 /** 发帖 */
 const postArticle = async () => {
-  router.push('/article/' + MD5('add'))
+  router.push('/article/add/' + MD5('add'))
 }
 </script>
 

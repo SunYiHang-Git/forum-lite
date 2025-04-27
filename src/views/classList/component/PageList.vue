@@ -17,11 +17,7 @@ const router = useRouter()
 const handleDetail = (item: any) => {
   // router.push(`/detail/${item.id}`)
   const newUrl = window.location.origin + `/#/detail/${item.id}`
-  console.log('window.location--->', window.location)
-  console.log('newUrl--->', newUrl)
   window.open(newUrl, '_blank')
-  // const routePath = router.resolve({ name: 'detail', params: { id: item.id } })
-  // window.open(routePath.href, '_blank')
 }
 </script>
 

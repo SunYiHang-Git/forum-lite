@@ -263,7 +263,7 @@ const confirmDelArticle = async () => {
 
 /** 去编辑页面 */
 const goEditPage = () => {
-  router.push(`/article/${articleInfo.value.id}`)
+  router.push(`/article/edit/${articleInfo.value.id}`)
 }
 const handleCommand = (command: string) => {
   switch (command) {

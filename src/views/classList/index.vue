@@ -3,7 +3,6 @@ import NavClass from './component/NavClass.vue'
 import TabList from './component/TabList.vue'
 import RightUser from './component/RightUser.vue'
 import { useRoute } from 'vue-router'
-import { getArticleTypeListAPI, getClassByIdAPI } from '@/api/home'
 import { ref } from 'vue'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import { INTERACTION_ID, KNOWLEDGE_ID, NOTICE_ID } from '@/const/home'
@@ -15,7 +14,6 @@ const activeCardName = ref('knowledge')
 const activePid = ref(KNOWLEDGE_ID)
 /** 解析跳转路由参数 */
 function handleRouteQuery() {
-  console.log('route.name--->', route.name)
   const name = route.name
   activeCardName.value = name as string
   switch (name) {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getArticleTypeListAPI, getClassByIdAPI, getUserASllTypeNumAPI } from '@/api/home'
+import { getArticleTypeListAPI, getUserASllTypeNumAPI } from '@/api/home'
 import { useUser } from '@/store/modules/user'
 import MakeCenter from '@/views/User/components/MakeCenter.vue'
 import HotCard from '@/views/classList/component/HotCard.vue'

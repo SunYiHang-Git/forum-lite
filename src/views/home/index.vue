@@ -14,9 +14,7 @@ import { INTERACTION_ID, KNOWLEDGE_ID } from '@/const/home'
 const { userInfo } = storeToRefs(useUser())
 async function makeTokenLogin() {
   const { loginId } = userInfo.value
-  console.log('loginId--->', loginId)
   if (loginId) return
-  console.log('111--->')
   await getRPAUserAPI()
 }
 makeTokenLogin()

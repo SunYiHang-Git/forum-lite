@@ -3,9 +3,24 @@ import { getUserASllTypeNumAPI } from '@/api/home'
 import MakeCenterSvg from '@/assets/svg/make-center.svg'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
+interface IPropsParams {
+  ArticleCount: number
+  ByCollectCount: number
+  CollectNum: number
+  MonthByCollectCount: number
+  MonthByReplyCount: number
+  MonthPostCount: number
+  MonthReplyCount: number
+  PostCount: number
+  QuestionCount: number
+  RegisterTime: string
+  ReplyCount: number
+  City: string
+  Signature: string
+}
 
 const { params } = defineProps<{
-  params: any
+  params: IPropsParams
 }>()
 </script>
 
@@ -19,15 +34,15 @@ const { params } = defineProps<{
     </div>
     <div class="bottom">
       <div class="post">
-        <div class="num">{{ params.ArticleCount + params.QuestionCount }}</div>
+        <div class="num">{{ params.ArticleCount + params.QuestionCount || 0 }}</div>
         <div class="type-name">帖子</div>
       </div>
       <div class="collect">
-        <div class="num">{{ params.ByCollectCount }}</div>
+        <div class="num">{{ params.ByCollectCount || 0 }}</div>
         <div class="type-name">被收藏</div>
       </div>
       <div class="comment">
-        <div class="num">{{ params.ReplyCount }}</div>
+        <div class="num">{{ params.ReplyCount || 0 }}</div>
         <div class="type-name">评论</div>
       </div>
     </div>
