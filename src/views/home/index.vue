@@ -14,7 +14,9 @@ import { INTERACTION_ID, KNOWLEDGE_ID } from '@/const/home'
 const { userInfo } = storeToRefs(useUser())
 async function makeTokenLogin() {
   const { loginId } = userInfo.value
+  console.log('loginId--->', loginId)
   if (loginId) return
+  console.log('111--->')
   await getRPAUserAPI()
 }
 makeTokenLogin()
@@ -146,7 +148,6 @@ getDataList()
           height: 232px;
           border-radius: 12px;
           overflow: hidden;
-          background-color: pink;
         }
         .userInfo-box {
           top: 0px;

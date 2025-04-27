@@ -1,4 +1,23 @@
-const KEY = '__K-RPA Lite__'
+import { useStorage } from '@/store/modules/storage'
+
+const KEY = '__K-RPA Lite__FORUM_'
+
+/**
+ * 拼接 key
+ *
+ * @param key
+ * @returns
+ */
+function montageKey(key: string, type?: 'local' | 'session'): string {
+  const { setLocalStorageList, setSessionStorageList } = useStorage()
+  const _key = KEY + key
+  if (type === 'local') {
+    setLocalStorageList(_key)
+  } else if (type === 'session') {
+    setSessionStorageList(_key)
+  }
+  return _key
+}
 
 /**
  * 存储数据到本地
@@ -8,13 +27,15 @@ const KEY = '__K-RPA Lite__'
  */
 export const setLocalStorage = (key: string, data: any) => {
   const str = JSON.stringify(data)
-  localStorage.setItem(KEY + key, str)
+  const _key = montageKey(key, 'local')
+  localStorage.setItem(_key, str)
 }
 
 /** 从本地获取数据 */
 export const getLocalStorage = (key: string) => {
   try {
-    const str = localStorage.getItem(KEY + key) ?? ''
+    const _key = montageKey(key)
+    const str = localStorage.getItem(_key) ?? ''
     return JSON.parse(str)
   } catch (error) {
     return ''
@@ -23,12 +44,14 @@ export const getLocalStorage = (key: string) => {
 
 /** 根据key删除本地存储 */
 export const removeLocalStorageByKey = (key: string) => {
-  localStorage.removeItem(KEY + key)
+  const _key = montageKey(key)
+  localStorage.removeItem(_key)
 }
 
 /** 清空本地所有数据 */
 export const clearLocalStorage = () => {
-  localStorage.clear()
+  const { clearSpecificLocalStorageList } = useStorage()
+  clearSpecificLocalStorageList()
 }
 
 /**
@@ -39,13 +62,15 @@ export const clearLocalStorage = () => {
  */
 export const setSessionStorage = (key: string, data: any) => {
   const str = JSON.stringify(data)
-  sessionStorage.setItem(KEY + key, str)
+  const _key = montageKey(key, 'session')
+  sessionStorage.setItem(_key, str)
 }
 
 /** 从本地获取临时数据 */
 export const getSessionStorage = (key: string) => {
   try {
-    const str = sessionStorage.getItem(KEY + key) ?? ''
+    const _key = montageKey(key)
+    const str = sessionStorage.getItem(_key) ?? ''
     return JSON.parse(str)
   } catch (error) {
     return ''
@@ -53,12 +78,14 @@ export const getSessionStorage = (key: string) => {
 }
 /** 根据key删除临时存储 */
 export const removeSessionStorageByKey = (key: string) => {
-  sessionStorage.removeItem(KEY + key)
+  const _key = montageKey(key)
+  sessionStorage.removeItem(_key)
 }
 
 /** 清空本地所有临时数据 */
 export const clearSessionStorage = () => {
-  sessionStorage.clear()
+  const { clearSpecificSessionStorageList } = useStorage()
+  clearSpecificSessionStorageList()
 }
 
 // 获取浏览器地址参数，如果name = true  则返回全部参数对象

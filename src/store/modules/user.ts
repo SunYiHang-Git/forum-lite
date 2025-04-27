@@ -1,4 +1,5 @@
 import { clearLocalStorage, clearSessionStorage, getSessionStorage, setSessionStorage } from '@/utils/auth'
+import { removeToken } from '@ksware/micro-lib-web-temp'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 export interface IUserInfo {
@@ -120,9 +121,11 @@ export const useUser = defineStore(
     }
     /** 退出登录 */
     function exitLogin() {
+      console.log('清空--->')
       clearUserInfoStore()
       clearLocalStorage()
       clearSessionStorage()
+      removeToken()
     }
     return {
       userInfo,

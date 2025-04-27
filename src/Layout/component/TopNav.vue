@@ -8,7 +8,8 @@ import { clearLocalStorage, clearSessionStorage } from '@/utils/auth'
 import { storeToRefs } from 'pinia'
 import { helpDocumentUel, liteHomeUrl } from '@/views/home'
 import { MD5 } from '@ksware/micro-lib-web-temp'
-const { clearUserInfoStore } = useUser()
+import { useRouterInfo } from '@/store/modules/useRouterInfo'
+const { clearBreadcrumbList } = useRouterInfo()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
 const searchValue = ref<string>('')
@@ -80,9 +81,11 @@ async function layout() {
     cancelButtonText: '取消',
     type: 'warning',
   })
-  clearUserInfoStore()
+  const { exitLogin } = useUser()
+  exitLogin()
   clearLocalStorage()
   clearSessionStorage()
+  clearBreadcrumbList()
   await nextTick()
   // TODO 是否清楚路由
   // router.replace('/login')

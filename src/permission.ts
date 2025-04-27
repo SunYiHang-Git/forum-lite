@@ -9,15 +9,16 @@ const permNameList = ['/application']
 // 路由执行前加载缓存数据
 router.beforeEach((to, from, next) => {
   const urlToken = getUrlParamByName('Token')
+  console.log('urlToken--->', urlToken)
   if (urlToken) {
     setToken(urlToken)
     const url = location.href.replace(/token=[a-z0-9]{32}/i, '')
+    console.log('url--->', url)
     history.replaceState({}, '', url)
     next('/home')
     return
   }
   if (!getToken() && to.path !== '/login') {
-    console.log('to--->', to)
     next('/login' + `?toRedirectPath=${to.fullPath}`)
     return
   }
