@@ -54,10 +54,8 @@ const uploadImageAPI = async (file: File): Promise<string> => {
     const imgRes: any = await callServerFunc('TRPADM', 'RPAUploadForumPic', params, { isUpload: true, file })
     const ServerFile = imgRes.data.ImgUrl
     const imgUrl = fileHostUrl + ServerFile
-    console.log('imgUrl--->', imgUrl)
     return imgUrl
     // const a = 'https://cdn.pixabay.com/photo/2022/02/13/17/22/cartoon-easter-bunny-7011655_1280.jpg'
-    // return a
   } catch (error: any) {
     throw new Error(error.message || '图片上传失败')
   }

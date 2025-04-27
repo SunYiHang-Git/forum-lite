@@ -121,7 +121,6 @@ export const useUser = defineStore(
     }
     /** 退出登录 */
     function exitLogin() {
-      console.log('清空--->')
       clearUserInfoStore()
       clearLocalStorage()
       clearSessionStorage()

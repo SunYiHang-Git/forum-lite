@@ -7,7 +7,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { callServerFunc, getGuid, MD5 } from '@ksware/micro-lib-web-temp'
 import { fileHostUrl } from '@/views/home/index'
 import { getArticleInfoById, getArticleTypeListAPI } from '@/api/home'
-import { htmlToMarkdown } from '@/utils/format'
 
 interface RuleForm {
   /** 标题 */
@@ -55,9 +54,7 @@ const getArticleInfo = async (id: string) => {
   const { title, type, content, abstract, tag, cover } = articleInfo.value
   ruleForm.title = title
   ruleForm.type = type
-  ruleForm.content = htmlToMarkdown(content)
-  console.log('content--->', content)
-  console.log('ruleForm.content--->', htmlToMarkdown(ruleForm.content))
+  ruleForm.content = content
   ruleForm.abstract = abstract
   ruleForm.tags = tag
   ruleForm.cover = cover
@@ -82,7 +79,6 @@ const columnOptions = ref<any[]>([])
 const getHomeClassList = async () => {
   const { parentList, sonList } = await getArticleTypeListAPI()
   columnOptions.value = parentList.map(({ postsTypeId, postsTypeName }: any) => {
-    // const children = sonList.filter((item: any) => item.pid === postsTypeId)
     const children = sonList
       .filter((item: any) => item.pid === postsTypeId)
       .map((item: any) => {
@@ -90,10 +86,6 @@ const getHomeClassList = async () => {
       })
     return { value: postsTypeId, label: postsTypeName, children }
   })
-  // const findInteraction: any = homeNavClassList.find((item) => item.postsTypeName === '互动解答')
-  // const findKnow = homeNavClassList.find((item) => item.postsTypeName === '知识分享')
-  // interactionId.value = findInteraction.postsTypeId
-  // knowledgeId.value = findKnow.postsTypeId
 }
 getHomeClassList()
 const handleChange = (arr: any): void => {

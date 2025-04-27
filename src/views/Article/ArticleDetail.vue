@@ -16,6 +16,7 @@ import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import RightHotCard from '@/views/Article/RightHotCard.vue'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import { convertMarkdownToHtml } from '@/utils/format'
+import { useUser } from '@/store/modules/user'
 
 const router = useRouter()
 
@@ -63,10 +64,59 @@ const getReplyData = async () => {
   })
   replyArticleList.value = firstList
 }
+const dropDownItemList = ref<any[]>([])
+/** 初始化下拉菜单 */
+function initDropDown() {
+  const { isAdminByUser, userInfo } = useUser()
+  const arr = [
+    {
+      name: '编辑',
+      icon: 'IconEdit',
+      command: 'edit',
+    },
+    {
+      name: articleInfo.value.isFine ? '取消精选' : '精选',
+      icon: 'IconEdit',
+      command: 'essence',
+    },
+    {
+      name: articleInfo.value.isTop ? '取消置顶' : '置顶',
+      icon: 'IconSortTop',
+      command: 'top',
+    },
+    {
+      name: '锁定',
+      icon: 'IconLocked',
+      command: 'lock',
+    },
+    {
+      name: '删除',
+      icon: 'IconDelete',
+      command: 'delete',
+    },
+  ]
+  const isAuthor = articleInfo.value.createUser === userInfo.loginId
+  console.log('isAuthor--->', isAuthor)
+
+  if (isAdminByUser()) {
+    // 是管理员
+    dropDownItemList.value = arr
+  } else if (isAuthor) {
+    // 不是管理员,是作者,可以编辑
+    dropDownItemList.value = [
+      {
+        name: '编辑',
+        icon: 'IconEdit',
+        command: 'edit',
+      },
+    ]
+  }
+}
 
 async function initWindow() {
   await getArticleInfo(ArticleId.value)
   await getReplyData()
+  initDropDown()
 }
 initWindow()
 /** 去评论的位置 */
@@ -150,43 +200,6 @@ const handleCollect = async () => {
   articleInfo.value.collectNum = articleInfo.value.collectNum + (collectValue ? 1 : -1)
 }
 
-const styleDropdownItem = {
-  width: '140px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: '8px',
-}
-
-const dropDownItemList = computed(() => {
-  return [
-    {
-      name: '编辑',
-      icon: 'IconEdit',
-      command: 'edit',
-    },
-    {
-      name: articleInfo.value.isFine ? '取消精选' : '精选',
-      icon: '',
-      command: 'essence',
-    },
-    {
-      name: articleInfo.value.isTop ? '取消置顶' : '置顶',
-      icon: 'IconSortTop',
-      command: 'top',
-    },
-    {
-      name: '锁定',
-      icon: 'IconLocked',
-      command: 'lock',
-    },
-    {
-      name: '删除',
-      icon: 'IconDelete',
-      command: 'delete',
-    },
-  ]
-})
 /** 置顶 */
 const onTop = async () => {
   const { isTop, id } = articleInfo.value
@@ -281,6 +294,17 @@ const goTop = () => {
     behavior: 'smooth',
   })
 }
+const styleDropdownItem = {
+  width: '120px',
+}
+
+const styleTemplateDiv = {
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '16px',
+}
 </script>
 
 <template>
@@ -301,7 +325,12 @@ const goTop = () => {
                 <!-- <router-link :to="{ hash: '#textareaTEditor' }"><IconMessageOne :size="26" /></router-link> -->
               </k-badge>
             </div>
-            <k-dropdown placement="left-start" trigger="click" @command="handleCommand">
+            <k-dropdown
+              v-if="dropDownItemList.length > 1"
+              placement="left-start"
+              trigger="click"
+              @command="handleCommand"
+            >
               <template #title>
                 <div class="more-box">
                   <IconMore
@@ -323,14 +352,16 @@ const goTop = () => {
                   v-for="item in dropDownItemList"
                   :key="item.command"
                   :style="styleDropdownItem"
-                  :icon="item.icon"
                   :command="item.command"
                 >
-                  <template #default v-if="item.command !== 'essence'">
-                    <!-- {{ item.name }} -->
-                    <span style="width: 80px">{{ item.name }}</span>
+                  <!-- :icon="item.icon" -->
+                  <template #default>
+                    <div :style="styleTemplateDiv">
+                      <component :is="item.icon" />
+                      <span style="width: 80px">{{ item.name }}</span>
+                    </div>
                   </template>
-                  <template #default v-if="item.command === 'essence'">
+                  <!-- <template #default v-if="item.command === 'essence'">
                     <span
                       style="
                         display: flex;
@@ -346,10 +377,26 @@ const goTop = () => {
                       精
                     </span>
                     <span style="width: 80px">{{ item.name }}</span>
-                  </template>
+                  </template> -->
                 </k-dropdown-item>
               </template>
             </k-dropdown>
+            <div class="more-box" v-if="dropDownItemList.length === 1">
+              <IconEdit
+                :size="26"
+                style="
+                  width: 42px;
+                  height: 42px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  background-color: #fff;
+                  cursor: pointer;
+                "
+                @click="goEditPage"
+              />
+            </div>
           </div>
           <div class="goTop">
             <div @click="goTop" class="top-icon dfc">
@@ -372,7 +419,7 @@ const goTop = () => {
               <div class="avatar dfc">
                 <k-image :src="articleInfo.userIcon"></k-image>
               </div>
-              <div class="username ove">{{ articleInfo.username }}</div>
+              <div class="username ove">{{ articleInfo.userName }}</div>
             </div>
             <div class="publish-time">发布于 {{ articleInfo.lastTime }}</div>
             <div class="show-num">{{ articleInfo.hot }} 浏览</div>
