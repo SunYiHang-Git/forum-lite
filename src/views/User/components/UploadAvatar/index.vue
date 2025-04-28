@@ -1,107 +1,146 @@
 <script setup lang="ts">
-import { useUser } from '@/store/modules/user'
-import { fileHostUrl } from '@/views/home'
-import { KMessage } from '@ksware/ksw-ux'
-import { callServerFunc } from '@ksware/micro-lib-web-temp'
-import type { UploadRawFile } from 'element-plus'
-import { computed, ref } from 'vue'
-const { setUserInfo } = useUser()
+import { ref } from 'vue'
 
-type Props = {
-  modelValue?: string
-  /** 接收类型 */
-  accept?: string[]
-  /** 尺寸 */
-  maxSize?: number
-  /** 上传前校验类型 */
-  validTypes?: string[]
-}
-const props = withDefaults(defineProps<Props>(), {
-  accept: () => ['jpg', 'png'],
-  maxSize: 2, // 默认最大2MB
-  validTypes: () => ['image/png', 'image/jpeg'],
-})
-
-const emits = defineEmits<{
-  (e: 'update:modelValue', src: string): void
+const { picture } = defineProps<{
+  picture: string
 }>()
 
-const acceptTypes = computed(() => {
-  return props.accept.map((ext) => `.${ext}`).join(', ')
-})
-// http://192.168.104.182:8888/UserIcon/20DA62D450BA4236BD70E2A937268DB1.jpg
-const imageUrl = ref(props.modelValue)
-/** 上传文件前 */
-const beforeAvatarUpload = (rawFile: any) => {
-  if (!props.validTypes.includes(rawFile.type)) {
-    const msg = `仅支持${acceptTypes.value.toUpperCase()}格式！`
-    KMessage.error(msg)
-    return false
-  }
-  // 检查文件大小是否超过2MB
-  if (rawFile.size / 1024 / 1024 > props.maxSize) {
-    KMessage.error(`文件大小不能超过${props.maxSize}MB！`)
-    return false
-  }
-  return true
-}
+const defaultPictures = [
+  { index: 1, src: '' },
+  { index: 2, src: '' },
+  { index: 3, src: '' },
+  { index: 4, src: '' },
+  { index: 5, src: '' },
+  { index: 6, src: '' },
+  { index: 7, src: '' },
+  { index: 8, src: '' },
+  { index: 9, src: '' },
+]
 
-const httpRequestFile = async ({ file }: { file: UploadRawFile }) => {
-  const type = file.name.split('.').pop()
-  const params = { FileType: '.' + type }
-  const { data }: any = await callServerFunc('TRPADM', 'RPAUploadIcon', params, { isUpload: true, file: file })
-  const ServerFile = data.UserIcon
-  const url = fileHostUrl + ServerFile
-  imageUrl.value = url.split('\\').join('/')
-  emits('update:modelValue', imageUrl.value)
-  setUserInfo({ avatar: imageUrl.value })
+const dialogVisible = ref(false)
+/** 打开选择头像弹框 */
+const showDialogPicture = () => {
+  console.log('picture--->', picture)
+  dialogVisible.value = true
+}
+/** 取消弹框 */
+const handleClose = () => {
+  dialogVisible.value = false
+}
+/** 确定弹框按钮 */
+const handleConfirm = () => {
+  //
 }
 </script>
 
 <template>
-  <div class="upload-image-box">
-    <k-upload
-      :show-file-list="false"
-      :accept="acceptTypes"
-      :before-upload="beforeAvatarUpload"
-      :http-request="httpRequestFile"
-    >
-      <template #trigger>
-        <div class="uploadIcon dfc">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-          <IconAdd v-else :size="44" class="k-uploader__icon" />
-        </div>
-      </template>
-    </k-upload>
+  <div class="upload-avatar-box">
+    <div class="img-box">
+      <img :src="picture" class="avatar-img" />
+    </div>
+    <div class="btn-box" @click="showDialogPicture">点击修改</div>
   </div>
+  <!-- 选择图片弹框 -->
+  <k-dialog v-model="dialogVisible" title="Tips" width="550" :show-close="false">
+    <template #header>
+      <div class="dialog-header">
+        更换头像
+        <IconClose style="cursor: pointer" @click="handleClose" />
+      </div>
+    </template>
+    <div class="dialog-main-box">
+      <div class="user-box">
+        <img :src="picture" />
+        <k-button>自定义上传</k-button>
+      </div>
+      <div class="select-photo-box">
+        <div class="grid-item-img" v-for="item in defaultPictures" :key="item.index">{{ item.index }}</div>
+      </div>
+    </div>
+    <template #footer>
+      <div class="dialog-footer">
+        <k-button @click="handleClose">取消</k-button>
+        <k-button type="primary" main @click="handleConfirm">确定</k-button>
+      </div>
+    </template>
+  </k-dialog>
 </template>
 
 <style lang="scss" scoped>
-.dfc {
+.upload-avatar-box {
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-}
-.upload-image-box {
+  gap: 12px;
   width: 100%;
   height: 100%;
-  :deep(.k-upload) {
-    width: 100%;
-    height: 100%;
-    div {
+  overflow: hidden;
+  .img-box {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    .avatar-img {
       width: 100%;
       height: 100%;
-      .uploadIcon {
-        width: 100%;
-        height: 100%;
+      object-fit: fill;
+    }
+  }
+  .btn-box {
+    height: 22px;
+    width: fit-content;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 22px;
+    color: #0f0b1c;
+    cursor: pointer;
+  }
+}
+.k-dialog {
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 24px;
+  }
+  .dialog-main-box {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 350px;
+    .user-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      justify-content: start;
+      width: 130px;
+      img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
         overflow: hidden;
-        .avatar {
-          width: 100%;
-          height: 100%;
-        }
       }
-      .el-upload__tip {
-        display: none;
+    }
+    .select-photo-box {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      width: 330px;
+      height: 330px;
+      border-radius: 16px;
+      background-color: #f9fafb;
+      justify-items: center; /* 水平居中对齐所有网格项 */
+      align-items: center;
+      .grid-item-img {
+        width: 92px;
+        height: 90px;
+        border-radius: 50%;
+        overflow: hidden;
+        background-color: pink;
+        cursor: pointer;
       }
     }
   }

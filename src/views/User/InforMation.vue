@@ -5,6 +5,7 @@ import EditUserDialog from '@/views/User/components/EditUserDialog.vue'
 import { useUser } from '@/store/modules/user'
 import { storeToRefs } from 'pinia'
 import { formatMobile } from '@/utils/check'
+// import UploadAvatar from '@/views/User/components/UploadFile/index.vue'
 import UploadAvatar from '@/views/User/components/UploadAvatar/index.vue'
 import { CheckPhoneCodeAPI, RPAApplyDeveloperAPI, SetRPAUserInfoAPI, SetRPAUserNewPassAPI } from '@/api/user'
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
@@ -31,6 +32,7 @@ interface RuleForm {
   signature: string
 }
 const { phone, userName, fullName, company, sex, city, avatar, signature, loginId, isDeveloper } = userInfo.value
+console.log('userInfo.value--->', userInfo.value)
 const cityArr = city.split('/')
 const avatarValue = ref(avatar ?? '')
 const env = import.meta.env
@@ -229,7 +231,7 @@ const props = {
             </k-form>
           </div>
           <div class="form-avatar-box">
-            <UploadAvatar v-model="avatarValue" />
+            <UploadAvatar :picture="avatarValue" />
           </div>
         </div>
       </div>
@@ -296,7 +298,7 @@ const props = {
     justify-content: start;
     gap: 24px;
     width: 100%;
-    max-width: 1380px;
+    max-width: 1200px;
     min-width: 960px;
     min-height: calc(100vh - 100px);
     margin-bottom: 50px;
@@ -337,10 +339,10 @@ const props = {
           width: 540px;
         }
         .form-avatar-box {
-          width: 80px;
-          height: 80px;
-          border-radius: 8px;
-          border: 1px dotted #dbdbdb;
+          width: 100px;
+          height: 134px;
+          // border-radius: 8px;
+          // border: 1px dotted #dbdbdb;
           overflow: hidden;
         }
       }

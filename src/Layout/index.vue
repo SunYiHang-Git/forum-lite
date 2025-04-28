@@ -33,6 +33,7 @@ import TopNav from './component/TopNav.vue'
     align-items: center;
     .el-header {
       width: 100%;
+      max-width: 1200px;
       min-width: 1200px;
       width: 100%;
       height: 60px;
@@ -44,6 +45,7 @@ import TopNav from './component/TopNav.vue'
       padding: 0;
       width: 100%;
       overflow: visible;
+      background-color: red;
       // overflow-x: hidden;
     }
   }
