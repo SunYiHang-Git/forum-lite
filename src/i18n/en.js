@@ -202,6 +202,7 @@ export default {
     exit: 'Exit',
     machineCode: 'Machine Code',
     authorize: 'Authorize',
+    max18: 'Up to eighteen characters',
   },
   /** 论坛 */
   forum: {

@@ -188,6 +188,7 @@ export default {
     exit: '退出',
     machineCode: '机器码',
     authorize: '授权',
+    max18: '最多十八个字符',
   },
   /** 论坛 */
   forum: {

@@ -12,8 +12,10 @@ import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import { MD5 } from '@ksware/micro-lib-web-temp'
 import { cityList } from '@/utils/city'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
+import { useCI18n } from '@/i18n'
 const { userInfo } = storeToRefs(useUser())
 const { setUserInfo } = useUser()
+const { t } = useCI18n()
 
 interface RuleForm {
   /** 昵称 */
@@ -32,7 +34,6 @@ interface RuleForm {
   signature: string
 }
 const { phone, userName, fullName, company, sex, city, avatar, signature, loginId, isDeveloper } = userInfo.value
-console.log('userInfo.value--->', userInfo.value)
 const cityArr = city.split('/')
 const avatarValue = ref(avatar ?? '')
 const env = import.meta.env
@@ -47,7 +48,15 @@ const ruleForm = reactive<RuleForm>({
   signature: signature,
 })
 const rules = reactive<FormRules<RuleForm>>({
-  userName: [{ required: true, message: '此为必填项', trigger: 'blur' }],
+  userName: [
+    { required: true, message: '此为必填项', trigger: 'blur' },
+    {
+      min: 1,
+      max: 18,
+      message: t('login.max18'),
+      trigger: 'blur',
+    },
+  ],
   fullName: [{ required: true, message: '此为必填项', trigger: 'blur' }],
   company: [{ required: true, message: '此为必填项', trigger: 'blur' }],
   sex: [{ required: true, message: '此为必选项', trigger: 'change' }],

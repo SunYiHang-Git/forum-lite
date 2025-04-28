@@ -40,7 +40,15 @@ const rules = reactive<FormRules<RuleForm>>({
   ],
   password: [{ required: true, message: ct('common.pwd', 'common.inputNoNull'), trigger: 'blur' }],
   code: [{ required: true, message: ct('login.verificationCode', 'common.inputNoNull'), trigger: 'blur' }],
-  username: [{ required: true, message: ct('login.username', 'common.inputNoNull'), trigger: 'blur' }],
+  username: [
+    { required: true, message: ct('login.username', 'common.inputNoNull'), trigger: 'blur' },
+    {
+      min: 1,
+      max: 18,
+      message: t('login.max18'),
+      trigger: 'blur',
+    },
+  ],
 })
 
 const phoneCoseTime = ref<number>(0)
@@ -87,6 +95,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     UserName: ruleForm.username,
     Pass: MD5(ruleForm.password),
     IsLite: true,
+    icon: 'userIcon/avatar-default-' + 1 + '.jpg',
   }
   await callServerFunc('TRPADM', 'RPAUserRegister', data)
 }
