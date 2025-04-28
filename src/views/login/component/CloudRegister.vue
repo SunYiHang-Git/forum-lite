@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCI18n } from '@/i18n'
+import { matchKeywords } from '@/utils/check'
 import { KMessage } from '@ksware/ksw-ux'
 import { callServerFunc, MD5 } from '@ksware/micro-lib-web-temp'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -46,6 +47,22 @@ const rules = reactive<FormRules<RuleForm>>({
       min: 1,
       max: 18,
       message: t('login.max18'),
+      trigger: 'blur',
+    },
+    {
+      pattern: /^[^#]*$/,
+      message: '不能包含#',
+      trigger: 'blur',
+    },
+    {
+      validator: (rule, value, cb) => {
+        const valid = matchKeywords(value)
+        if (valid.matches.length > 0) {
+          cb(new Error('有违规字段  ' + valid.matches[0]))
+        } else {
+          cb()
+        }
+      },
       trigger: 'blur',
     },
   ],
@@ -95,7 +112,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     UserName: ruleForm.username,
     Pass: MD5(ruleForm.password),
     IsLite: true,
-    icon: 'userIcon/avatar-default-' + 1 + '.jpg',
+    Icon: 'userIcon/avatar-default-' + 1 + '.jpg',
   }
   await callServerFunc('TRPADM', 'RPAUserRegister', data)
 }

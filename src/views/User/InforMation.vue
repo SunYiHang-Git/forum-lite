@@ -4,7 +4,7 @@ import { computed, reactive, ref } from 'vue'
 import EditUserDialog from '@/views/User/components/EditUserDialog.vue'
 import { useUser } from '@/store/modules/user'
 import { storeToRefs } from 'pinia'
-import { formatMobile } from '@/utils/check'
+import { formatMobile, matchKeywords } from '@/utils/check'
 // import UploadAvatar from '@/views/User/components/UploadFile/index.vue'
 import UploadAvatar from '@/views/User/components/UploadAvatar/index.vue'
 import { CheckPhoneCodeAPI, RPAApplyDeveloperAPI, SetRPAUserInfoAPI, SetRPAUserNewPassAPI } from '@/api/user'
@@ -54,6 +54,22 @@ const rules = reactive<FormRules<RuleForm>>({
       min: 1,
       max: 18,
       message: t('login.max18'),
+      trigger: 'blur',
+    },
+    {
+      pattern: /^[^#]*$/,
+      message: '不能包含#',
+      trigger: 'blur',
+    },
+    {
+      validator: (rule, value, cb) => {
+        const valid = matchKeywords(value)
+        if (valid.matches.length > 0) {
+          cb(new Error('有违规字段  ' + valid.matches[0]))
+        } else {
+          cb()
+        }
+      },
       trigger: 'blur',
     },
   ],
@@ -240,7 +256,7 @@ const props = {
             </k-form>
           </div>
           <div class="form-avatar-box">
-            <UploadAvatar :picture="avatarValue" />
+            <UploadAvatar :picture="userInfo.avatar" />
           </div>
         </div>
       </div>

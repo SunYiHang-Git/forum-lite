@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import AvatarDefaultImg1 from '@/assets/images/avatar/avatar-default-1.jpg'
 import AvatarDefaultImg2 from '@/assets/images/avatar/avatar-default-2.jpg'
 import AvatarDefaultImg3 from '@/assets/images/avatar/avatar-default-3.jpg'
@@ -11,16 +11,15 @@ import AvatarDefaultImg8 from '@/assets/images/avatar/avatar-default-8.jpg'
 import AvatarDefaultImg9 from '@/assets/images/avatar/avatar-default-9.jpg'
 import { KMessage } from '@ksware/ksw-ux'
 import type { UploadRawFile } from 'element-plus'
-import { callServerFunc } from '@ksware/micro-lib-web-temp'
 import { fileHostUrl } from '@/views/home'
 import { useUser } from '@/store/modules/user'
+import { RPAGetUserIconAPI, RPAUploadIconAPI } from '@/api/user'
 const { setUserInfo } = useUser()
 
 const { picture } = defineProps<{
   picture: string
 }>()
-
-const defaultPictures = [
+const defaultPictures = ref<any[]>([
   { index: 1, src: AvatarDefaultImg1 },
   { index: 2, src: AvatarDefaultImg2 },
   { index: 3, src: AvatarDefaultImg3 },
@@ -30,7 +29,20 @@ const defaultPictures = [
   { index: 7, src: AvatarDefaultImg7 },
   { index: 8, src: AvatarDefaultImg8 },
   { index: 9, src: AvatarDefaultImg9 },
-]
+])
+/** 选中图片的index */
+const activeAvatarIndex = ref(0)
+/** 获取默认头像 */
+const getDefaultAvatarList = async () => {
+  const list = await RPAGetUserIconAPI()
+  defaultPictures.value = list.map((item: string, index: number) => {
+    return { index: index + 1, src: fileHostUrl + item }
+  })
+  const findItem = defaultPictures.value.find((item) => item.src === picture)
+  if (!findItem) return
+  activeAvatarIndex.value = findItem.index
+}
+
 /** 临时存储选中的图片 */
 const tempSelectImg = ref<any>({})
 const imageUrl = ref(picture)
@@ -39,6 +51,7 @@ const dialogVisible = ref(false)
 /** 打开选择头像弹框 */
 const showDialogPicture = () => {
   dialogVisible.value = true
+  getDefaultAvatarList()
 }
 /** 取消弹框 */
 const handleClose = () => {
@@ -46,15 +59,27 @@ const handleClose = () => {
   activeAvatarIndex.value = 0
 }
 /** 确定弹框按钮 */
-const handleConfirm = () => {
+const handleConfirm = async () => {
   activeAvatarIndex.value = 0
-  console.log('tempSelectImg.value--->', tempSelectImg.value)
+  const { src } = tempSelectImg.value
+  if (!src) {
+    handleClose()
+    return
+  }
+  const url = src.replace(fileHostUrl, '')
+  const params = { FileType: '.jpg', IsLite: true, Icon: url }
+  await RPAUploadIconAPI(params, {})
+  setUserInfo({ avatar: src })
+  handleClose()
+  KMessage.success('修改头像成功!')
 }
 
-const activeAvatarIndex = ref(0)
+/** 切换/选择图片 */
 const handleSelectPicture = (index: number) => {
   activeAvatarIndex.value = index
-  tempSelectImg.value = defaultPictures[index - 1]
+  const findItem = defaultPictures.value.find((item) => item.index === index)
+  if (!findItem) return
+  tempSelectImg.value = findItem
 }
 
 const beforeAvatarUpload = (rawFile: any) => {
@@ -73,14 +98,23 @@ const beforeAvatarUpload = (rawFile: any) => {
 
 const httpRequestFile = async ({ file }: { file: UploadRawFile }) => {
   const type = file.name.split('.').pop()
-  const params = { FileType: '.' + type }
-  const { data }: any = await callServerFunc('TRPADM', 'RPAUploadIcon', params, { isUpload: true, file: file })
+  const params = { FileType: '.' + type, IsLite: false }
+  const data = await RPAUploadIconAPI(params, { isUpload: true, file: file })
   const ServerFile = data.UserIcon
   const url = fileHostUrl + ServerFile
   imageUrl.value = url.split('\\').join('/')
-  activeAvatarIndex.value = 0
   setUserInfo({ avatar: imageUrl.value })
+  KMessage.success('修改头像成功!')
+  activeAvatarIndex.value = 0
+  tempSelectImg.value = {}
 }
+
+watch(
+  () => picture,
+  () => {
+    imageUrl.value = picture
+  },
+)
 </script>
 
 <template>
@@ -101,7 +135,6 @@ const httpRequestFile = async ({ file }: { file: UploadRawFile }) => {
     <div class="dialog-main-box">
       <div class="user-box">
         <img :src="imageUrl" />
-        <!-- <k-button @click="httpUploadAvatar">自定义上传</k-button> -->
         <k-upload
           action="#"
           :show-file-list="false"

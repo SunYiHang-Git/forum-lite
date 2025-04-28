@@ -45,7 +45,6 @@ import TopNav from './component/TopNav.vue'
       padding: 0;
       width: 100%;
       overflow: visible;
-      background-color: red;
       // overflow-x: hidden;
     }
   }

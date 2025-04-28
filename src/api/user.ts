@@ -69,3 +69,15 @@ export const RPAGetUserIndexLiteAPI = async (params: any) => {
   }
   return { list: rows, total: data.DataCount }
 }
+
+/** 获取默认头像 */
+export const RPAGetUserIconAPI = async () => {
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserIcon', {})
+  return data.DefaulIcon
+}
+
+/** 上传头像 */
+export const RPAUploadIconAPI = async (params: any, options: any) => {
+  const { data }: any = await callServerFunc('TRPADM', 'RPAUploadIcon', params, options)
+  return data
+}
