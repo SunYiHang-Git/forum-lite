@@ -151,7 +151,7 @@ const postArticle = async () => {
             <div class="icon dfc">
               <img :src="userInfo.avatar" />
             </div>
-            <div class="user-name dfc">{{ userInfo.userName }}</div>
+            <div class="user-name">{{ userInfo.userName }}</div>
           </div>
         </template>
         <template #default>
@@ -227,7 +227,7 @@ const postArticle = async () => {
       font-size: 14px;
     }
     .user-box {
-      max-width: 130px;
+      max-width: 180px;
       height: 30px;
       justify-content: start;
       gap: 4px;
@@ -248,9 +248,10 @@ const postArticle = async () => {
         }
       }
       .user-name {
-        justify-content: start;
-        max-width: 100px;
+        max-width: 150px;
+        width: fit-content;
         height: 24px;
+        line-height: 24px;
         font-size: 14px;
         overflow: hidden;
         text-overflow: ellipsis;

@@ -53,7 +53,6 @@ const ruleForm = reactive<RuleForm>({
   city: cityArr,
   signature: signature,
 })
-console.log('ruleForm--->', ruleForm)
 const rules = reactive<FormRules<RuleForm>>({
   userName: [
     { required: true, message: '此为必填项', trigger: 'blur' },
