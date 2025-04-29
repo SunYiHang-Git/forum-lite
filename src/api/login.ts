@@ -1,4 +1,5 @@
 import { handleUrlFormat, maturityDays } from '@/utils/format'
+import { generateUniqueNumber } from '@/utils/tools'
 import { fileHostUrl } from '@/views/home'
 import { callServerFunc, setToken, SQLTable } from '@ksware/micro-lib-web-temp'
 
@@ -28,7 +29,7 @@ export const loginByAccountAPI = async (params: any) => {
     user: User,
     userId: UserID,
     userName: nameArr[0],
-    userName_suffix: '#' + nameArr[1] || '',
+    userName_suffix: '#' + (nameArr[1] || generateUniqueNumber()),
     role: IsAdmin,
     isAdmin: IsAdmin === 1,
     loginStatus: true,

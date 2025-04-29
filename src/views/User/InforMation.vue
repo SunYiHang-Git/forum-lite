@@ -106,7 +106,9 @@ async function retrySetUserInfo(params: any, userInfoObj: any) {
     if (error.sError.includes('当前昵称已被注册')) {
       if (retryCount.value > 0) {
         retryCount.value--
-        retrySetUserInfo(params, userInfoObj)
+        const { userName } = ruleForm
+        const data = { ...params, NewName: userName + '#' + generateUniqueNumber() }
+        retrySetUserInfo(data, userInfoObj)
       }
     }
   }
@@ -134,6 +136,7 @@ const submitForm = async () => {
       City: cityStr,
       Signature: signature,
     }
+    console.log('params--->', params)
     const userInfoObj = { userName, fullName, company, sex, city: cityStr, signature }
     retrySetUserInfo(params, userInfoObj)
   } catch (error: any) {
@@ -180,15 +183,19 @@ const editPhone = async () => {
 
 /** 修改手机号--身份确认 */
 const handleEditPhone = () => {
-  editDialogParams.value.visible = true
-  editDialogParams.value.phone = phone
-  editDialogParams.value.title = '身份验证'
-  editDialogParams.value.desc = `请输入发送至 ${formatMobile(phone)} 的验证码。`
-  editDialogParams.value.type = 'authentication'
-  editDialogParams.value.confirm = async (code: any) => {
-    const params = { Phone: phone, PhoneCode: code }
-    await CheckPhoneCodeAPI(params)
-    editPhone()
+  try {
+    editDialogParams.value.visible = true
+    editDialogParams.value.phone = phone
+    editDialogParams.value.title = '身份验证'
+    editDialogParams.value.desc = `请输入发送至 ${formatMobile(phone)} 的验证码。`
+    editDialogParams.value.type = 'authentication'
+    editDialogParams.value.confirm = async (code: any) => {
+      const params = { Phone: phone, PhoneCode: code }
+      await CheckPhoneCodeAPI(params)
+      editPhone()
+    }
+  } catch (error) {
+    console.error(error)
   }
 }
 

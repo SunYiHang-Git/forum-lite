@@ -17,11 +17,11 @@ import RightHotCard from '@/views/Article/RightHotCard.vue'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import { convertMarkdownToHtml } from '@/utils/format'
 import { useUser } from '@/store/modules/user'
+import CommentArticle from '@/views/Article/components/CommentArticle.vue'
 
 const router = useRouter()
 
 const replyValue = ref<string>('')
-const replyValueDialog = ref<string>('')
 
 const route = useRoute()
 
@@ -48,22 +48,6 @@ function getRouteId() {
 }
 getRouteId()
 
-/** 回复 帖子 数据 */
-const replyArticleList = ref<any[]>([])
-/** 获取帖子的回复数据 */
-const getReplyData = async () => {
-  // TODO 获取帖子回复数量问题
-  const params = { PostsID: ArticleId.value, PageNum: '0', PageSize: '200', iSort: 1 }
-  const { firstList, secondList } = await getReplyListAPI(params)
-  firstList.forEach((item: any) => {
-    const arr = secondList.filter((v) => v.initialID === item.id)
-    item.children = arr.map((v: any) => {
-      const findItem = arr.find(({ id }: any) => id === v.pid)
-      return { ...v, replyPerson: findItem?.userName ?? item.userName }
-    })
-  })
-  replyArticleList.value = firstList
-}
 const dropDownItemList = ref<any[]>([])
 /** 初始化下拉菜单 */
 function initDropDown() {
@@ -76,7 +60,7 @@ function initDropDown() {
     },
     {
       name: articleInfo.value.isFine ? '取消精选' : '精选',
-      icon: 'IconEdit',
+      icon: 'IconJinghuaColor',
       command: 'essence',
     },
     {
@@ -115,13 +99,12 @@ function initDropDown() {
 
 async function initWindow() {
   await getArticleInfo(ArticleId.value)
-  await getReplyData()
   initDropDown()
 }
 initWindow()
 /** 去评论的位置 */
 const handleToBottom = () => {
-  const { scrollHeight, scrollTop, clientHeight } = document.documentElement
+  const { scrollHeight } = document.documentElement
   window.scrollTo({
     top: scrollHeight, // 滚动条总高度
     left: 0,
@@ -141,49 +124,11 @@ const addReply = async () => {
   replyValue.value = ''
   initWindow()
 }
-const showReplyDialog = ref(false)
 
 /** 显示删除原因弹窗 */
 const showDeleteDialog = ref(false)
 /** 删除原因 */
 const delReasonValue = ref('')
-
-/** 弹窗取消 */
-const dialogCancel = () => {
-  showReplyDialog.value = false
-  replyValueDialog.value = ''
-}
-
-const dialogParams = ref<any>({})
-/** 弹框回复帖子 */
-const dialogReply = async () => {
-  await nextTick()
-  if (!replyValueDialog.value) {
-    KMessage.warning('不能回复空内容!')
-    return
-  }
-  showReplyDialog.value = false
-  const { PostsID, PID, InitialID } = dialogParams.value
-  const params = {
-    PostsID,
-    PID,
-    InitialID,
-    Content: replyValueDialog.value,
-  }
-  await addReplyForArticleAPI(params)
-  dialogCancel()
-  initWindow()
-}
-/** 显示回复弹框 */
-const replyShowDialog = (item: any) => {
-  showReplyDialog.value = true
-  dialogParams.value = {
-    PostsID: item.postId,
-    PID: item.id,
-    InitialID: item.initialID || item.id,
-    userName: item.userName,
-  }
-}
 
 /** 收藏/取消收藏帖子 */
 const handleCollect = async () => {
@@ -322,7 +267,6 @@ const styleTemplateDiv = {
             <div class="reply-box">
               <k-badge @click="handleToBottom" :value="articleAllNum" type="info" class="item dfc">
                 <IconMessageOne :size="26" />
-                <!-- <router-link :to="{ hash: '#textareaTEditor' }"><IconMessageOne :size="26" /></router-link> -->
               </k-badge>
             </div>
             <k-dropdown
@@ -354,30 +298,12 @@ const styleTemplateDiv = {
                   :style="styleDropdownItem"
                   :command="item.command"
                 >
-                  <!-- :icon="item.icon" -->
                   <template #default>
                     <div :style="styleTemplateDiv">
                       <component :is="item.icon" />
                       <span style="width: 80px">{{ item.name }}</span>
                     </div>
                   </template>
-                  <!-- <template #default v-if="item.command === 'essence'">
-                    <span
-                      style="
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 14px;
-                        height: 14px;
-                        font-size: 10px;
-                        color: #c55902;
-                        background-color: #fff6d3;
-                      "
-                    >
-                      精
-                    </span>
-                    <span style="width: 80px">{{ item.name }}</span>
-                  </template> -->
                 </k-dropdown-item>
               </template>
             </k-dropdown>
@@ -427,49 +353,13 @@ const styleTemplateDiv = {
           <div class="content-box-text markdown-body" :innerHTML="convertMarkdownToHtml(articleInfo.content)"></div>
         </div>
         <div class="comment-box">
-          <div class="reply-num-box">{{ articleAllNum }} 条回复</div>
-          <div class="reply-list-box">
-            <div class="lis-reply" v-for="item in replyArticleList" :key="item.id">
-              <div class="replyUser-box">
-                <div class="replyUserName">
-                  <div class="avatar">
-                    <k-image :src="item.userIcon" />
-                  </div>
-                  <div class="user-name">{{ item.userName }}</div>
-                </div>
-                <div class="is-author" v-if="articleInfo.createUser === item.userId">作者</div>
-                <div class="reply-time">{{ item.time }}</div>
-              </div>
-              <div class="reply-text-box" :innerHTML="convertMarkdownToHtml(item.content)"></div>
-              <div class="reply-to-article" @click="replyShowDialog(item)">
-                <IconMessageOne />
-                回复
-              </div>
-              <div class="reply-children-box-list">
-                <div class="children-lis-reply" v-for="child in item.children" :key="child.id">
-                  <div class="replyUser-box">
-                    <div class="replyUserName">
-                      <div class="avatar">
-                        <k-image :src="child.userIcon" />
-                      </div>
-                      <div class="user-name">{{ child.userName }}</div>
-                    </div>
-                    <div class="is-author" v-if="articleInfo.createUser === child.userId">作者</div>
-                    <div class="to-reply-person-box">
-                      <div class="reply-to-text">回复</div>
-                      <div class="reply-to-user-name">{{ child.replyPerson }}</div>
-                    </div>
-                    <div class="reply-time">{{ child.time }}</div>
-                  </div>
-                  <div class="reply-text-box" :innerHTML="child.content"></div>
-                  <div class="reply-to-article" @click="replyShowDialog(child)">
-                    <IconMessageOne />
-                    回复
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CommentArticle
+            v-if="ArticleId"
+            :articleId="ArticleId"
+            :articleInfo="articleInfo"
+            :articleReplyCount="articleAllNum"
+            @init="initWindow"
+          />
         </div>
         <div id="textareaTEditor" class="to-reply-box">
           <Vditor v-model="replyValue" :placeholder="$t('forum.formContent')" />
@@ -483,17 +373,6 @@ const styleTemplateDiv = {
       </div>
     </div>
   </div>
-  <k-dialog v-model="showReplyDialog" :title="'回复: ' + dialogParams.userName" width="700">
-    <div class="reply-dialog-box">
-      <div class="reply-dialog-edit">
-        <Vditor v-model="replyValueDialog" :placeholder="$t('forum.formContent')" />
-      </div>
-      <div class="btn-box">
-        <k-button @click="dialogCancel">取 消</k-button>
-        <k-button main @click="dialogReply">确 定</k-button>
-      </div>
-    </div>
-  </k-dialog>
   <k-dialog v-model="showDeleteDialog" title="删除原因" width="700">
     <div class="delete-box-reason">
       <div class="textarea-box">
@@ -688,7 +567,7 @@ const styleTemplateDiv = {
       .content-box-text {
         margin-top: 15px;
         width: 100%;
-        overflow-x: hidden;
+        height: fit-content;
       }
       .comment-box {
         margin-top: 20px;
