@@ -40,14 +40,14 @@ const userDownList = ref([
     name: 'myHome',
     click: myHome,
   },
-  {
-    label: '我的发表',
-    name: 'myPublish',
-  },
-  {
-    label: '我的收藏',
-    name: 'myCollect',
-  },
+  // {
+  //   label: '我的发表',
+  //   name: 'myPublish',
+  // },
+  // {
+  //   label: '我的收藏',
+  //   name: 'myCollect',
+  // },
   {
     label: '账号资料',
     name: 'accountInformation',
@@ -148,7 +148,9 @@ const postArticle = async () => {
       <k-dropdown trigger="click" @command="handleCommand">
         <template #title>
           <div class="user-box dfc">
-            <div class="icon dfc">{{ userInfo.userName?.slice(0, 1) || '' }}</div>
+            <div class="icon dfc">
+              <img :src="userInfo.avatar" />
+            </div>
             <div class="user-name dfc">{{ userInfo.userName }}</div>
           </div>
         </template>
@@ -239,6 +241,11 @@ const postArticle = async () => {
         color: #fff;
         background-color: #05bfee;
         overflow: hidden;
+        img {
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+        }
       }
       .user-name {
         justify-content: start;

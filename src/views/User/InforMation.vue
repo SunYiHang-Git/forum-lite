@@ -13,6 +13,7 @@ import { MD5 } from '@ksware/micro-lib-web-temp'
 import { cityList } from '@/utils/city'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import { useCI18n } from '@/i18n'
+import { generateUniqueNumber } from '@/utils/tools'
 const { userInfo } = storeToRefs(useUser())
 const { setUserInfo } = useUser()
 const { t } = useCI18n()
@@ -33,9 +34,14 @@ interface RuleForm {
   /** 个人简介 */
   signature: string
 }
-const { phone, userName, fullName, company, sex, city, avatar, signature, loginId, isDeveloper } = userInfo.value
-const cityArr = city.split('/')
-const avatarValue = ref(avatar ?? '')
+const { phone, userName, fullName, company, sex, city, avatar, signature, loginId, isDeveloper, userName_suffix } =
+  userInfo.value
+let cityArr: any = []
+if (Array.isArray(city)) {
+  cityArr = city
+} else {
+  cityArr = city.split('/')
+}
 const env = import.meta.env
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
@@ -47,6 +53,7 @@ const ruleForm = reactive<RuleForm>({
   city: cityArr,
   signature: signature,
 })
+console.log('ruleForm--->', ruleForm)
 const rules = reactive<FormRules<RuleForm>>({
   userName: [
     { required: true, message: '此为必填项', trigger: 'blur' },
@@ -56,16 +63,16 @@ const rules = reactive<FormRules<RuleForm>>({
       message: t('login.max18'),
       trigger: 'blur',
     },
-    {
-      pattern: /^[^#]*$/,
-      message: '不能包含#',
-      trigger: 'blur',
-    },
+    // {
+    //   pattern: /^[^#]*$/,
+    //   message: '不能包含#',
+    //   trigger: 'blur',
+    // },
     {
       validator: (rule, value, cb) => {
         const valid = matchKeywords(value)
         if (valid.matches.length > 0) {
-          cb(new Error('有违规字段  ' + valid.matches[0]))
+          cb(new Error('不能使用"' + valid.matches[0] + '"作为昵称'))
         } else {
           cb()
         }
@@ -87,31 +94,52 @@ const editDialogParams = ref<any>({
   },
 })
 
-/** 保存资料 */
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  await formEl.validate()
-  await KMessageBox.confirm('是否确认保存资料?', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
-    type: 'success',
-  })
-  const { userName, oldUserName, fullName, company, sex, city, signature } = ruleForm
-  const cityStr = city.join('/')
-  const params = {
-    UserName: oldUserName,
-    NewName: userName,
-    ChangeName: oldUserName !== userName,
-    FullName: fullName,
-    Sex: sex,
-    Company: company,
-    City: cityStr,
-    Signature: signature,
+/** 昵称重复,重试次数 */
+const retryCount = ref(3)
+
+/** 重试提交资料 */
+async function retrySetUserInfo(params: any, userInfoObj: any) {
+  try {
+    await SetRPAUserInfoAPI(params)
+    KMessage.success('保存资料成功!')
+    setUserInfo(userInfoObj)
+  } catch (error: any) {
+    if (error.sError.includes('当前昵称已被注册')) {
+      if (retryCount.value > 0) {
+        retryCount.value--
+        retrySetUserInfo(params, userInfoObj)
+      }
+    }
   }
-  const userInfoObj = { userName, fullName, company, sex, city, signature }
-  await SetRPAUserInfoAPI(params)
-  KMessage.success('保存资料成功!')
-  setUserInfo(userInfoObj)
+}
+
+/** 保存资料 */
+const submitForm = async () => {
+  try {
+    if (!ruleFormRef.value) return
+    await ruleFormRef.value.validate()
+    await KMessageBox.confirm('是否确认保存资料?', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'success',
+    })
+    const { userName, oldUserName, fullName, company, sex, city, signature } = ruleForm
+    const cityStr = city.join('/')
+    const params = {
+      UserName: oldUserName,
+      NewName: userName + userName_suffix,
+      ChangeName: oldUserName !== userName,
+      FullName: fullName,
+      Sex: sex,
+      Company: company,
+      City: cityStr,
+      Signature: signature,
+    }
+    const userInfoObj = { userName, fullName, company, sex, city: cityStr, signature }
+    retrySetUserInfo(params, userInfoObj)
+  } catch (error: any) {
+    console.error(error)
+  }
 }
 
 /** 修改手机号 */
@@ -251,7 +279,7 @@ const props = {
                 />
               </k-form-item>
               <k-form-item>
-                <k-button style="width: 100%" main @click="submitForm(ruleFormRef)">保存资料</k-button>
+                <k-button style="width: 100%" main @click="submitForm()">保存资料</k-button>
               </k-form-item>
             </k-form>
           </div>

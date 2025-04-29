@@ -58,6 +58,7 @@ export function matchKeywords(input: string): { matched: boolean; matches: strin
     /(admin|root)/i,
     /(金智维|kingsware)/i,
     /rpa|lite/i,
+    /#/i,
   ]
 
   const matches: string[] = []

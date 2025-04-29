@@ -4,7 +4,7 @@ import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 保存用户资料 */
 export const SetRPAUserInfoAPI = async (params: any) => {
-  await callServerFunc('TRPADM', 'SetRPAUserInfo', params)
+  await callServerFunc('TRPADM', 'SetRPAUserInfo', params, { isShowErrorMsg: false })
 }
 
 /** 通过手机号验证身份 */

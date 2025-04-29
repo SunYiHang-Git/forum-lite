@@ -6,6 +6,7 @@ import { reactive, ref } from 'vue'
 import { useUser } from '@/store/modules/user'
 import { useRouter } from 'vue-router'
 import { fileHostUrl } from '@/views/home'
+import { loginByAccountAPI } from '@/api/login'
 
 const emits = defineEmits<{
   (e: 'goPage', page: 'register' | 'forget'): void
@@ -22,8 +23,8 @@ const { setUserInfo } = useUser()
 const isRememberStatus = ref<boolean>(false)
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  account: '13213728520',
-  password: '1',
+  account: '',
+  password: '',
 })
 const rules = reactive<FormRules<RuleForm>>({
   account: [{ required: true, message: '此为必填项', trigger: 'blur' }],
@@ -39,36 +40,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     User: ruleForm.account,
     Pass: MD5(ruleForm.password),
   }
-  const { data }: any = await callServerFunc('TRPADM', 'RPAUserLogin', params)
-  const { ID, IsLite, LncDate, LoginID, PassWord, Token, User, UserID, UserName, IsForumLogin } = data
-  setToken(Token)
-  const userInfoRes = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true })
-  const { IsAdmin, Phone, City, Company, DeveloperState, FullName, IsDeveloper, Sex, Signature, UserIcon }: any =
-    userInfoRes.data
+  const data = await loginByAccountAPI(params)
   const userInfoObj = {
-    id: ID,
-    isLite: IsLite,
-    isForumLogin: IsForumLogin,
-    remainDays: maturityDays(LncDate),
-    loginId: LoginID,
-    passWord: PassWord,
-    token: Token,
-    user: User,
-    userId: UserID,
-    userName: UserName,
-    role: IsAdmin,
-    isAdmin: IsAdmin === 1,
-    loginStatus: true,
+    ...data,
     rememberInfo: isRememberStatus.value,
-    phone: Phone,
-    city: City,
-    company: Company,
-    developerState: DeveloperState,
-    isDeveloper: IsDeveloper,
-    sex: Sex,
-    signature: Signature,
-    avatar: fileHostUrl + UserIcon,
-    fullName: FullName,
   }
   setUserInfo(userInfoObj)
   emits('loginSuccess')

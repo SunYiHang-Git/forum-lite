@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCI18n } from '@/i18n'
 import { matchKeywords } from '@/utils/check'
+import { generateRandomNumber, generateUniqueNumber } from '@/utils/tools'
 import { KMessage } from '@ksware/ksw-ux'
 import { callServerFunc, MD5 } from '@ksware/micro-lib-web-temp'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -40,7 +41,10 @@ const rules = reactive<FormRules<RuleForm>>({
     },
   ],
   password: [{ required: true, message: ct('common.pwd', 'common.inputNoNull'), trigger: 'blur' }],
-  code: [{ required: true, message: ct('login.verificationCode', 'common.inputNoNull'), trigger: 'blur' }],
+  code: [
+    { required: true, message: ct('login.verificationCode', 'common.inputNoNull'), trigger: 'blur' },
+    { pattern: /^\d{6}$/, message: ct('common.checkTip', 'login.validity', 'login.verificationCode'), trigger: 'blur' },
+  ],
   username: [
     { required: true, message: ct('login.username', 'common.inputNoNull'), trigger: 'blur' },
     {
@@ -50,15 +54,10 @@ const rules = reactive<FormRules<RuleForm>>({
       trigger: 'blur',
     },
     {
-      pattern: /^[^#]*$/,
-      message: '不能包含#',
-      trigger: 'blur',
-    },
-    {
       validator: (rule, value, cb) => {
         const valid = matchKeywords(value)
         if (valid.matches.length > 0) {
-          cb(new Error('有违规字段  ' + valid.matches[0]))
+          cb(new Error('不能使用"' + valid.matches[0] + '"作为昵称'))
         } else {
           cb()
         }
@@ -102,19 +101,38 @@ const sendCodeBtnText = computed(() => {
   return ct('login.gain', 'login.verificationCode')
 })
 
+/** 昵称重复,重试次数 */
+const retryCount = ref(0)
 /** 注册 */
-const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return
-  await formEl.validate()
-  const data = {
-    PhoneTo: ruleForm.phone,
-    PhoneCode: ruleForm.code,
-    UserName: ruleForm.username,
-    Pass: MD5(ruleForm.password),
-    IsLite: true,
-    Icon: 'userIcon/avatar-default-' + 1 + '.jpg',
+const submitForm = async () => {
+  try {
+    if (!ruleFormRef.value) return
+    await ruleFormRef.value.validate()
+    const data = {
+      Phone: ruleForm.phone,
+      UserID: ruleForm.phone,
+      PhoneCode: ruleForm.code,
+      UserName: ruleForm.username + '#' + generateUniqueNumber(),
+      Pass: MD5(ruleForm.password),
+      IsLite: true,
+      Icon: 'userIcon/avatar-default-' + generateRandomNumber(1, 9) + '.jpg',
+      FullName: 'RPA_Lite_' + ruleForm.username,
+      Company: 'RPA_Lite_' + ruleForm.username,
+    }
+    await callServerFunc('TRPADM', 'RPAUserRegister', data, { isShowErrorMsg: false })
+    retryCount.value = 0
+  } catch (error: any) {
+    if (error.sError.includes('当前昵称已被注册')) {
+      if (retryCount.value < 3) {
+        retryCount.value++
+        submitForm()
+      } else {
+        KMessage.error('注册失败~')
+      }
+    } else {
+      KMessage.error(error.sError)
+    }
   }
-  await callServerFunc('TRPADM', 'RPAUserRegister', data)
 }
 
 const goLogin = () => {
@@ -172,7 +190,7 @@ const goLogin = () => {
           />
         </k-form-item>
         <k-form-item>
-          <k-button style="width: 100%" main @click="submitForm(ruleFormRef)">{{ $t('login.register') }}</k-button>
+          <k-button style="width: 100%" main @click="submitForm()">{{ $t('login.register') }}</k-button>
         </k-form-item>
         <k-form-item>
           <k-row class="immediately-register">

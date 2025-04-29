@@ -22,6 +22,8 @@ export interface IUserInfo {
   userId: string
   /** 昵称 */
   userName: string
+  /** 昵称#号后缀 */
+  userName_suffix: string
   /** 是否是市场管理员 */
   isAdmin: boolean
   /** 角色 1=超级管理员 2=市场管理员, 3=云开发 , 0=普通用户 */
@@ -66,6 +68,7 @@ export const useUser = defineStore(
       user: '',
       userId: '',
       userName: '',
+      userName_suffix: '',
       isAdmin: false,
       role: 0,
       loginStatus: false,
@@ -99,6 +102,7 @@ export const useUser = defineStore(
         user: '',
         userId: '',
         userName: '',
+        userName_suffix: '',
         isAdmin: false,
         role: 0,
         loginStatus: false,
