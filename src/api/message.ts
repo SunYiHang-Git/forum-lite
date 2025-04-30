@@ -62,6 +62,7 @@ export const RPAInformationLiteAPI = async (params: any) => {
       content: table.s('Content'),
       countNum: table.s('CountNum'),
       postId: table.s('PostID'),
+      state: table.s('State'),
       firstTypeName: table.s('FirstTypeName'),
     }
     formatPost(row)
