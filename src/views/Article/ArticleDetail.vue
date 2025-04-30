@@ -26,6 +26,8 @@ const replyValue = ref<string>('')
 const route = useRoute()
 
 const ArticleId = ref('')
+/** 消息中心-评论id */
+const commentId = ref('')
 
 /** 帖子详情 */
 const articleInfo = ref<any>({})
@@ -42,11 +44,27 @@ const getArticleInfo = async (id: string) => {
 }
 /** 获取传入 ID */
 function getRouteId() {
-  const { id }: any = route.params
-  if (!id) return
-  ArticleId.value = id
+  const { params, query }: any = route
+  if (params?.id) {
+    // 常规获取详情请
+    ArticleId.value = params.id
+  } else if (query?.postId) {
+    // 消息中心跳转
+    ArticleId.value = query.postId
+    commentId.value = query.commentId
+  }
 }
 getRouteId()
+
+/** 获取评论完成 */
+const getDataFinish = async () => {
+  if (!commentId.value) return
+  // TODO 拿到评论 Id,将要跳转置顶位置
+  await nextTick()
+  setTimeout(() => {
+    console.log('这里处理滚动到评论的地方--->')
+  }, 1000)
+}
 
 const dropDownItemList = ref<any[]>([])
 /** 初始化下拉菜单 */
@@ -361,6 +379,7 @@ const styleTemplateDiv = {
             :articleReplyCount="articleAllNum"
             @init="initWindow"
             :sign="signRefresh"
+            @getDataFinish="getDataFinish"
           />
         </div>
         <div id="textareaTEditor" class="to-reply-box">

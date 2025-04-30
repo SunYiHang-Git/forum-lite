@@ -1,7 +1,29 @@
 <script setup lang="ts">
+import { RPASetReadMessageLiteAPI } from '@/api/message'
+
 const { list } = defineProps<{
   list: any[]
 }>()
+
+/** 设置消息为已读 */
+async function setReadMessageById(item: any) {
+  const params = { MessageID: item.id }
+  await RPASetReadMessageLiteAPI(params)
+}
+
+/** 跳转详情页 */
+const lookDetail = async (item: any) => {
+  await setReadMessageById(item)
+  if (Number(item.type) < 7) {
+    // 跳转帖子详情页
+    const newUrl = window.location.origin + `/#/detail/message?postId=${item.postId}&commentId=${item.commentId}`
+    window.open(newUrl, '_blank')
+  } else if (Number(item.type) === 8) {
+    // TODO 类型为 8 特殊处理
+  } else {
+    // 其他情况处理
+  }
+}
 </script>
 
 <template>
@@ -14,7 +36,7 @@ const { list } = defineProps<{
         <div class="text">{{ item.value }}</div>
       </div>
       <div class="more-box">
-        <k-button text>查看详情</k-button>
+        <k-button text @click="lookDetail(item)">查看详情</k-button>
         <div class="time">2025-04-27 15:38:39</div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 获取首页 官方公告, 回帖周榜, 本周热议 的数据 */
 export const getHomeAllDataAPI = async () => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetForumIndex', {})
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetForumIndex', {}, { isShowLoading: true })
   const table1 = new SQLTable(data.k_forum_newestNotice)
   const noticeList = handleNoticeListByTable(table1)
   const table2 = new SQLTable(data.k_forum_weeklyusers)
@@ -84,7 +84,7 @@ function handleWeekHost(table: any) {
 
 /** 获取互动解答,知识分享数据接口 */
 export const getInteractionListAPI = async (params: any) => {
-  const res: any = await callServerFunc('TRPADM', 'RPAGetPosts', params)
+  const res: any = await callServerFunc('TRPADM', 'RPAGetPosts', params, { isShowLoading: true })
   const table = new SQLTable(res.data.k_forum_postslist)
   const rows = []
   while (!table.eof()) {
@@ -164,7 +164,7 @@ function handleSonType(table: any) {
 
 /** 根据 Id 获取分类 */
 export const getClassByIdAPI = async (params: any) => {
-  const res: any = await callServerFunc('TRPADM', 'RPAGetDataTypeByID', params)
+  const res: any = await callServerFunc('TRPADM', 'RPAGetDataTypeByID', params, { isShowLoading: true })
   const table = new SQLTable(res.data.k_forum_poststype)
   const rows = []
   while (!table.eof()) {
@@ -181,13 +181,13 @@ export const getClassByIdAPI = async (params: any) => {
 
 /** 获取用户的提问, 文章, 回复, 收藏 的数据 */
 export const getUserASllTypeNumAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserHome', params)
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserHome', params, { isShowLoading: true })
   return data
 }
 
 /** 根据 Id 获取帖子详情 */
 export const getArticleInfoById = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetPostsDetail', params)
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetPostsDetail', params, { isShowLoading: true })
   const table = new SQLTable(data.k_forum_list_position)
   const {
     Abstract,
@@ -274,7 +274,7 @@ export const getArticleInfoById = async (params: any) => {
 
 /** 获取帖子的回复数据 */
 export const getReplyListAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetReply', params)
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetReply', params, { isShowLoading: true })
   const table1 = new SQLTable(data.k_forum_reply)
   const table2 = new SQLTable(data.k_forum_secondreply)
   const firstList = handleReplyList(table1)

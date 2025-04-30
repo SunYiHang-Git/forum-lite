@@ -16,7 +16,7 @@ const replyShowDialog = (item: any) => {
 </script>
 
 <template>
-  <div class="reply-card">
+  <div class="reply-card" :id="item.id">
     <div class="replyUser-box">
       <div class="replyUserName">
         <div class="avatar">

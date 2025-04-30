@@ -46,7 +46,7 @@ function formatPost(item: any) {
 }
 /** 获取消息中心的消息 */
 export const RPAInformationLiteAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAInformation', params)
+  const { data }: any = await callServerFunc('TRPADM', 'RPAInformation', params, { isShowLoading: true })
   const table = new SQLTable(data.k_forum_information)
   const rows = []
   while (!table.eof()) {
@@ -75,7 +75,6 @@ export const RPAInformationLiteAPI = async (params: any) => {
 /** 获取未读消息数量 */
 export const RPAGetNotReadLiteAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAGetNotRead', params)
-  console.log('data--00->', data)
   return data
 }
 

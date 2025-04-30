@@ -25,6 +25,7 @@ const props = withDefaults(defineProps<IProps>(), {
 
 const emits = defineEmits<{
   (e: 'init'): void
+  (e: 'getDataFinish'): void
 }>()
 /** 回复内容 */
 const replyValueDialog = ref<string>('')
@@ -54,7 +55,7 @@ function handleUserNameReply(item: any) {
 /** 获取帖子的回复数据 */
 const getReplyData = async () => {
   // TODO 获取帖子回复数量问题
-  const params = { PostsID: props.articleId, PageNum: '0', PageSize: '200', iSort: 1 }
+  const params = { PostsID: props.articleId, PageNum: '0', PageSize: '2000', iSort: 1 }
   const { firstList, secondList } = await getReplyListAPI(params)
   firstList.forEach((item: any) => {
     const arr = secondList.filter((v) => v.initialID === item.id)
@@ -70,9 +71,10 @@ const getReplyData = async () => {
       handleUserNameReply(child)
     })
   })
-  console.log('userNameIdRepeatList.value--->', userNameIdRepeatList.value)
   replyArticleList.value = firstList
-  console.log('firstList--->', firstList)
+  // 数据获取完成,通知父组件
+  await nextTick()
+  emits('getDataFinish')
 }
 
 /** 显示回复弹框 */
@@ -114,7 +116,6 @@ const dialogReply = async () => {
 watch(
   () => props.sign,
   () => {
-    console.log('触发--->')
     getReplyData()
   },
   {

@@ -77,13 +77,19 @@ export const routeList = [
     ],
   },
   {
-    path: '/detail/:id',
+    path: '/detail/',
     name: 'detailLayout',
     component: Layout,
     children: [
       {
-        path: '',
+        path: ':id',
         name: 'detail',
+        component: () => import('@/views/Article/ArticleDetail.vue'),
+        meta: { title: '帖子详情', icon: 'el-icon-s-home', breadcrumb: '帖子详情' },
+      },
+      {
+        path: 'message',
+        name: 'message-detail',
         component: () => import('@/views/Article/ArticleDetail.vue'),
         meta: { title: '帖子详情', icon: 'el-icon-s-home', breadcrumb: '帖子详情' },
       },
