@@ -106,6 +106,12 @@ export const routeList = [
         component: () => import('@/views/User/InforMation.vue'),
         meta: { title: '编辑资料', icon: 'el-icon-s-home', breadcrumb: '用户资料' },
       },
+      {
+        path: '/message',
+        name: 'message',
+        component: () => import('@/views/Message/index.vue'),
+        meta: { title: '我的消息', icon: 'el-icon-s-home', breadcrumb: '消息中心' },
+      },
     ],
   },
 ]

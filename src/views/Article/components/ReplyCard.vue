@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { convertMarkdownToHtml } from '@/utils/format'
-import { getSplitStrName } from '@/utils/tools'
-import { computed } from 'vue'
 
 const { item, isAuthor } = defineProps<{
   item: any
@@ -9,8 +7,11 @@ const { item, isAuthor } = defineProps<{
   isAuthor: boolean
 }>()
 
+const emits = defineEmits<{
+  (e: 'showDialog', item: any): void
+}>()
 const replyShowDialog = (item: any) => {
-  //
+  emits('showDialog', item)
 }
 </script>
 

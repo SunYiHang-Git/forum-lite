@@ -9,6 +9,7 @@ import { storeToRefs } from 'pinia'
 import { helpDocumentUel, liteHomeUrl } from '@/views/home'
 import { MD5 } from '@ksware/micro-lib-web-temp'
 import { useRouterInfo } from '@/store/modules/useRouterInfo'
+import MessageInfo from './MessageInfo.vue'
 const { clearBreadcrumbList } = useRouterInfo()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
@@ -40,14 +41,6 @@ const userDownList = ref([
     name: 'myHome',
     click: myHome,
   },
-  // {
-  //   label: '我的发表',
-  //   name: 'myPublish',
-  // },
-  // {
-  //   label: '我的收藏',
-  //   name: 'myCollect',
-  // },
   {
     label: '账号资料',
     name: 'accountInformation',
@@ -143,7 +136,9 @@ const postArticle = async () => {
     </div>
     <div v-if="userInfo.loginStatus" class="opt-but">
       <k-button text color="#000" @click="postArticle">发帖</k-button>
-      <k-button text color="#000">消息</k-button>
+      <div class="message-box">
+        <MessageInfo />
+      </div>
 
       <k-dropdown trigger="click" @command="handleCommand">
         <template #title>
@@ -222,7 +217,12 @@ const postArticle = async () => {
     align-items: center;
     margin-left: 32px;
     width: fit-content;
-    gap: 10px;
+    gap: 32px;
+    .message-box {
+      width: fit-content;
+      height: 30px;
+      line-height: 30px;
+    }
     .k-button {
       font-size: 14px;
     }

@@ -96,7 +96,7 @@ function initDropDown() {
     ]
   }
 }
-
+const signRefresh = ref(true)
 async function initWindow() {
   await getArticleInfo(ArticleId.value)
   initDropDown()
@@ -122,7 +122,8 @@ const addReply = async () => {
   const params = { Content: replyValue.value, PostsID: ArticleId.value }
   await addReplyForArticleAPI(params)
   replyValue.value = ''
-  initWindow()
+  signRefresh.value = !signRefresh.value
+  await initWindow()
 }
 
 /** 显示删除原因弹窗 */
@@ -359,6 +360,7 @@ const styleTemplateDiv = {
             :articleInfo="articleInfo"
             :articleReplyCount="articleAllNum"
             @init="initWindow"
+            :sign="signRefresh"
           />
         </div>
         <div id="textareaTEditor" class="to-reply-box">

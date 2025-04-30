@@ -4,7 +4,7 @@ import Vditor from '@/component/Vditor/index.vue'
 import { convertMarkdownToHtml } from '@/utils/format'
 import { getSplitStrName, handleNameSuffixShow } from '@/utils/tools'
 import { KMessage } from '@ksware/ksw-ux'
-import { nextTick, ref } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import ReplyCard from '@/views/Article/components/ReplyCard.vue'
 
 interface IProps {
@@ -14,6 +14,8 @@ interface IProps {
   articleInfo: any
   /** 回复帖子总数 */
   articleReplyCount: number
+  /** 触发事件 */
+  sign: boolean
 }
 const props = withDefaults(defineProps<IProps>(), {
   articleId: '',
@@ -72,7 +74,7 @@ const getReplyData = async () => {
   replyArticleList.value = firstList
   console.log('firstList--->', firstList)
 }
-getReplyData()
+
 /** 显示回复弹框 */
 const replyShowDialog = (item: any) => {
   showReplyDialog.value = true
@@ -108,6 +110,17 @@ const dialogReply = async () => {
   emits('init')
   getReplyData()
 }
+
+watch(
+  () => props.sign,
+  () => {
+    console.log('触发--->')
+    getReplyData()
+  },
+  {
+    immediate: true,
+  },
+)
 </script>
 
 <template>
@@ -115,7 +128,7 @@ const dialogReply = async () => {
     <div class="reply-num-box">{{ articleReplyCount }} 条回复</div>
     <div class="reply-list-box">
       <div class="lis-reply" v-for="item in replyArticleList" :key="item.id">
-        <ReplyCard :item="item" :isAuthor="articleInfo.createUser === item.userId" />
+        <ReplyCard :item="item" :isAuthor="articleInfo.createUser === item.userId" @showDialog="replyShowDialog" />
       </div>
     </div>
   </div>
