@@ -1,35 +1,27 @@
 <script setup lang="ts">
 import { RPASetReadMessageLiteAPI } from '@/api/message'
-import { ref } from 'vue'
 
 const { list } = defineProps<{
   list: any[]
 }>()
-
+const emits = defineEmits<{
+  (e: 'resetCount'): void
+}>()
 /** 设置消息为已读 */
 async function setReadMessageById(item: any) {
   const params = { MessageID: item.id, MessageState: 0 }
   await RPASetReadMessageLiteAPI(params)
   item.state = '1'
-}
-
-const dialogVisible = ref(false)
-const dialogParams = ref<any>({})
-const handleClose = () => {
-  dialogVisible.value = false
+  emits('resetCount')
 }
 
 /** 跳转详情页 */
 const lookDetail = async (item: any) => {
   await setReadMessageById(item)
-  if (Number(item.type) < 7) {
+  if (Number(item.type) !== 7) {
     // 跳转帖子详情页
     const newUrl = window.location.origin + `/#/detail/message?postId=${item.postId}&commentId=${item.commentId}`
     window.open(newUrl, '_blank')
-  } else {
-    // 其他情况处理
-    dialogParams.value = item
-    dialogVisible.value = true
   }
 }
 </script>
@@ -44,18 +36,11 @@ const lookDetail = async (item: any) => {
         <div class="text">{{ item.value }}</div>
       </div>
       <div class="more-box">
-        <k-button text @click="lookDetail(item)">查看详情</k-button>
+        <k-button v-if="item.type !== '7'" text @click="lookDetail(item)">查看详情</k-button>
+        <k-button v-if="item.type7 == '7'" text @click="setReadMessageById(item)">点击已读</k-button>
         <div class="time">2025-04-27 15:38:39</div>
       </div>
     </div>
-    <k-dialog v-model="dialogVisible" title="消息中心" width="500" @close="handleClose">
-      <span>{{ dialogParams.content }}</span>
-      <template #footer>
-        <div class="dialog-footer">
-          <k-button type="primary" main @click="dialogVisible = false">确定</k-button>
-        </div>
-      </template>
-    </k-dialog>
   </div>
 </template>
 

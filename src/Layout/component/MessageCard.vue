@@ -17,6 +17,9 @@ const props = withDefaults(defineProps<IProps>(), {
   replyCount: 0,
   systemCount: 0,
 })
+const emits = defineEmits<{
+  (e: 'resetCount'): void
+}>()
 
 const tabList = ref<any[]>([
   {
@@ -93,7 +96,6 @@ const getFormaInfoList = async (type: number | null = null) => {
   }
   const { list } = await RPAInformationLiteAPI(params)
   tableData.value = list
-  console.log('tableData.value--->', tableData.value)
 }
 getFormaInfoList()
 
@@ -138,7 +140,7 @@ const handleSelectName = (name: string) => {
     </div>
     <div class="content-box">
       <div class="lis-box" v-if="tableData.length">
-        <MessageCard :list="tableData" class="MessageCard" />
+        <MessageCard :list="tableData" class="MessageCard" @resetCount="() => emits('resetCount')" />
       </div>
       <div class="empty" v-if="tableData.length === 0">
         <div class="empty-icon">

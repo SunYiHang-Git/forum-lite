@@ -67,6 +67,7 @@ onUnmounted(() => {
             :posts-count="postCount"
             :reply-count="replyCount"
             :system-count="systemCount"
+            @resetCount="getNoteData"
           />
         </template>
       </k-popover>
