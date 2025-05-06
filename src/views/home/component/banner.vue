@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import Banner1 from '@/assets/images/banner/banner1.png'
-import Banner2 from '@/assets/images/banner/banner2.png'
-import Banner3 from '@/assets/images/banner/banner3.png'
+import Banner1 from '@/assets/images/banner/banner1_2.png'
+import Banner2 from '@/assets/images/banner/banner2_2.png'
+import Banner3 from '@/assets/images/banner/banner3_2.png'
 type IPictureType = {
   name: string
   src: string
@@ -29,7 +29,7 @@ const bannerList = ref<IPictureType[]>([
         v-for="(item, index) in PictureList || bannerList"
         :key="index"
       >
-        <k-image :src="item.src" style="width: 100%; height: 100%" fit="fill" />
+        <k-image :src="item.src" style="width: 100%; height: 100%" fit="cover" />
       </k-carousel-item>
     </k-carousel>
   </div>

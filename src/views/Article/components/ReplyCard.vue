@@ -178,6 +178,7 @@ const replyShowDialog = (item: any) => {
   }
   .reply-text-box {
     width: 100%;
+    margin: 12px 0 12px 0;
     padding-left: 34px;
     box-sizing: border-box;
   }
@@ -206,7 +207,6 @@ const replyShowDialog = (item: any) => {
       display: flex;
       flex-direction: column;
       justify-content: start;
-      gap: 16px;
       width: 100%;
       padding: 10px 0px;
     }

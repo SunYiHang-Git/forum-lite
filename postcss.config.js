@@ -15,5 +15,7 @@ export default {
     //   landscape: false, // 是否增加横屏样式
     //   landscapeUnit: 'vw', // 横屏转换单位
     // },
+    tailwindcss: {},
+    autoprefixer: {},
   },
 }
