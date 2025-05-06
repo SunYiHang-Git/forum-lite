@@ -16,27 +16,29 @@ const replyShowDialog = (item: any) => {
 </script>
 
 <template>
-  <div class="reply-card" :id="item.id">
-    <div class="replyUser-box">
-      <div class="replyUserName">
-        <div class="avatar">
-          <k-image :src="item.userIcon" />
+  <div class="reply-card">
+    <div :id="item.id">
+      <div class="replyUser-box">
+        <div class="replyUserName">
+          <div class="avatar">
+            <k-image :src="item.userIcon" />
+          </div>
+          <div class="user-name">
+            {{ item.userName }}
+            <div v-if="item.suffix">{{ item.suffix }}</div>
+          </div>
         </div>
-        <div class="user-name">
-          {{ item.userName }}
-          <div v-if="item.suffix">{{ item.suffix }}</div>
-        </div>
+        <div class="is-author" v-if="isAuthor">作者</div>
+        <div class="reply-time">{{ item.time }}</div>
       </div>
-      <div class="is-author" v-if="isAuthor">作者</div>
-      <div class="reply-time">{{ item.time }}</div>
-    </div>
-    <div class="reply-text-box" :innerHTML="convertMarkdownToHtml(item.content)"></div>
-    <div class="reply-to-article" @click="replyShowDialog(item)">
-      <IconMessageOne />
-      回复
+      <div class="reply-text-box" :innerHTML="convertMarkdownToHtml(item.content)"></div>
+      <div class="reply-to-article" @click="replyShowDialog(item)">
+        <IconMessageOne />
+        回复
+      </div>
     </div>
     <div class="reply-children-box-list">
-      <div class="children-lis-reply" v-for="child in item.children" :key="child.id">
+      <div class="children-lis-reply" v-for="child in item.children" :key="child.id" :id="child.id">
         <div class="replyUser-box">
           <div class="replyUserName">
             <div class="avatar">
@@ -139,17 +141,27 @@ const replyShowDialog = (item: any) => {
         color: #a3a3a3;
       }
       .reply-to-user-name {
-        max-width: 200px;
+        display: flex;
+        align-items: center;
+        max-width: 300px;
         width: fit-content;
         height: 24px;
         line-height: 24px;
         font-family: Alibaba PuHuiTi 3;
         font-size: 14px;
         font-weight: 500;
-        color: #171717;
+        color: #736f78;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        div {
+          height: 24px;
+          font-family: Alibaba PuHuiTi 3;
+          font-size: 14px;
+          font-weight: normal;
+          line-height: 24px;
+          color: #d1d5db;
+        }
       }
     }
     .reply-time {

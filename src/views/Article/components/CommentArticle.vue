@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { addReplyForArticleAPI, getAllReplyNumAPI, getArticleInfoById, getReplyListAPI } from '@/api/home'
 import Vditor from '@/component/Vditor/index.vue'
-import { convertMarkdownToHtml } from '@/utils/format'
 import { getSplitStrName, handleNameSuffixShow } from '@/utils/tools'
 import { KMessage } from '@ksware/ksw-ux'
 import { nextTick, ref, watch } from 'vue'
@@ -46,8 +45,8 @@ function handleUserNameReply(item: any) {
     item.suffix = endName
   }
   if (userNameIdRepeatList.value.includes(item.replyPersonUserId)) {
-    const starReply = getSplitStrName(item.userName)
-    const endReply = '#' + getSplitStrName(item.userName, '#', 1)
+    const starReply = getSplitStrName(item.replyPerson)
+    const endReply = '#' + getSplitStrName(item.replyPerson, '#', 1)
     item.replyPerson = starReply
     item.replySuffix = endReply
   }
@@ -57,6 +56,8 @@ const getReplyData = async () => {
   // TODO 获取帖子回复数量问题
   const params = { PostsID: props.articleId, PageNum: '0', PageSize: '2000', iSort: 1 }
   const { firstList, secondList } = await getReplyListAPI(params)
+  console.log('firstList--->', firstList)
+  console.log('secondList--->', secondList)
   firstList.forEach((item: any) => {
     const arr = secondList.filter((v) => v.initialID === item.id)
     item.children = arr.map((v: any) => {
@@ -65,6 +66,7 @@ const getReplyData = async () => {
     })
   })
   userNameIdRepeatList.value = handleNameSuffixShow(firstList)
+  console.log('userNameIdRepeatList.value--->', userNameIdRepeatList.value)
   firstList.forEach((item: any) => {
     handleUserNameReply(item)
     item.children?.forEach((child: any) => {
@@ -72,6 +74,7 @@ const getReplyData = async () => {
     })
   })
   replyArticleList.value = firstList
+  console.log('firstList--->', firstList)
   // 数据获取完成,通知父组件
   await nextTick()
   emits('getDataFinish')

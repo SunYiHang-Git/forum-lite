@@ -1,32 +1,73 @@
 <script setup lang="ts">
 import { RPAGetNotReadLiteAPI, RPAInformationLiteAPI } from '@/api/message'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import MessageCard from '@/views/Message/components/MessageCard.vue'
 const router = useRouter()
+interface IProps {
+  count: number
+  postsCount: number
+  replyCount: number
+  systemCount: number
+}
+const props = withDefaults(defineProps<IProps>(), {
+  count: 0,
+  postsCount: 0,
+  replyCount: 0,
+  systemCount: 0,
+})
 
 const tabList = ref<any[]>([
   {
     label: '全部消息',
     name: 'all',
-    count: 9,
+    count: props.count,
   },
   {
     label: '帖子消息',
     name: 'article',
-    count: 5,
+    count: props.postsCount,
   },
   {
     label: '评论消息',
     name: 'reply',
-    count: 23,
+    count: props.replyCount,
   },
   {
     label: '系统消息',
     name: 'system',
-    count: 51,
+    count: props.systemCount,
   },
 ])
+
+watch(
+  () => props,
+  () => {
+    tabList.value = [
+      {
+        label: '全部消息',
+        name: 'all',
+        count: props.count,
+      },
+      {
+        label: '帖子消息',
+        name: 'article',
+        count: props.postsCount,
+      },
+      {
+        label: '评论消息',
+        name: 'reply',
+        count: props.replyCount,
+      },
+      {
+        label: '系统消息',
+        name: 'system',
+        count: props.systemCount,
+      },
+    ]
+  },
+  { deep: true },
+)
 
 const activeName = ref<string>('all')
 
@@ -38,32 +79,42 @@ const activeIndex = computed(() => {
   const a = index * itemWidth.value + index * 20
   return a + 'px'
 })
-/** tab 切换 */
-const handleSelectName = (name: string) => {
-  activeName.value = name
-}
 
 const handleLookMore = () => {
   router.push('/message')
 }
 
-/** 获取消息数量 */
-const getMsgCount = async () => {
-  const params = {}
-  const data = await RPAGetNotReadLiteAPI(params)
-  console.log('data--->', data)
-}
-getMsgCount()
-
 const tableData = ref<any[]>([])
-const getFormaInfoList = async () => {
-  const params: any = { pageNum: 0, pageSize: 5 }
-  console.log('params--->', params)
+const getFormaInfoList = async (type: number | null = null) => {
+  const params: any = { pageNum: 0, pageSize: 5, State: 1 }
+  if (type) {
+    params.iType = type
+  }
   const { list } = await RPAInformationLiteAPI(params)
-  console.log('list-0000-->', list)
   tableData.value = list
 }
 getFormaInfoList()
+
+/** tab 切换 */
+const handleSelectName = (name: string) => {
+  activeName.value = name
+  switch (name) {
+    case 'all':
+      getFormaInfoList()
+      break
+    case 'article':
+      getFormaInfoList(2)
+      break
+    case 'reply':
+      getFormaInfoList(1)
+      break
+    case 'system':
+      getFormaInfoList(3)
+      break
+    default:
+      break
+  }
+}
 </script>
 
 <template>

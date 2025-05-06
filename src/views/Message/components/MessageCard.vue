@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RPASetReadMessageLiteAPI } from '@/api/message'
+import { ref } from 'vue'
 
 const { list } = defineProps<{
   list: any[]
@@ -7,8 +8,15 @@ const { list } = defineProps<{
 
 /** 设置消息为已读 */
 async function setReadMessageById(item: any) {
-  const params = { MessageID: item.id }
+  const params = { MessageID: item.id, MessageState: 0 }
   await RPASetReadMessageLiteAPI(params)
+  item.state = '1'
+}
+
+const dialogVisible = ref(false)
+const dialogParams = ref<any>({})
+const handleClose = () => {
+  dialogVisible.value = false
 }
 
 /** 跳转详情页 */
@@ -18,10 +26,10 @@ const lookDetail = async (item: any) => {
     // 跳转帖子详情页
     const newUrl = window.location.origin + `/#/detail/message?postId=${item.postId}&commentId=${item.commentId}`
     window.open(newUrl, '_blank')
-  } else if (Number(item.type) === 8) {
-    // TODO 类型为 8 特殊处理
   } else {
     // 其他情况处理
+    dialogParams.value = item
+    dialogVisible.value = true
   }
 }
 </script>
@@ -31,7 +39,7 @@ const lookDetail = async (item: any) => {
     <div v-for="item in list" :key="item.id" class="row-msg">
       <div class="name-box">
         <div class="tag">
-          <div class="cur"></div>
+          <div class="cur" v-if="item.state === '0'"></div>
         </div>
         <div class="text">{{ item.value }}</div>
       </div>
@@ -40,6 +48,14 @@ const lookDetail = async (item: any) => {
         <div class="time">2025-04-27 15:38:39</div>
       </div>
     </div>
+    <k-dialog v-model="dialogVisible" title="消息中心" width="500" @close="handleClose">
+      <span>{{ dialogParams.content }}</span>
+      <template #footer>
+        <div class="dialog-footer">
+          <k-button type="primary" main @click="dialogVisible = false">确定</k-button>
+        </div>
+      </template>
+    </k-dialog>
   </div>
 </template>
 

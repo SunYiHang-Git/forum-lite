@@ -221,7 +221,6 @@ const postArticle = async () => {
     .message-box {
       width: fit-content;
       height: 30px;
-      line-height: 30px;
     }
     .k-button {
       font-size: 14px;

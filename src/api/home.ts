@@ -275,6 +275,7 @@ export const getArticleInfoById = async (params: any) => {
 /** 获取帖子的回复数据 */
 export const getReplyListAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAGetReply', params, { isShowLoading: true })
+  console.log('data--->', data)
   const table1 = new SQLTable(data.k_forum_reply)
   const table2 = new SQLTable(data.k_forum_secondreply)
   const firstList = handleReplyList(table1)
@@ -301,6 +302,7 @@ function handleReplyList(table: any) {
       userName: table.s('Username'),
       likeCount: table.s('LikeCount'),
       initialID: table.s('InitialID'),
+      replyPersonUserId: table.s('ReplyPersonUserId'),
     }
     rows.push(row)
     table.next()

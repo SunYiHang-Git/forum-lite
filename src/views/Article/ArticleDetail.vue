@@ -62,7 +62,14 @@ const getDataFinish = async () => {
   // TODO 拿到评论 Id,将要跳转置顶位置
   await nextTick()
   setTimeout(() => {
-    console.log('这里处理滚动到评论的地方--->')
+    const dom = document.getElementById(commentId.value)
+    dom && dom.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    if (dom) {
+      dom.style.backgroundColor = 'rgba(9,9,9,.1)'
+      setTimeout(() => {
+        dom.style.backgroundColor = ''
+      }, 1000)
+    }
   }, 1000)
 }
 
@@ -98,7 +105,6 @@ function initDropDown() {
     },
   ]
   const isAuthor = articleInfo.value.createUser === userInfo.loginId
-  console.log('isAuthor--->', isAuthor)
 
   if (isAdminByUser()) {
     // 是管理员

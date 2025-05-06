@@ -1,37 +1,66 @@
 <script setup lang="ts">
-import { RPAInformationLiteAPI } from '@/api/message'
+import { RPAGetNotReadLiteAPI, RPAInformationLiteAPI, RPASetReadMessageLiteAPI } from '@/api/message'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import MessageCard from '@/views/Message/components/MessageCard.vue'
+import { KMessageBox } from '@ksware/ksw-ux'
 import { ref } from 'vue'
 
 const tabList = ref<any[]>([
   {
     label: '全部消息',
     name: 'all',
-    count: 9,
+    count: 0,
   },
   {
     label: '帖子消息',
     name: 'article',
-    count: 5,
+    count: 0,
   },
   {
     label: '评论消息',
     name: 'reply',
-    count: 23,
+    count: 0,
   },
   {
     label: '系统消息',
     name: 'system',
-    count: 51,
+    count: 0,
   },
 ])
+
+const getNoteData = async () => {
+  const data = await RPAGetNotReadLiteAPI()
+  const { Count, PostsCount, ReplyCount, SystemCount } = data
+  tabList.value = [
+    {
+      label: '全部消息',
+      name: 'all',
+      count: Count,
+    },
+    {
+      label: '帖子消息',
+      name: 'article',
+      count: PostsCount,
+    },
+    {
+      label: '评论消息',
+      name: 'reply',
+      count: ReplyCount,
+    },
+    {
+      label: '系统消息',
+      name: 'system',
+      count: SystemCount,
+    },
+  ]
+}
+getNoteData()
 const activeName = ref('all')
 
 const tabType = ref(0)
 
-/** 全部或者未读 1=全部, 0=未读 */
-const messageType = ref<0 | 1>(1)
+/** 全部或者未读 0=全部, 1=未读 */
+const messageType = ref<0 | 1>(0)
 /** 页码 */
 const currentPage = ref<number>(1)
 /** 页数尺寸 */
@@ -46,15 +75,21 @@ const tableData = ref<any>([])
 
 /** 获取帖子信息 */
 const getFormaInfoList = async () => {
-  const params: any = { pageNum: currentPage.value - 1, pageSize: pageSize.value }
+  const params: any = {
+    pageNum: currentPage.value - 1,
+    pageSize: pageSize.value,
+    State: messageType.value,
+    KeySearch: searchValue.value,
+  }
   if (tabType.value !== 0) {
     params.iType = tabType.value
   }
   console.log('params--->', params)
   const { list, total } = await RPAInformationLiteAPI(params)
+  console.log('total--->', total)
+  console.log('list--->', list)
   totalMessage.value = total
   tableData.value = list
-  console.log('list--->', list)
 }
 getFormaInfoList()
 /** tab 切换事件 */
@@ -68,33 +103,47 @@ const handleClick = (name: string) => {
       break
     case 'reply':
       tabType.value = 2
+      break
     case 'system':
       tabType.value = 3
       break
     default:
+      tabType.value = 0
       break
   }
   getFormaInfoList()
 }
 /** 选择消息全部或者未读 */
 const selectMsgType = (type: 0 | 1) => {
-  //
   messageType.value = type
+  getFormaInfoList()
 }
 /** 全部已读 */
-const allReady = () => {
-  //
+const allReady = async () => {
+  await KMessageBox.confirm('是否确认全部已读?', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'success',
+  })
+  const params = { MessageState: 1 }
+  await RPASetReadMessageLiteAPI(params)
+  getFormaInfoList()
 }
 
 /** 搜索事件 */
 const handleEnterPress = () => {
-  // /
+  currentPage.value = 1
+  getFormaInfoList()
+}
+const clearSearch = () => {
+  currentPage.value = 1
+  searchValue.value = ''
+  getFormaInfoList()
 }
 
 /** 分页 */
 const handleCurrentChange = () => {
   getFormaInfoList()
-  //
 }
 </script>
 
@@ -110,8 +159,8 @@ const handleCurrentChange = () => {
             <div class="component-box">
               <div class="nav-box">
                 <div class="type">
-                  <div @click="selectMsgType(1)" class="btn" :class="messageType === 1 ? 'activeType' : ''">全部</div>
-                  <div @click="selectMsgType(0)" class="btn" :class="messageType === 0 ? 'activeType' : ''">未读</div>
+                  <div @click="selectMsgType(0)" class="btn" :class="messageType === 0 ? 'activeType' : ''">全部</div>
+                  <div @click="selectMsgType(1)" class="btn" :class="messageType === 1 ? 'activeType' : ''">未读</div>
                 </div>
                 <div class="opt-box">
                   <div class="search">
@@ -120,6 +169,8 @@ const handleCurrentChange = () => {
                       @keyup.enter="handleEnterPress"
                       style="width: 160px"
                       placeholder="搜索..."
+                      clearable
+                      @clear="clearSearch"
                     ></k-input>
                   </div>
                   <k-button @click="allReady">全部已读</k-button>

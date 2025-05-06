@@ -34,7 +34,7 @@ const sonClassId = ref('')
 /** 获取互动解答,知识分享数据接口 */
 const getInteractionListData = async () => {
   const params = {
-    PageNum: (currentPage.value - 1) * 20 + '',
+    PageNum: currentPage.value - 1 + '',
     PageSize: '20',
     PostsTypePID: props.pid,
     PostsType: sonClassId.value,
