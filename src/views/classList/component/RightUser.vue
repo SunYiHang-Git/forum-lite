@@ -43,7 +43,7 @@ getNoticeList()
   width: 100%;
   .user-box {
     position: sticky;
-    top: 0;
+    top: 60px;
     width: 100%;
     min-height: 172px;
     border-radius: 12px;

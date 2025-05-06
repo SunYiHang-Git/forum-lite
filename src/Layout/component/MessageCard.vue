@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { RPAGetNotReadLiteAPI, RPAInformationLiteAPI } from '@/api/message'
+import { RPAInformationLiteAPI } from '@/api/message'
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import MessageCard from '@/views/Message/components/MessageCard.vue'
+import EmptySvg from '@/assets/svg/no-notice.svg'
 const router = useRouter()
 interface IProps {
   count: number
@@ -92,6 +93,7 @@ const getFormaInfoList = async (type: number | null = null) => {
   }
   const { list } = await RPAInformationLiteAPI(params)
   tableData.value = list
+  console.log('tableData.value--->', tableData.value)
 }
 getFormaInfoList()
 
@@ -126,7 +128,7 @@ const handleSelectName = (name: string) => {
         :key="index"
         :class="activeName === item.name ? 'active' : ''"
       >
-        <k-badge :value="item.count">
+        <k-badge :value="item.count" :hidden="item.count === 0">
           <div class="title" :style="{ width: itemWidth + 'px' }" @click="handleSelectName(item.name)">
             {{ item.label }}
           </div>
@@ -135,8 +137,14 @@ const handleSelectName = (name: string) => {
       <div class="indicator" :style="{ transform: `translateX(${activeIndex})` }"></div>
     </div>
     <div class="content-box">
-      <div class="lis-box">
+      <div class="lis-box" v-if="tableData.length">
         <MessageCard :list="tableData" class="MessageCard" />
+      </div>
+      <div class="empty" v-if="tableData.length === 0">
+        <div class="empty-icon">
+          <img :src="EmptySvg" />
+        </div>
+        <div class="empty-text">暂无通知</div>
       </div>
       <div class="footer-box">
         <div class="button-box" @click="handleLookMore">查看更多消息</div>
@@ -192,62 +200,30 @@ const handleSelectName = (name: string) => {
       width: 100%;
       height: fit-content;
       overflow: hidden;
-      .row-msg {
+    }
+    .empty {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      height: 300px;
+      border-bottom: 1px solid #f3f4f6;
+      .empty-icon {
+        width: 200px;
+        height: 150px;
+        border: 1px dashed #dad9d9;
         display: flex;
-        flex-direction: column;
-        justify-content: start;
-        width: 100%;
-        padding: 12px 0px;
-        gap: 8px;
-        height: fit-content;
-        border-bottom: 1px solid #f3f4f6;
-        .name-box {
-          width: 100%;
-          display: flex;
-          align-items: start;
-          .tag {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 12px;
-            height: 20px;
-            .cur {
-              width: 6px;
-              height: 6px;
-              border-radius: 50%;
-              background-color: #3b82f6;
-            }
-          }
-          .text {
-            width: 100%;
-            font-family: Alibaba PuHuiTi 3;
-            font-size: 14px;
-            font-weight: normal;
-            color: #111827;
-            display: -webkit-box; /* 老式弹性盒子模型 */
-            -webkit-box-orient: vertical; /* 内容垂直排列 */
-            -webkit-line-clamp: 2; /* 限制显示为两行 */
-            overflow: hidden; /* 隐藏溢出内容 */
-            text-overflow: ellipsis;
-          }
-        }
-        .more-box {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          height: 22px;
-          padding-left: 25px;
-          .k-button {
-            margin-left: 12px;
-          }
-          .time {
-            font-family: Alibaba PuHuiTi 3;
-            font-size: 14px;
-            font-weight: normal;
-            color: #9ca3af;
-          }
-        }
+        justify-content: center;
+        align-items: center;
+      }
+      .empty-text {
+        font-family: Alibaba PuHuiTi 3;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: normal;
+        color: #6b7280;
       }
     }
     .footer-box {

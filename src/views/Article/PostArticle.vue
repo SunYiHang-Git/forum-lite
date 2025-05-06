@@ -7,6 +7,9 @@ import { useRoute, useRouter } from 'vue-router'
 import { callServerFunc, getGuid, MD5 } from '@ksware/micro-lib-web-temp'
 import { fileHostUrl } from '@/views/home/index'
 import { getArticleInfoById, getArticleTypeListAPI } from '@/api/home'
+import { storeToRefs } from 'pinia'
+import { useUser } from '@/store/modules/user'
+const { userInfo } = storeToRefs(useUser())
 
 interface RuleForm {
   /** 标题 */
@@ -21,6 +24,8 @@ interface RuleForm {
   tags: string[]
   /** 封面 */
   cover: string
+  /** 开启地第三方 */
+  syncData: boolean
 }
 
 const router = useRouter()
@@ -33,6 +38,7 @@ const ruleForm = reactive<RuleForm>({
   abstract: '',
   tags: [],
   cover: '',
+  syncData: true,
 })
 const rules = reactive<FormRules<RuleForm>>({
   title: [{ required: true, message: '此为必填项', trigger: 'blur' }],
@@ -154,7 +160,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     cancelButtonText: '取消',
     type: 'success',
   })
-  const { title, content, type, abstract, tags, cover } = ruleForm
+  const { title, content, type, abstract, tags, cover, syncData } = ruleForm
   const params = {
     postsID: getGuid(),
     Title: title,
@@ -163,11 +169,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     Abstract: abstract,
     Cover: cover,
     Tags: tags.join(','),
+    syncData,
   }
   if (!id) {
     // 发布
     await callServerFunc('TRPADM', 'RPAPublish', params)
   } else {
+    /** 修改发布 */
     params.postsID = id
     await callServerFunc('TRPADM', 'RPAEditPostsContent', params)
   }
@@ -266,6 +274,13 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                   <k-image style="width: 100%; height: 100%" :src="imageUrl" fit="fill"></k-image>
                 </div>
               </div>
+            </k-form-item>
+            <k-form-item v-if="userInfo.isAdmin" label="开启 elasticSearch">
+              <k-switch
+                v-model="ruleForm.syncData"
+                class="ml-2"
+                style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+              />
             </k-form-item>
             <k-form-item>
               <k-button main @click="submitForm(ruleFormRef)" style="width: 100px; font-size: 16px; height: 30px">

@@ -167,6 +167,8 @@ const postArticle = async () => {
   align-items: center;
   justify-content: start;
   width: 100%;
+  max-width: 1200px;
+  min-width: 1200px;
   height: 60px;
   .dfc {
     display: flex;

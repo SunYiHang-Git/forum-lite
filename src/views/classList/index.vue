@@ -62,7 +62,6 @@ handleRouteQuery()
   justify-content: flex-start; // 子元素从顶部开始排列
   min-height: calc(100vh - 60px);
   background-color: #f9f9f9;
-  // overflow: hidden;
   .dfc {
     display: flex;
     justify-content: center;

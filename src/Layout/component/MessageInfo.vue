@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RPAGetNotReadLiteAPI } from '@/api/message'
 import MessageCard from './MessageCard.vue'
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 /** 消息数量 */
 const messageCount = ref<number>(0)
@@ -24,7 +24,26 @@ const getNoteData = async () => {
   replyCount.value = ReplyCount
   systemCount.value = SystemCount
 }
-getNoteData()
+
+let intervalId: null | number = null
+onMounted(() => {
+  getNoteData()
+  // 设置每 15 分钟执行一次
+  intervalId = setInterval(
+    () => {
+      getNoteData()
+    },
+    15 * 60 * 1000,
+  )
+})
+
+onUnmounted(() => {
+  // 组件卸载时清除定时器，防止内存泄漏
+  if (intervalId) {
+    clearInterval(intervalId)
+    intervalId = null
+  }
+})
 </script>
 
 <template>

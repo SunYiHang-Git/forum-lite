@@ -55,12 +55,14 @@ const gatTabList = async () => {
 }
 gatTabList()
 
+const activeBtnValue = ref('onFine')
 const filterChangeBtn = (name: string) => {
   if (name === 'isFine') {
     isFine.value = 1
   } else {
     isFine.value = 0
   }
+  activeBtnValue.value = name
   getInteractionListData()
 }
 
@@ -83,9 +85,6 @@ const handleCurrentChange = () => {
 <template>
   <div class="tab-list">
     <k-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
-      <div class="select-btn">
-        <k-slider-button @change="filterChangeBtn" :items="filterBtnList" active="onFine"></k-slider-button>
-      </div>
       <k-tab-pane
         v-for="(item, index) in pageClassList"
         :key="index"
@@ -93,6 +92,15 @@ const handleCurrentChange = () => {
         :name="item.postsTypeId"
       >
         <div class="tab-div-content">
+          <div class="nav-btns">
+            <div class="btn" @click="filterChangeBtn('onFine')" :class="activeBtnValue === 'onFine' ? 'active' : ''">
+              综合
+            </div>
+            <div class="btn" @click="filterChangeBtn('isFine')" :class="activeBtnValue === 'isFine' ? 'active' : ''">
+              精华
+            </div>
+          </div>
+
           <PageList :tableData="tableDataList" />
         </div>
       </k-tab-pane>
@@ -147,7 +155,35 @@ const handleCurrentChange = () => {
     }
   }
   .tab-div-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 0;
     min-height: calc(100vh - 400px);
+    .nav-btns {
+      display: flex;
+      justify-content: start;
+      gap: 8px;
+      padding-top: 1px;
+      box-sizing: border-box;
+      .btn {
+        width: 52px;
+        height: 28px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        background-color: #f5f5f5;
+        font-size: 14px;
+        font-weight: normal;
+        color: #404040;
+        border-radius: 4px;
+      }
+      .btn.active {
+        color: #0a4aeb;
+        background-color: #d7eaff;
+      }
+    }
   }
   .page-footer {
     display: flex;

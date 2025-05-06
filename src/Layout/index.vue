@@ -23,7 +23,6 @@ import TopNav from './component/TopNav.vue'
   min-height: 100vh;
   min-width: 1280px;
   box-sizing: border-box;
-  overflow: auto;
   .el-container {
     width: 100%;
     height: 100%;
@@ -32,14 +31,18 @@ import TopNav from './component/TopNav.vue'
     justify-content: start;
     align-items: center;
     .el-header {
-      width: 100%;
-      max-width: 1200px;
-      min-width: 1200px;
+      position: fixed;
+      top: 0;
       width: 100%;
       height: 60px;
       padding: 0;
+      display: flex;
+      justify-content: center;
+      z-index: 9;
+      background-color: #fff;
     }
     .el-main {
+      margin-top: 60px;
       min-height: calc(100vh - 60px);
       flex: 1;
       padding: 0;

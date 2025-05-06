@@ -32,7 +32,7 @@ const handleDetail = (item: any) => {
           </div>
           <div class="title" @click="handleDetail(item)">{{ item.title }}</div>
         </div>
-        <div class="desc-box">{{ item.abstract }}</div>
+        <div class="desc-box">{{ item.content }}</div>
         <div class="user-info-box">
           <div class="left-user">
             <div class="username" v-if="props.showUsername">{{ item.userName }}</div>
