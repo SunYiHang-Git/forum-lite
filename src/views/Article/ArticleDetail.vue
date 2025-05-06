@@ -421,7 +421,8 @@ const styleTemplateDiv = {
   width: 100%;
   min-height: calc(100vh - 60px);
   background-color: #f5f5f5;
-  padding-top: 20px;
+  padding-top: 32px;
+  padding-bottom: 32px;
   .dfc {
     display: flex;
     align-content: center;
@@ -445,6 +446,7 @@ const styleTemplateDiv = {
         justify-content: space-between;
         padding-right: 10px;
         padding-top: 40px;
+        padding-bottom: 40px;
         width: 200px;
         height: calc(100vh - 100px);
         .flex-top {
@@ -489,7 +491,7 @@ const styleTemplateDiv = {
     }
     .right {
       position: sticky;
-      top: 0;
+      top: 92px;
       width: 350px;
       height: fit-content;
     }
@@ -501,7 +503,6 @@ const styleTemplateDiv = {
       max-width: 980px;
       gap: 16px;
       width: 100%;
-      border-radius: 12px;
       box-sizing: border-box;
       overflow: hidden;
       .ove {
@@ -515,8 +516,9 @@ const styleTemplateDiv = {
         justify-content: start;
         gap: 16px;
         width: 100%;
-        padding: 32px;
+        padding: 24px 32px;
         background-color: #fff;
+        border-radius: 12px;
         .bread-box {
           display: flex;
           align-items: center;
@@ -597,10 +599,10 @@ const styleTemplateDiv = {
         height: fit-content;
       }
       .comment-box {
-        margin-top: 20px;
         width: 100%;
-        padding: 32px;
+        padding: 24px 32px;
         background-color: #fff;
+        border-radius: 12px 12px 0 0;
         .reply-num-box {
           width: 100%;
           height: 24px;
@@ -616,7 +618,7 @@ const styleTemplateDiv = {
           flex-direction: column;
           justify-content: start;
           gap: 16px;
-          margin-top: 24px;
+          margin-top: 20px;
           .lis-reply {
             display: flex;
             flex-direction: column;
@@ -755,6 +757,7 @@ const styleTemplateDiv = {
         padding: 32px;
         box-sizing: border-box;
         background-color: #fff;
+        border-radius: 0 0 12px 12px;
         .submit-box {
           margin-top: 10px;
           width: 100%;

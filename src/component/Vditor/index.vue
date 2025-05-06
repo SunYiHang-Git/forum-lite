@@ -336,6 +336,8 @@ onUnmounted(() => {
   height: 100%;
   overflow: hidden;
   .vditor-container {
+    border-radius: 4px;
+    overflow: hidden;
     width: 100%;
     height: 100%;
   }

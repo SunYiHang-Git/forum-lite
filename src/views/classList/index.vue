@@ -75,7 +75,8 @@ handleRouteQuery()
     min-height: calc(100vh - 60px);
     gap: 24px;
     box-sizing: border-box;
-    padding-top: 40px;
+    padding-top: 32px;
+    padding-bottom: 32px;
     .nav {
       width: 100%;
       height: 102px;
@@ -92,12 +93,10 @@ handleRouteQuery()
     .main-list {
       flex: 1;
       min-height: calc(100vh - 226px);
-      padding-bottom: 40px;
       overflow-x: hidden;
     }
     .user-right {
       width: 400px;
-      padding-bottom: 40px;
     }
   }
 }

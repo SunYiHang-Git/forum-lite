@@ -35,7 +35,7 @@ function goUrl(src: string, name: string) {
   height: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: 16px;
   justify-items: center;
   .nav-link {
     display: flex;
@@ -43,7 +43,7 @@ function goUrl(src: string, name: string) {
     align-items: center;
     gap: 16px;
     height: 96px;
-    padding: 0 10px;
+    padding: 24px 32px;
     border-radius: 12px;
     width: 100%;
     background-color: #fff;

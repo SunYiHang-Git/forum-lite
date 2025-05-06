@@ -170,6 +170,9 @@ watch(
     gap: 16px;
     margin-top: 24px;
     .lis-reply {
+      &:first-child {
+        padding-top: 0;
+      }
       display: flex;
       flex-direction: column;
       justify-content: space-between;

@@ -248,9 +248,7 @@ const goDetail = (item: any) => {
             width: 100%;
             height: 24px;
             .icon {
-              width: 15px;
-              height: 14px;
-              font-size: 14px;
+              font-size: 16px;
             }
             .system {
               height: 100%;

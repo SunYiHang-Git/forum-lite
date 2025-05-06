@@ -107,7 +107,7 @@ watch(
   }
   .content {
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 100px);
   }
   .login-bg {
     display: flex;
@@ -115,7 +115,7 @@ watch(
     justify-content: end;
     width: 50%;
     height: 100%;
-    padding: 30px;
+    padding-right: 20px;
     box-sizing: border-box;
     @media (max-width: 960px) {
       display: none; // 当屏幕宽度小于960px时，隐藏login-bg
@@ -139,7 +139,7 @@ watch(
     min-width: 23.75rem;
     height: 100%;
     box-sizing: border-box;
-    padding-left: 20px;
+    padding-left: 80px;
     @media (max-width: 960px) {
       display: flex;
       justify-content: center;

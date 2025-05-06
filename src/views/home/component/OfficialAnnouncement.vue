@@ -166,12 +166,12 @@ function lookMore() {
               padding: 0 5px;
               width: fit-content;
               height: 100%;
-
               font-size: 12px;
               font-weight: 500;
               display: flex;
               color: #736f78;
               background-color: rgba(0, 0, 0, 0.06);
+              border-radius: 4px;
             }
           }
         }
