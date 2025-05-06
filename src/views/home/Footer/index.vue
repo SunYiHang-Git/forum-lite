@@ -88,7 +88,6 @@ const goPageByUrl = (url: string | undefined) => {
     max-width: 1240px;
     height: 100%;
     .company-name {
-      font-family: Alibaba PuHuiTi 3;
       font-size: 14px;
       font-weight: normal;
       line-height: 28px;
@@ -111,7 +110,6 @@ const goPageByUrl = (url: string | undefined) => {
           height: 32px;
         }
         .name {
-          font-family: Alibaba PuHuiTi 3;
           font-size: 24px;
           font-weight: bold;
           line-height: normal;
@@ -129,7 +127,6 @@ const goPageByUrl = (url: string | undefined) => {
           justify-content: start;
           gap: 24px;
           .link-title {
-            font-family: Alibaba PuHuiTi 3;
             font-size: 16px;
             font-weight: 500;
             line-height: normal;
@@ -137,7 +134,6 @@ const goPageByUrl = (url: string | undefined) => {
             color: #ffffff;
           }
           .link-src {
-            font-family: Alibaba PuHuiTi 3;
             font-size: 14px;
             font-weight: normal;
             line-height: 14px;

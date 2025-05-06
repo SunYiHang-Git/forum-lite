@@ -113,7 +113,6 @@ function lookMore() {
       width: 100%;
       height: 32px;
       .title-note {
-        font-family: Alibaba PuHuiTi 3;
         font-size: 24px;
         font-weight: 600;
         line-height: 32px;
@@ -167,7 +166,7 @@ function lookMore() {
               padding: 0 5px;
               width: fit-content;
               height: 100%;
-              font-family: Alibaba PuHuiTi 3;
+
               font-size: 12px;
               font-weight: 500;
               display: flex;
@@ -185,7 +184,7 @@ function lookMore() {
             width: 100%;
             height: 25px;
             line-height: 25px;
-            font-family: Alibaba PuHuiTi 3;
+
             font-size: 14px;
             font-weight: normal;
             letter-spacing: 0px;
@@ -204,7 +203,7 @@ function lookMore() {
           height: 100%;
           width: fit-content;
           min-width: 110px;
-          font-family: Alibaba PuHuiTi 3;
+
           font-size: 12px;
           font-weight: normal;
           color: #a3a3a3;
@@ -223,7 +222,6 @@ function lookMore() {
     box-sizing: border-box;
     background: #ffffff;
     .reply-weekly-list {
-      font-family: Alibaba PuHuiTi 3;
       font-size: 24px;
       font-weight: 600;
       line-height: 32px;
@@ -267,7 +265,7 @@ function lookMore() {
         .username {
           flex: 1;
           height: 22px;
-          font-family: Alibaba PuHuiTi 3;
+
           font-size: 14px;
           font-weight: normal;
           line-height: 22px;
@@ -275,7 +273,7 @@ function lookMore() {
         }
         .reply-num {
           width: fit-content;
-          font-family: Alibaba PuHuiTi 3;
+
           font-size: 14px;
           font-weight: normal;
           line-height: 22px;

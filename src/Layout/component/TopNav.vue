@@ -189,7 +189,6 @@ const postArticle = async () => {
       height: 30px;
     }
     .logo-title {
-      font-family: Alibaba PuHuiTi 3;
       font-size: 22.59px;
       font-weight: bold;
       color: #000;
@@ -202,7 +201,6 @@ const postArticle = async () => {
     margin-left: 40px;
     gap: 32px;
     .link {
-      font-family: Alibaba PuHuiTi 3;
       font-size: 16px;
       font-weight: normal;
       line-height: 24px;

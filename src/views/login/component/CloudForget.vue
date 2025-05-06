@@ -172,7 +172,6 @@ const isShowPwd = ref<boolean>(false)
   padding: 30px 40px;
   overflow: hidden;
   .name {
-    font-family: Alibaba PuHuiTi 3;
     font-size: 24px;
     font-weight: bold;
     line-height: 32px;

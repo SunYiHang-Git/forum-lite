@@ -63,7 +63,6 @@ function goUrl(src: string, name: string) {
       width: 100%;
       height: 48px;
       .title {
-        font-family: Alibaba PuHuiTi 3;
         font-size: 18px;
         font-weight: 600;
         line-height: 26px;
@@ -71,7 +70,6 @@ function goUrl(src: string, name: string) {
         color: #3d3d3d;
       }
       .desc {
-        font-family: Alibaba PuHuiTi 3;
         font-size: 12px;
         font-weight: normal;
         line-height: 20px;

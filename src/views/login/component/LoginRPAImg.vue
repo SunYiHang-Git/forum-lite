@@ -88,7 +88,7 @@ import bg3 from '@/assets/svg/login-bg-3.svg'
         width: 100%;
         text-align: center;
         opacity: 1;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 32px;
         font-weight: 600;
         line-height: normal;

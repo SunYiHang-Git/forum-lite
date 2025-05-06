@@ -51,7 +51,7 @@ const goDetail = (item: any) => {
   background-color: #fff;
   .header-title {
     height: 28px;
-    font-family: Alibaba PuHuiTi 3;
+
     font-size: 20px;
     font-weight: 600;
     line-height: 28px;
@@ -84,7 +84,7 @@ const goDetail = (item: any) => {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      font-family: Alibaba PuHuiTi 3;
+
       font-size: 16px;
       font-weight: normal;
       color: #171717;

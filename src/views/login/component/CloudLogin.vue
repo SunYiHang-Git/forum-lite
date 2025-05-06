@@ -105,7 +105,6 @@ const register = () => {
   box-sizing: border-box;
   padding: 40px;
   .header-title {
-    font-family: Alibaba PuHuiTi 3;
     font-size: 24px;
     font-weight: bold;
     line-height: 32px;

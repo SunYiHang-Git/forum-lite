@@ -92,12 +92,12 @@ handleRouteQuery()
     .main-list {
       flex: 1;
       min-height: calc(100vh - 226px);
-      padding-bottom: 20px;
+      padding-bottom: 40px;
       overflow-x: hidden;
     }
     .user-right {
       width: 400px;
-      padding-bottom: 20px;
+      padding-bottom: 40px;
     }
   }
 }

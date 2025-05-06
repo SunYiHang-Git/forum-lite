@@ -527,7 +527,7 @@ const styleTemplateDiv = {
       .title {
         width: 100%;
         height: 32px;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 24px;
         font-weight: 500;
         color: #171717;
@@ -546,7 +546,7 @@ const styleTemplateDiv = {
           line-height: 24px;
           border-radius: 4px;
           padding: 0 6px;
-          font-family: Alibaba PuHuiTi 3;
+
           font-size: 12px;
           font-weight: 500;
           color: #2563eb;
@@ -574,7 +574,7 @@ const styleTemplateDiv = {
             width: fit-content;
             max-width: 300px;
             overflow: hidden;
-            font-family: Alibaba PuHuiTi 3;
+
             font-size: 14px;
             font-weight: 500;
             color: #171717;
@@ -584,7 +584,7 @@ const styleTemplateDiv = {
         .show-num {
           height: 24%;
           line-height: 24px;
-          font-family: Alibaba PuHuiTi 3;
+
           font-size: 14px;
           font-weight: normal;
           color: #a3a3a3;
@@ -604,7 +604,7 @@ const styleTemplateDiv = {
         .reply-num-box {
           width: 100%;
           height: 24px;
-          font-family: Alibaba PuHuiTi 3;
+
           font-size: 16px;
           font-weight: 500;
           line-height: 150%;
@@ -648,7 +648,7 @@ const styleTemplateDiv = {
                   width: fit-content;
                   height: 24px;
                   line-height: 24px;
-                  font-family: Alibaba PuHuiTi 3;
+
                   font-size: 14px;
                   font-weight: 500;
                   color: #171717;
@@ -662,7 +662,7 @@ const styleTemplateDiv = {
                 line-height: 24px;
                 padding: 0 8px;
                 background-color: #f5f5f5;
-                font-family: Alibaba PuHuiTi 3;
+
                 font-size: 12px;
                 font-weight: normal;
                 color: #6b7280;
@@ -679,7 +679,7 @@ const styleTemplateDiv = {
                 .reply-to-text {
                   height: 24px;
                   line-height: 24px;
-                  font-family: Alibaba PuHuiTi 3;
+
                   font-size: 14px;
                   font-weight: normal;
                   color: #a3a3a3;
@@ -689,7 +689,7 @@ const styleTemplateDiv = {
                   width: fit-content;
                   height: 24px;
                   line-height: 24px;
-                  font-family: Alibaba PuHuiTi 3;
+
                   font-size: 14px;
                   font-weight: 500;
                   color: #171717;
@@ -705,7 +705,7 @@ const styleTemplateDiv = {
                 padding-right: 15px;
                 height: 24px;
                 line-height: 24px;
-                font-family: Alibaba PuHuiTi 3;
+
                 font-size: 14px;
                 font-weight: normal;
                 color: #a3a3a3;
@@ -720,7 +720,7 @@ const styleTemplateDiv = {
               width: fit-content;
               box-sizing: border-box;
               margin-left: 34px;
-              font-family: Alibaba PuHuiTi 3;
+
               font-size: 14px;
               font-weight: normal;
               color: #737373;

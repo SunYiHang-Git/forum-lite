@@ -95,17 +95,17 @@ const replyShowDialog = (item: any) => {
         width: fit-content;
         height: 24px;
         line-height: 24px;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 14px;
         font-weight: 500;
-        font-family: Alibaba PuHuiTi 3;
+
         color: #736f78;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         div {
           height: 24px;
-          font-family: Alibaba PuHuiTi 3;
+
           font-size: 14px;
           font-weight: normal;
           line-height: 24px;
@@ -118,7 +118,7 @@ const replyShowDialog = (item: any) => {
       line-height: 24px;
       padding: 0 8px;
       background-color: #f5f5f5;
-      font-family: Alibaba PuHuiTi 3;
+
       font-size: 12px;
       font-weight: normal;
       color: #6b7280;
@@ -135,7 +135,7 @@ const replyShowDialog = (item: any) => {
       .reply-to-text {
         height: 24px;
         line-height: 24px;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 14px;
         font-weight: normal;
         color: #a3a3a3;
@@ -147,7 +147,7 @@ const replyShowDialog = (item: any) => {
         width: fit-content;
         height: 24px;
         line-height: 24px;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 14px;
         font-weight: 500;
         color: #736f78;
@@ -156,7 +156,7 @@ const replyShowDialog = (item: any) => {
         text-overflow: ellipsis;
         div {
           height: 24px;
-          font-family: Alibaba PuHuiTi 3;
+
           font-size: 14px;
           font-weight: normal;
           line-height: 24px;
@@ -170,7 +170,7 @@ const replyShowDialog = (item: any) => {
       padding-right: 15px;
       height: 24px;
       line-height: 24px;
-      font-family: Alibaba PuHuiTi 3;
+
       font-size: 14px;
       font-weight: normal;
       color: #a3a3a3;
@@ -186,7 +186,7 @@ const replyShowDialog = (item: any) => {
     width: fit-content;
     box-sizing: border-box;
     margin-left: 34px;
-    font-family: Alibaba PuHuiTi 3;
+
     font-size: 14px;
     font-weight: normal;
     color: #737373;

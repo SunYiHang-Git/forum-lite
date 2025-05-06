@@ -59,7 +59,6 @@ const { activeCardName } = defineProps<{
     .name-box {
       flex: 1;
       .name {
-        font-family: Alibaba PuHuiTi 3;
         font-size: 24px;
         font-weight: 600;
         line-height: 26px;
@@ -69,7 +68,7 @@ const { activeCardName } = defineProps<{
       .desc {
         width: 80%;
         margin-top: 8px;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 16px;
         font-weight: normal;
         line-height: 20px;

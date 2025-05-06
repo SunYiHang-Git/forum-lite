@@ -40,6 +40,7 @@ import TopNav from './component/TopNav.vue'
       justify-content: center;
       z-index: 9;
       background-color: #fff;
+      border-bottom: 1px solid rgb(242, 243, 245);
     }
     .el-main {
       margin-top: 60px;

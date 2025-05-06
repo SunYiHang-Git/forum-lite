@@ -98,7 +98,6 @@ const goDetail = (item: any) => {
   height: 32px;
   z-index: 99;
   .title {
-    font-family: Alibaba PuHuiTi 3;
     font-size: 24px;
     font-weight: 600;
     line-height: 32px;
@@ -160,7 +159,7 @@ const goDetail = (item: any) => {
       background-color: #fff;
       .sign-name {
         height: 28px;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 20px;
         font-weight: 600;
         color: #000;
@@ -189,7 +188,7 @@ const goDetail = (item: any) => {
             border: none;
             .hot-desc {
               width: 100%;
-              font-family: Alibaba PuHuiTi 3;
+
               font-size: 12px;
               font-weight: normal;
               line-height: 20px;
@@ -219,7 +218,7 @@ const goDetail = (item: any) => {
               .user-name {
                 width: fit-content;
                 padding: 0 5px;
-                font-family: Alibaba PuHuiTi 3;
+
                 font-size: 14px;
                 font-weight: normal;
                 color: #afabb3;
@@ -229,13 +228,12 @@ const goDetail = (item: any) => {
                 justify-content: start;
                 margin-left: 10px;
                 padding: 0 5px;
-                font-family: Alibaba PuHuiTi 3;
+
                 font-size: 14px;
                 font-weight: normal;
                 color: #afabb3;
               }
               .answer {
-                font-family: Alibaba PuHuiTi 3;
                 font-size: 14px;
                 font-weight: normal;
                 color: #afabb3;
@@ -259,7 +257,7 @@ const goDetail = (item: any) => {
               border-radius: 4px;
               padding: 0px 6px;
               background: #dbeafe;
-              font-family: Alibaba PuHuiTi 3;
+
               font-size: 12px;
               color: #2563eb;
             }
@@ -270,14 +268,13 @@ const goDetail = (item: any) => {
               overflow: hidden;
               text-overflow: ellipsis;
               text-wrap: nowrap;
-              font-family: Alibaba PuHuiTi 3;
+
               font-size: 16px;
               font-weight: normal;
               color: #171717;
               cursor: pointer;
             }
             .answer {
-              font-family: Alibaba PuHuiTi 3;
               font-size: 14px;
               font-weight: normal;
               color: #afabb3;

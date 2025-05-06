@@ -84,7 +84,6 @@ const goDetail = (item: any) => {
   width: 100%;
   height: 32px;
   .title {
-    font-family: Alibaba PuHuiTi 3;
     font-size: 24px;
     font-weight: 600;
     line-height: 32px;
@@ -129,7 +128,7 @@ const goDetail = (item: any) => {
       overflow: hidden;
       .header-title-card {
         height: 28px;
-        font-family: Alibaba PuHuiTi 3;
+
         line-height: 28px;
         font-size: 20px;
         font-weight: 600;
@@ -173,7 +172,7 @@ const goDetail = (item: any) => {
               border-radius: 4px;
               padding: 0px 6px;
               background: #dbeafe;
-              font-family: Alibaba PuHuiTi 3;
+
               font-size: 12px;
               color: #2563eb;
             }
@@ -184,7 +183,7 @@ const goDetail = (item: any) => {
               overflow: hidden;
               text-overflow: ellipsis;
               text-wrap: nowrap;
-              font-family: Alibaba PuHuiTi 3;
+
               font-size: 16px;
               font-weight: normal;
               color: #171717;
@@ -193,7 +192,7 @@ const goDetail = (item: any) => {
           }
           .lis-desc {
             width: 100%;
-            font-family: Alibaba PuHuiTi 3;
+
             font-size: 12px;
             font-weight: normal;
             line-height: 20px;
@@ -223,7 +222,7 @@ const goDetail = (item: any) => {
             .user-name {
               width: fit-content;
               padding: 0 5px;
-              font-family: Alibaba PuHuiTi 3;
+
               font-size: 14px;
               font-weight: normal;
               color: #afabb3;
@@ -233,13 +232,12 @@ const goDetail = (item: any) => {
               justify-content: start;
               margin-left: 10px;
               padding: 0 5px;
-              font-family: Alibaba PuHuiTi 3;
+
               font-size: 14px;
               font-weight: normal;
               color: #afabb3;
             }
             .answer {
-              font-family: Alibaba PuHuiTi 3;
               font-size: 14px;
               font-weight: normal;
               color: #afabb3;

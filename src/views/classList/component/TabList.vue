@@ -128,7 +128,8 @@ const handleCurrentChange = () => {
   width: 100%;
   min-height: 100%;
   background-color: #fff;
-  padding: 0 32px;
+  padding: 16px 32px;
+  border-radius: 12px;
   .demo-tabs {
     position: relative;
   }
@@ -166,6 +167,7 @@ const handleCurrentChange = () => {
       gap: 8px;
       padding-top: 1px;
       box-sizing: border-box;
+      margin: 8px 0 8px 0;
       .btn {
         width: 52px;
         height: 28px;

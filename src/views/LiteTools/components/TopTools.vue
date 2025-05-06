@@ -155,7 +155,7 @@ watch(
   align-items: center;
   width: 1440px;
   height: 92px;
-  font-family: Alibaba PuHuiTi 3;
+
   overflow: hidden;
   .flex-c {
     display: flex;

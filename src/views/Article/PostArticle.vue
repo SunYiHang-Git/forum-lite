@@ -322,7 +322,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     min-height: calc(100vh - 70px);
     .header-title {
       width: 100%;
-      font-family: Alibaba PuHuiTi 3;
+
       font-size: 20px;
       font-weight: 600;
       line-height: 28px;
@@ -342,7 +342,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           margin-top: 24px;
           margin-bottom: 16px;
           width: 100%;
-          font-family: Alibaba PuHuiTi 3;
+
           font-size: 16px;
           font-weight: bold;
           line-height: 22px;
@@ -377,7 +377,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
               border: 1px dashed #d4d4d4;
               border-radius: 8px;
               .text {
-                font-family: Alibaba PuHuiTi 3;
                 font-size: 14px;
                 color: #525252;
               }

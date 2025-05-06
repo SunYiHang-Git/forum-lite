@@ -111,7 +111,6 @@ function goUserPage() {
       flex: 1;
       overflow: hidden;
       .name {
-        font-family: Alibaba PuHuiTi 3;
         font-size: 18px;
         font-weight: 600;
         line-height: 24px;
@@ -122,7 +121,6 @@ function goUserPage() {
         text-overflow: ellipsis;
       }
       .desc {
-        font-family: Alibaba PuHuiTi 3;
         font-size: 14px;
         font-weight: normal;
         line-height: 22px;
@@ -158,7 +156,6 @@ function goUserPage() {
       justify-content: space-between;
       height: 100%;
       .menu-title {
-        font-family: Alibaba PuHuiTi 3;
         font-size: 14px;
         font-weight: normal;
         line-height: 22px;
@@ -166,7 +163,7 @@ function goUserPage() {
       }
       .menu-num {
         height: 26px;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 18px;
         font-weight: 600;
         line-height: 26px;

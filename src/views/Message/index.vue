@@ -249,7 +249,6 @@ const handleCurrentChange = () => {
             align-items: center;
             gap: 16px;
             .btn {
-              font-family: Alibaba PuHuiTi 3;
               font-size: 14px;
               font-weight: normal;
               width: 52px;

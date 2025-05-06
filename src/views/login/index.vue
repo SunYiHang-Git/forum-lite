@@ -98,7 +98,6 @@ watch(
       color: #fff;
     }
     .title {
-      font-family: Alibaba PuHuiTi 3;
       font-size: 20px;
       font-weight: bold;
       line-height: 32px;

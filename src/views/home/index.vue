@@ -171,7 +171,6 @@ getDataList()
         width: 100%;
         height: 32px;
         .title {
-          font-family: Alibaba PuHuiTi 3;
           font-size: 24px;
           font-weight: 600;
           line-height: 32px;

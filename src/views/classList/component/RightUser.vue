@@ -35,15 +35,15 @@ getNoticeList()
 <style lang="scss" scoped>
 .right-user {
   width: 100%;
-  height: 100%;
+  height: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: start;
   gap: 16px;
   width: 100%;
+  position: sticky;
+  top: 82px;
   .user-box {
-    position: sticky;
-    top: 60px;
     width: 100%;
     min-height: 172px;
     border-radius: 12px;

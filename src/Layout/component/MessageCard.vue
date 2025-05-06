@@ -219,7 +219,6 @@ const handleSelectName = (name: string) => {
         align-items: center;
       }
       .empty-text {
-        font-family: Alibaba PuHuiTi 3;
         font-size: 16px;
         font-weight: 500;
         line-height: normal;
@@ -236,7 +235,7 @@ const handleSelectName = (name: string) => {
         height: 40px;
         line-height: 40px;
         border-radius: 24px;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 14px;
         font-weight: 600;
         color: #3b82f6;

@@ -156,7 +156,7 @@ watch(
   .reply-num-box {
     width: 100%;
     height: 24px;
-    font-family: Alibaba PuHuiTi 3;
+
     font-size: 16px;
     font-weight: 500;
     line-height: 150%;

@@ -94,6 +94,7 @@ const handleDetail = (item: any) => {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        width: 100%;
         .tags {
           display: flex;
           align-items: center;
@@ -105,7 +106,6 @@ const handleDetail = (item: any) => {
             height: 20px;
             box-sizing: border-box;
             padding: 0 5px;
-            font-family: Alibaba PuHuiTi 3;
             font-size: 11px;
             font-weight: 500;
             letter-spacing: 0em;
@@ -124,19 +124,20 @@ const handleDetail = (item: any) => {
           }
         }
         .title {
-          font-family: Alibaba PuHuiTi 3;
           font-size: 18px;
           font-weight: 500;
           line-height: normal;
           color: #171717;
           cursor: pointer;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
       .desc-box {
         width: 100%;
         min-width: 200px;
         min-height: 2px;
-        font-family: Alibaba PuHuiTi 3;
         font-size: 14px;
         font-weight: normal;
         line-height: 22px;
@@ -154,7 +155,6 @@ const handleDetail = (item: any) => {
         height: 20px;
         width: 100%;
         line-height: 20px;
-        font-family: Alibaba PuHuiTi 3;
         font-size: 14px;
         font-weight: normal;
         color: #afabb3;

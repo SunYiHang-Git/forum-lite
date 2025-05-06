@@ -96,7 +96,7 @@ const lookDetail = async (item: any) => {
       }
       .text {
         width: 100%;
-        font-family: Alibaba PuHuiTi 3;
+
         font-size: 14px;
         font-weight: normal;
         color: #111827;
@@ -118,7 +118,6 @@ const lookDetail = async (item: any) => {
         margin-left: 12px;
       }
       .time {
-        font-family: Alibaba PuHuiTi 3;
         font-size: 14px;
         font-weight: normal;
         color: #9ca3af;
