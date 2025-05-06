@@ -21,7 +21,7 @@ getNoticeList()
       <UserCard />
     </div>
     <div class="banner-box">
-      <Banner :height="140" />
+      <Banner :height="114" />
     </div>
     <div class="now-box">
       <HotCard title="最新公告" :list="noticeListData" />
@@ -52,7 +52,7 @@ getNoticeList()
   }
   .banner-box {
     width: 100%;
-    height: 140px;
+    height: 114px;
     border-radius: 10px;
     background-color: pink;
     overflow: hidden;
