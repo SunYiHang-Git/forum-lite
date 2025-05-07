@@ -103,6 +103,25 @@ const sendCodeBtnText = computed(() => {
 
 /** 昵称重复,重试次数 */
 const retryCount = ref(0)
+
+/** 重新注册--用户昵称冲突 */
+async function againRegister(data: any) {
+  if (retryCount.value < 3) {
+    try {
+      retryCount.value++
+      await callServerFunc('TRPADM', 'RPAUserRegister', data, { isShowErrorMsg: false })
+      retryCount.value = 0
+      emits('goPage', 'login')
+      KMessage.success('注册成功!')
+    } catch (error) {
+      const p = { ...data, UserName: ruleForm.username + '#' + generateUniqueNumber() }
+      againRegister({ ...data, UserName: ruleForm.username + '#' + generateUniqueNumber() })
+    }
+  } else {
+    KMessage.error('注册失败~')
+  }
+}
+
 /** 注册 */
 const submitForm = async () => {
   try {
@@ -112,7 +131,7 @@ const submitForm = async () => {
       Phone: ruleForm.phone,
       UserID: ruleForm.phone,
       PhoneCode: ruleForm.code,
-      UserName: ruleForm.username + '#' + generateUniqueNumber(),
+      UserName: ruleForm.username,
       Pass: MD5(ruleForm.password),
       IsLite: true,
       Icon: 'userIcon/avatar-default-' + generateRandomNumber(1, 9) + '.jpg',
@@ -121,14 +140,22 @@ const submitForm = async () => {
     }
     await callServerFunc('TRPADM', 'RPAUserRegister', data, { isShowErrorMsg: false })
     retryCount.value = 0
+    emits('goPage', 'login')
+    KMessage.success('注册成功!')
   } catch (error: any) {
     if (error.sError.includes('当前昵称已被注册')) {
-      if (retryCount.value < 3) {
-        retryCount.value++
-        submitForm()
-      } else {
-        KMessage.error('注册失败~')
+      const data = {
+        Phone: ruleForm.phone,
+        UserID: ruleForm.phone,
+        PhoneCode: ruleForm.code,
+        UserName: ruleForm.username + '#' + generateUniqueNumber(),
+        Pass: MD5(ruleForm.password),
+        IsLite: true,
+        Icon: 'userIcon/avatar-default-' + generateRandomNumber(1, 9) + '.jpg',
+        FullName: 'RPA_Lite_' + ruleForm.username,
+        Company: 'RPA_Lite_' + ruleForm.username,
       }
+      againRegister(data)
     } else {
       KMessage.error(error.sError)
     }

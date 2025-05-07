@@ -62,11 +62,6 @@ const rules = reactive<FormRules<RuleForm>>({
       message: t('login.max18'),
       trigger: 'blur',
     },
-    // {
-    //   pattern: /^[^#]*$/,
-    //   message: '不能包含#',
-    //   trigger: 'blur',
-    // },
     {
       validator: (rule, value, cb) => {
         const valid = matchKeywords(value)
@@ -94,7 +89,7 @@ const editDialogParams = ref<any>({
 })
 
 /** 昵称重复,重试次数 */
-const retryCount = ref(3)
+const retryCount = ref(0)
 
 /** 重试提交资料 */
 async function retrySetUserInfo(params: any, userInfoObj: any) {
@@ -104,8 +99,8 @@ async function retrySetUserInfo(params: any, userInfoObj: any) {
     setUserInfo(userInfoObj)
   } catch (error: any) {
     if (error.sError.includes('当前昵称已被注册')) {
-      if (retryCount.value > 0) {
-        retryCount.value--
+      if (retryCount.value < 3) {
+        retryCount.value++
         const { userName } = ruleForm
         const data = { ...params, NewName: userName + '#' + generateUniqueNumber() }
         retrySetUserInfo(data, userInfoObj)

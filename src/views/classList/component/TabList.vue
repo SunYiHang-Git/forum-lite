@@ -7,16 +7,6 @@ const props = defineProps<{ pid: string }>()
 
 const activeName = ref('all')
 
-const filterBtnList = [
-  {
-    label: '综合',
-    name: 'onFine',
-  },
-  {
-    label: '精品',
-    name: 'isFine',
-  },
-]
 const isFine = ref(0)
 
 /** 页面分配 */

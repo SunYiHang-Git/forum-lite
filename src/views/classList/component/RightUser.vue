@@ -3,7 +3,7 @@ import UserCard from '@/views/home/component/UserCard.vue'
 import Banner from '@/views/home/component/Banner.vue'
 import HotCard from '@/views/classList/component/HotCard.vue'
 import { getHomeAllDataAPI } from '@/api/home'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const noticeListData = ref<any[]>([])
 const weekHotListData = ref<any[]>([])
@@ -12,7 +12,9 @@ const getNoticeList = async () => {
   noticeListData.value = noticeList
   weekHotListData.value = weekHotList
 }
-getNoticeList()
+onMounted(() => {
+  getNoticeList()
+})
 </script>
 
 <template>
@@ -34,11 +36,11 @@ getNoticeList()
 
 <style lang="scss" scoped>
 .right-user {
-  width: 100%;
-  height: fit-content;
   display: flex;
   flex-direction: column;
   justify-content: start;
+  width: 100%;
+  height: fit-content;
   gap: 16px;
   width: 100%;
   position: sticky;

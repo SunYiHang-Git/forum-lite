@@ -1,5 +1,5 @@
 import { handleUrlFormat, maturityDays } from '@/utils/format'
-import { generateUniqueNumber } from '@/utils/tools'
+import { generateUniqueNumber, getSplitStrName } from '@/utils/tools'
 import { fileHostUrl } from '@/views/home'
 import { callServerFunc, setToken, SQLTable } from '@ksware/micro-lib-web-temp'
 
@@ -17,7 +17,8 @@ export const loginByAccountAPI = async (params: any) => {
   const userInfoRes: any = await GetRPAUserAPI()
   const { IsAdmin, Phone, City, Company, DeveloperState, FullName, IsDeveloper, Sex, Signature, UserIcon } = userInfoRes
   /** 拆分 userName 的 # 后缀 */
-  const nameArr = UserName.split('#')
+  const userName = getSplitStrName(UserName)
+  const _suffix = getSplitStrName(UserName, '#', 1)
   const userInfoObj = {
     id: ID,
     isLite: IsLite,
@@ -28,8 +29,8 @@ export const loginByAccountAPI = async (params: any) => {
     token: Token,
     user: User,
     userId: UserID,
-    userName: nameArr[0],
-    userName_suffix: '#' + (nameArr[1] || generateUniqueNumber()),
+    userName: userName,
+    userName_suffix: _suffix ? '#' + _suffix : _suffix,
     role: IsAdmin,
     isAdmin: IsAdmin === 1,
     loginStatus: true,
@@ -55,7 +56,8 @@ export const RPALitePhoneCodeLoginAPI = async (params: any) => {
   const { IsAdmin, City, Company, DeveloperState, UserID, FullName, IsDeveloper, Sex, Signature, UserIcon } =
     userInfoRes
   /** 拆分 userName 的 # 后缀 */
-  const nameArr = UserName.split('#')
+  const userName = getSplitStrName(UserName)
+  const _suffix = getSplitStrName(UserName, '#', 1)
   const userInfoObj = {
     id: ID,
     isLite: IsLite,
@@ -65,8 +67,8 @@ export const RPALitePhoneCodeLoginAPI = async (params: any) => {
     token: Token,
     user: user,
     userId: UserID,
-    userName: nameArr[0],
-    userName_suffix: '#' + (nameArr[1] || generateUniqueNumber()),
+    userName: userName,
+    userName_suffix: _suffix ? '#' + _suffix : _suffix,
     role: IsAdmin,
     isAdmin: IsAdmin === 1,
     loginStatus: true,
