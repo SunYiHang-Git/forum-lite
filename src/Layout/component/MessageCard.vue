@@ -44,6 +44,8 @@ const tabList = ref<any[]>([
   },
 ])
 
+const activeName = ref<string>('all')
+
 watch(
   () => props,
   () => {
@@ -69,12 +71,12 @@ watch(
         count: props.systemCount,
       },
     ]
+    console.log(' tabList.value--->', tabList.value)
+    console.log('activeName.value--->', activeName.value)
+    handleSelectName(activeName.value)
   },
   { deep: true },
 )
-
-const activeName = ref<string>('all')
-
 /** title 宽度 */
 const itemWidth = ref(67)
 // 获取当前激活项的 index
@@ -100,7 +102,7 @@ const getFormaInfoList = async (type: number | null = null) => {
 getFormaInfoList()
 
 /** tab 切换 */
-const handleSelectName = (name: string) => {
+function handleSelectName(name: string) {
   activeName.value = name
   switch (name) {
     case 'all':

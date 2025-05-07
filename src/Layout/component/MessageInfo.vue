@@ -44,13 +44,21 @@ onUnmounted(() => {
     intervalId = null
   }
 })
+
+const popoverRef = ref<any>()
+const resetCount = () => {
+  getNoteData()
+  popoverRef.value?.hide()
+}
 </script>
 
 <template>
   <div class="message-info">
     <div class="icon">
       <k-popover
+        ref="popoverRef"
         :width="480"
+        trigger="click"
         popper-style="
         box-shadow: rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px; padding:0 20px;border-radius:16px; 
       "
@@ -67,7 +75,7 @@ onUnmounted(() => {
             :posts-count="postCount"
             :reply-count="replyCount"
             :system-count="systemCount"
-            @resetCount="getNoteData"
+            @resetCount="resetCount"
           />
         </template>
       </k-popover>
