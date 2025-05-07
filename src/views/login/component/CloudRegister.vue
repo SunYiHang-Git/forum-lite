@@ -142,6 +142,10 @@ const goLogin = () => {
 
 <template>
   <div class="cloud-register">
+    <div class="go-back" @click="goLogin">
+      <IconLeft />
+      返回
+    </div>
     <div class="name">{{ $t('login.register') }}</div>
     <div class="form-box">
       <k-form
@@ -192,12 +196,12 @@ const goLogin = () => {
         <k-form-item>
           <k-button style="width: 100%" main @click="submitForm()">{{ $t('login.register') }}</k-button>
         </k-form-item>
-        <k-form-item>
+        <!-- <k-form-item>
           <k-row class="immediately-register">
             {{ $ct('login.have', { pt: true }, 'login.account') }}？
             <span @click="goLogin">{{ $ct('login.immediately', 'login.login') }}</span>
           </k-row>
-        </k-form-item>
+        </k-form-item> -->
       </k-form>
     </div>
   </div>
@@ -208,13 +212,20 @@ const goLogin = () => {
   display: flex;
   flex-direction: column;
   justify-content: start;
-  gap: 20px;
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
   padding: 40px;
   overflow: hidden;
+  .go-back {
+    width: fit-content;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+    color: #111827;
+    cursor: pointer;
+  }
   .name {
+    margin-top: 16px;
     font-size: 24px;
     font-weight: bold;
     line-height: 32px;

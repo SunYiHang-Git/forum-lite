@@ -97,6 +97,10 @@ const isShowPwd = ref<boolean>(false)
 
 <template>
   <div class="forget-pwd">
+    <div class="go-back" @click="goLogin">
+      <IconLeft />
+      返回
+    </div>
     <div class="name">{{ ct('login.reset', 'common.pwd') }}</div>
     <div class="form-box">
       <k-form
@@ -150,11 +154,11 @@ const isShowPwd = ref<boolean>(false)
             {{ $ct('login.reset', 'common.pwd') }}
           </k-button>
         </k-form-item>
-        <k-form-item>
+        <!-- <k-form-item>
           <k-row class="immediately-register">
             <span @click="goLogin">{{ $ct('common.goBack', 'login.login') }}</span>
           </k-row>
-        </k-form-item>
+        </k-form-item> -->
       </k-form>
     </div>
   </div>
@@ -165,21 +169,28 @@ const isShowPwd = ref<boolean>(false)
   display: flex;
   flex-direction: column;
   justify-content: start;
-  gap: 20px;
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
-  padding: 30px 40px;
+  padding: 40px;
   overflow: hidden;
+  .go-back {
+    width: fit-content;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 16px;
+    color: #111827;
+    cursor: pointer;
+  }
   .name {
+    margin-top: 16px;
     font-size: 24px;
     font-weight: bold;
     line-height: 32px;
     letter-spacing: 0em;
     color: #38363c;
-    margin-bottom: 20px;
   }
   .form-box {
+    margin-top: 16px;
     .code-box {
       display: flex;
       align-items: center;

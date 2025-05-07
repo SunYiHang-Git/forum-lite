@@ -45,3 +45,40 @@ export const loginByAccountAPI = async (params: any) => {
   }
   return userInfoObj
 }
+
+/** 验证码登录 */
+export const RPALitePhoneCodeLoginAPI = async (params: any) => {
+  const { data }: any = await callServerFunc('THttpDM', 'RPALitePhoneCodeLogin', params, { isShowErrorMsg: false })
+  const { ID, IsLite, LncDate, LoginID, RPALite: PassWord, Token, user, UserName, Phone } = data
+  setToken(Token)
+  const userInfoRes: any = await GetRPAUserAPI()
+  const { IsAdmin, City, Company, DeveloperState, UserID, FullName, IsDeveloper, Sex, Signature, UserIcon } =
+    userInfoRes
+  /** 拆分 userName 的 # 后缀 */
+  const nameArr = UserName.split('#')
+  const userInfoObj = {
+    id: ID,
+    isLite: IsLite,
+    remainDays: maturityDays(LncDate),
+    loginId: LoginID,
+    passWord: PassWord,
+    token: Token,
+    user: user,
+    userId: UserID,
+    userName: nameArr[0],
+    userName_suffix: '#' + (nameArr[1] || generateUniqueNumber()),
+    role: IsAdmin,
+    isAdmin: IsAdmin === 1,
+    loginStatus: true,
+    phone: Phone,
+    city: City,
+    company: Company,
+    developerState: DeveloperState,
+    isDeveloper: IsDeveloper,
+    sex: Sex,
+    signature: Signature,
+    avatar: fileHostUrl + UserIcon,
+    fullName: FullName,
+  }
+  return userInfoObj
+}
