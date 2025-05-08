@@ -49,7 +49,7 @@ const beforeAvatarUpload = (rawFile: any) => {
 const httpRequestFile = async ({ file }: { file: UploadRawFile }) => {
   const type = file.name.split('.').pop()
   const params = { FileType: '.' + type }
-  const { data }: any = await callServerFunc('TRPADM', 'RPAUploadIcon', params, { isUpload: true, file: file })
+  const { data }: any = await callServerFunc('TRPADM', 'RPAUploadIconLite', params, { isUpload: true, file: file })
   const ServerFile = data.UserIcon
   const url = fileHostUrl + ServerFile
   imageUrl.value = url.split('\\').join('/')

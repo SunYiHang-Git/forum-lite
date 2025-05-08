@@ -5,26 +5,27 @@ import RightUser from './component/RightUser.vue'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
-import { INTERACTION_ID, KNOWLEDGE_ID, NOTICE_ID } from '@/const/home'
+import { homeNavIds } from '@/const/home'
 
 const route = useRoute()
 /** 父专栏 name */
 const activeCardName = ref('knowledge')
 /** 父专栏 ID */
-const activePid = ref(KNOWLEDGE_ID)
+const activePid = ref(homeNavIds.KNOWLEDGE_ID)
 /** 解析跳转路由参数 */
 function handleRouteQuery() {
   const name = route.name
   activeCardName.value = name as string
+  console.log('homeNavIds--->', homeNavIds)
   switch (name) {
     case 'knowledge':
-      activePid.value = KNOWLEDGE_ID
+      activePid.value = homeNavIds.KNOWLEDGE_ID
       break
     case 'interaction':
-      activePid.value = INTERACTION_ID
+      activePid.value = homeNavIds.INTERACTION_ID
       break
     case 'notice':
-      activePid.value = NOTICE_ID
+      activePid.value = homeNavIds.NOTICE_ID
       break
     default:
       break

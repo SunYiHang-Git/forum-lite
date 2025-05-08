@@ -173,11 +173,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   }
   if (!id) {
     // 发布
-    await callServerFunc('TRPADM', 'RPAPublish', params)
+    await callServerFunc('TRPADM', 'RPAPublishLite', params)
   } else {
     /** 修改发布 */
     params.postsID = id
-    await callServerFunc('TRPADM', 'RPAEditPostsContent', params)
+    await callServerFunc('TRPADM', 'RPAEditPostsContentLite', params)
   }
   router.back()
 }

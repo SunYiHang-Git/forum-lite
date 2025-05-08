@@ -4,12 +4,15 @@ import noticeSvg from '@/assets/svg/notice.svg'
 import knowledgeSvg from '@/assets/svg/knowledge.svg'
 import { helpDocumentUel } from '@/views/home'
 
-/** 知识分享 Id */
-export const KNOWLEDGE_ID = '4D70FB49913F435BBCEDBCBDFD7E9D13'
-/** 互动解答 Id */
-export const INTERACTION_ID = 'AA7CBEAA4FDC4F64AF2C1A62797FE95E'
-/** 官方公告 */
-export const NOTICE_ID = 'E6ED36AB167949BFB6DC491524BC79E4'
+/** 首页 nav 专栏ID */
+export const homeNavIds = {
+  /** 知识分享 Id */
+  KNOWLEDGE_ID: '',
+  /** 互动解答 Id */
+  INTERACTION_ID: '',
+  /** 官方公告 */
+  NOTICE_ID: '',
+}
 
 /** 首页卡片 */
 export const NavCardList = [

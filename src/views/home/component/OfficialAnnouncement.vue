@@ -48,7 +48,7 @@ function lookMore() {
               </div>
             </div>
           </div>
-          <div class="lis-time">2025-02-28 12:01</div>
+          <div class="lis-time">{{ item.time }}</div>
         </div>
       </div>
     </div>
@@ -56,7 +56,7 @@ function lookMore() {
       <div class="reply-weekly-list">回帖周榜</div>
       <k-skeleton v-if="!isFetchData" :rows="5" />
       <div class="list-box" v-else>
-        <div class="lis" v-for="(item, index) in replyList.splice(0, 5)" :key="item.id">
+        <div class="lis" v-for="(item, index) in replyList" :key="item.id">
           <div class="reply-icon dfc">
             <div v-if="index === 0" class="icon dfc">
               <img :src="firstSvg" />

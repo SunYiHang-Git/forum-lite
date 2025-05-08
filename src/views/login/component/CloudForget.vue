@@ -46,7 +46,7 @@ const getPhoneCode = async () => {
   let timer: any = 0
   const data = { PhoneTo: ruleForm.phone, SendCodeType: 1 }
   try {
-    const res: any = await callServerFunc('TRPADM', 'SendPhoneCode', data)
+    const res: any = await callServerFunc('TRPADM', 'SendPhoneCodeLite', data)
     if (isDev) {
       const { sPhoneCode } = res
       ruleForm.code = sPhoneCode
@@ -81,7 +81,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
   const data = { MailTo: ruleForm.phone, MailCode: ruleForm.code, Pass: MD5(ruleForm.password) }
-  await callServerFunc('TRPADM', 'RPAUserForget', data)
+  await callServerFunc('TRPADM', 'RPAUserForgetLite', data)
   KMessage.success(ct('login.reset', 'common.pwd', 'login.success', { pt: true }))
   await nextTick()
   goLogin()

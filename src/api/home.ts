@@ -7,7 +7,7 @@ import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 获取首页 官方公告, 回帖周榜, 本周热议 的数据 */
 export const getHomeAllDataAPI = async () => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetForumIndex', {}, { isShowLoading: true })
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetForumIndexLite', {}, { isShowLoading: true })
   const table1 = new SQLTable(data.k_forum_newestNotice)
   const noticeList = handleNoticeListByTable(table1)
   const table2 = new SQLTable(data.k_forum_weeklyusers)
@@ -84,7 +84,7 @@ function handleWeekHost(table: any) {
 
 /** 获取互动解答,知识分享数据接口 */
 export const getInteractionListAPI = async (params: any) => {
-  const res: any = await callServerFunc('TRPADM', 'RPAGetPosts', params, { isShowLoading: true })
+  const res: any = await callServerFunc('TRPADM', 'RPAGetPostsLite', params, { isShowLoading: true })
   const table = new SQLTable(res.data.k_forum_postslist)
   const rows = []
   while (!table.eof()) {
@@ -124,7 +124,7 @@ export const getInteractionListAPI = async (params: any) => {
 
 /** 获取首页帖子类型 */
 export const getArticleTypeListAPI = async () => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetPostsAllTypes', {})
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetPostsAllTypesLite', {})
   const table1 = new SQLTable(data.k_forum_poststype)
   const table2 = new SQLTable(data.k_forum_postssecondtype)
   const parentList = handleParentType(table1)
@@ -164,7 +164,7 @@ function handleSonType(table: any) {
 
 /** 根据 Id 获取分类 */
 export const getClassByIdAPI = async (params: any) => {
-  const res: any = await callServerFunc('TRPADM', 'RPAGetDataTypeByID', params, { isShowLoading: true })
+  const res: any = await callServerFunc('TRPADM', 'RPAGetDataTypeLiteByID', params, { isShowLoading: true })
   const table = new SQLTable(res.data.k_forum_poststype)
   const rows = []
   while (!table.eof()) {
@@ -181,13 +181,13 @@ export const getClassByIdAPI = async (params: any) => {
 
 /** 获取用户的提问, 文章, 回复, 收藏 的数据 */
 export const getUserASllTypeNumAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserHome', params, { isShowLoading: true })
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserHomeLite', params, { isShowLoading: true })
   return data
 }
 
 /** 根据 Id 获取帖子详情 */
 export const getArticleInfoById = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetPostsDetail', params, { isShowLoading: true })
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetPostsDetailLite', params, { isShowLoading: true })
   const table = new SQLTable(data.k_forum_list_position)
   const {
     Abstract,
@@ -274,7 +274,7 @@ export const getArticleInfoById = async (params: any) => {
 
 /** 获取帖子的回复数据 */
 export const getReplyListAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetReply', params, { isShowLoading: true })
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetReplyLite', params, { isShowLoading: true })
   const table1 = new SQLTable(data.k_forum_reply)
   const table2 = new SQLTable(data.k_forum_secondreply)
   const firstList = handleReplyList(table1)
@@ -311,37 +311,37 @@ function handleReplyList(table: any) {
 
 /** 获取所有回复帖子数量 */
 export const getAllReplyNumAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetReplyCount', params)
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetReplyCountLite', params)
   return data.ReplyCouunt
 }
 
 /** 添加评论 */
 export const addReplyForArticleAPI = async (params: any) => {
-  const { data } = await callServerFunc('TRPADM', 'RPAAddReply', params)
+  const { data } = await callServerFunc('TRPADM', 'RPAAddReplyLite', params)
   return data
 }
 
 /** 收藏帖子 */
 export const setCollectArticleAPI = async (params: any) => {
-  const { data } = await callServerFunc('TRPADM', 'RPASetCollect', params)
+  const { data } = await callServerFunc('TRPADM', 'RPASetCollectLite', params)
   return data
 }
 
 /** 设置帖子的状态帖子--置顶, 等 */
 export const setArticleMenuStatusAPI = async (params: any) => {
-  const { data } = await callServerFunc('TRPADM', 'RPASetPosts', params)
+  const { data } = await callServerFunc('TRPADM', 'RPASetPostsLite', params)
   return data
 }
 
 /** 锁定帖子---审核 */
 export const setArticleAuditAPI = async (params: any) => {
-  const { data } = await callServerFunc('TRPADM', 'RPAAuditPost', params)
+  const { data } = await callServerFunc('TRPADM', 'RPAAuditPostLite', params)
   return data
 }
 
 /** 删除帖子 */
 export const deleteArticleByIdAPI = async (params: any) => {
-  const { data } = await callServerFunc('TRPADM', 'RPADelPosts', params)
+  const { data } = await callServerFunc('TRPADM', 'RPADelPostsLite', params)
   return data
 }
 
@@ -349,7 +349,7 @@ export const deleteArticleByIdAPI = async (params: any) => {
 export const getThirdTypeDataAPI = async () => {
   const { data }: any = await callServerFunc(
     'TRPADM',
-    'GetRPAIndexInfo',
+    'GetRPAIndexInfoLite',
     {},
     {
       isShowLoading: true,
@@ -405,7 +405,7 @@ function handleInteractionData(table: any) {
 /** 获取用户信息 */
 export const getRPAUserAPI = async () => {
   const { setUserInfo } = useUser()
-  const userInfoRes = await callServerFunc('TRPADM', 'GetRPAUser', {})
+  const userInfoRes = await callServerFunc('TRPADM', 'GetRPAUserLite', {})
   const {
     IsLite,
     IsAdmin,

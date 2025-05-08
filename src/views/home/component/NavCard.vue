@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { NavCardList } from '@/const/home'
+import { homeNavIds, NavCardList } from '@/const/home'
+import { getArticleTypeListAPI } from '@/api/home'
 const router = useRouter()
-
 /** 跳转 */
 function goUrl(src: string, name: string) {
   const httpRegex = /^(http|https):\/\//
@@ -13,6 +13,28 @@ function goUrl(src: string, name: string) {
   }
   router.push(src)
 }
+/** 获取首页分类 */
+const getHomeClassList = async () => {
+  const { parentList } = await getArticleTypeListAPI()
+  parentList.forEach((item): any => {
+    const { postsTypeName, postsTypeId } = item
+    if (!postsTypeName) return
+    switch (postsTypeName) {
+      case '知识分享':
+        homeNavIds.KNOWLEDGE_ID = postsTypeId
+        break
+      case '互动解答':
+        homeNavIds.INTERACTION_ID = postsTypeId
+        break
+      case '官方公告':
+        homeNavIds.NOTICE_ID = postsTypeId
+        break
+      default:
+        break
+    }
+  })
+}
+getHomeClassList()
 </script>
 
 <template>

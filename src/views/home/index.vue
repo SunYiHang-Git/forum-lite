@@ -7,10 +7,9 @@ import NavCard from '@/views/home/component/NavCard.vue'
 import OfficialAnnouncement from '@/views/home/component/OfficialAnnouncement.vue'
 import InteractionAnswer from '@/views/home/component/InteractionAnswer.vue'
 import KnowledgeShare from '@/views/home/component/KnowledgeShare.vue'
-import { getArticleTypeListAPI, getHomeAllDataAPI, getRPAUserAPI, getThirdTypeDataAPI } from '@/api/home'
+import { getHomeAllDataAPI, getRPAUserAPI, getThirdTypeDataAPI } from '@/api/home'
 import { storeToRefs } from 'pinia'
 import { useUser } from '@/store/modules/user'
-import { INTERACTION_ID, KNOWLEDGE_ID } from '@/const/home'
 const { userInfo } = storeToRefs(useUser())
 async function makeTokenLogin() {
   const { loginId } = userInfo.value
@@ -18,31 +17,14 @@ async function makeTokenLogin() {
   await getRPAUserAPI()
 }
 makeTokenLogin()
-const searchValue = ref<string>('')
 /** 回帖周榜 */
 const replyListData = ref<any[]>([])
-/** 获取官方公告 */
+/** 获取官方公告和回帖周榜 */
 const getNoticeList = async () => {
   const { replyList } = await getHomeAllDataAPI()
-  replyListData.value = replyList
+  replyListData.value = replyList.slice(0, 5)
 }
-/** 首页分类 nav */
-const homeNavClassList = ref<any[]>([])
 
-/** 互动解答 Id */
-const interactionId = ref(INTERACTION_ID)
-/** 知识分享 */
-const knowledgeId = ref(KNOWLEDGE_ID)
-
-/** 获取首页分类 */
-// const getHomeClassList = async () => {
-//   const { parentList } = await getArticleTypeListAPI()
-//   homeNavClassList.value = parentList
-//   const findInteraction = homeNavClassList.value.find((item) => item.postsTypeName === '互动解答')
-//   const findKnow = homeNavClassList.value.find((item) => item.postsTypeName === '知识分享')
-//   interactionId.value = findInteraction.postsTypeId
-//   knowledgeId.value = findKnow.postsTypeId
-// }
 onMounted(() => {
   getNoticeList()
 })
@@ -79,7 +61,7 @@ getDataList()
             <Banner />
           </div>
           <div class="userInfo-box">
-            <UserCard :list="homeNavClassList" />
+            <UserCard />
           </div>
         </div>
         <div class="nav-box">
@@ -91,7 +73,6 @@ getDataList()
         <div class="interaction">
           <InteractionAnswer
             :isFetchData="isFetchHome"
-            :moreId="INTERACTION_ID"
             :hotDataList="hotInteractionDataList"
             :newDataList="newInteractionDataList"
           />

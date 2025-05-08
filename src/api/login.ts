@@ -5,13 +5,13 @@ import { callServerFunc, setToken, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 获取用户信息 */
 export const GetRPAUserAPI = async () => {
-  const { data } = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true })
+  const { data } = await callServerFunc('TRPADM', 'GetRPAUserLite', { TokenError: true, HandleError: true })
   return data
 }
 
 /** 账号登录登录 */
 export const loginByAccountAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAUserLogin', params, { isShowErrorMsg: false })
+  const { data }: any = await callServerFunc('TRPADM', 'RPAUserLoginLite', params, { isShowErrorMsg: false })
   const { ID, IsLite, LncDate, LoginID, PassWord, Token, User, UserID, UserName, IsForumLogin } = data
   setToken(Token)
   const userInfoRes: any = await GetRPAUserAPI()
@@ -49,7 +49,7 @@ export const loginByAccountAPI = async (params: any) => {
 
 /** 验证码登录 */
 export const RPALitePhoneCodeLoginAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('THttpDM', 'RPALitePhoneCodeLogin', params, { isShowErrorMsg: false })
+  const { data }: any = await callServerFunc('THttpDM', 'RPALitePhoneCodeLoginLite', params, { isShowErrorMsg: false })
   const { ID, IsLite, LncDate, LoginID, RPALite: PassWord, Token, user, UserName, Phone } = data
   setToken(Token)
   const userInfoRes: any = await GetRPAUserAPI()

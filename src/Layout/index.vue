@@ -38,7 +38,7 @@ import TopNav from './component/TopNav.vue'
       padding: 0;
       display: flex;
       justify-content: center;
-      z-index: 9;
+      z-index: 999;
       background-color: #fff;
       border-bottom: 1px solid rgb(242, 243, 245);
     }
