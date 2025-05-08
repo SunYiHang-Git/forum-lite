@@ -1,6 +1,6 @@
 import { getToken, setToken } from '@ksware/micro-lib-web-temp'
 import router from './utils/router'
-import { getUrlParamByName } from '@/utils/auth'
+import { getUrlParamByName, removeTokenFromUrl } from '@/utils/auth'
 import { useRouterInfo, type IBreadcrumbs } from '@/store/modules/useRouterInfo'
 import { useUser } from './store/modules/user'
 
@@ -15,7 +15,8 @@ router.beforeEach((to, from, next) => {
     setToken(urlToken)
     const url = location.href.replace(/token=[a-z0-9]{32}/i, '')
     history.replaceState({}, '', url)
-    next('/home')
+    const newPath = removeTokenFromUrl(to.fullPath)
+    next(newPath)
     return
   }
   /** 没有 token */

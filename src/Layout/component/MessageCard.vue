@@ -71,8 +71,6 @@ watch(
         count: props.systemCount,
       },
     ]
-    console.log(' tabList.value--->', tabList.value)
-    console.log('activeName.value--->', activeName.value)
     handleSelectName(activeName.value)
   },
   { deep: true },

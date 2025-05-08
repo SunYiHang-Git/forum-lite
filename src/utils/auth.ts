@@ -106,3 +106,18 @@ export function getUrlParamByName(name: string | boolean = '') {
   // 兼容大小写
   return result[name as string] || result[String(name).toUpperCase()]
 }
+
+/**
+ * 去掉 token=xxx
+ *
+ * @param url to.fullPath
+ * @returns
+ */
+export function removeTokenFromUrl(url: string) {
+  // 使用正则表达式删除 token 参数：
+  // 匹配格式如：
+  // - &token=xxxxx
+  // - ?token=xxxxx
+  // - token=xxxxx& 或 token=xxxxx# 或 token=xxxxx（单独在末尾）
+  return url.replace(/[?&]token=[0-9A-Fa-f]{32,}[^&#]*/g, '').replace(/([&?])$/, '')
+}

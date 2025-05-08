@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RPASetReadMessageLiteAPI } from '@/api/message'
+import { getToken } from '@ksware/micro-lib-web-temp'
 
 const { list } = defineProps<{
   list: any[]
@@ -20,7 +21,8 @@ const lookDetail = async (item: any) => {
   await setReadMessageById(item)
   if (Number(item.type) !== 7) {
     // 跳转帖子详情页
-    const newUrl = window.location.origin + `/#/detail/message?postId=${item.postId}&commentId=${item.commentId}`
+    const newUrl =
+      window.location.origin + `/#/detail/message?postId=${item.postId}&commentId=${item.commentId}&token=${getToken()}`
     window.open(newUrl, '_blank')
   }
 }

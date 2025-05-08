@@ -56,8 +56,6 @@ const getReplyData = async () => {
   // TODO 获取帖子回复数量问题
   const params = { PostsID: props.articleId, PageNum: '0', PageSize: '2000', iSort: 1 }
   const { firstList, secondList } = await getReplyListAPI(params)
-  console.log('firstList--->', firstList)
-  console.log('secondList--->', secondList)
   firstList.forEach((item: any) => {
     const arr = secondList.filter((v) => v.initialID === item.id)
     item.children = arr.map((v: any) => {
@@ -66,7 +64,6 @@ const getReplyData = async () => {
     })
   })
   userNameIdRepeatList.value = handleNameSuffixShow(firstList)
-  console.log('userNameIdRepeatList.value--->', userNameIdRepeatList.value)
   firstList.forEach((item: any) => {
     handleUserNameReply(item)
     item.children?.forEach((child: any) => {
@@ -74,7 +71,6 @@ const getReplyData = async () => {
     })
   })
   replyArticleList.value = firstList
-  console.log('firstList--->', firstList)
   // 数据获取完成,通知父组件
   await nextTick()
   emits('getDataFinish')
