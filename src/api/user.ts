@@ -4,30 +4,30 @@ import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 保存用户资料 */
 export const SetRPAUserInfoAPI = async (params: any) => {
-  await callServerFunc('TRPADM', 'SetRPAUserInfoLite', params, { isShowErrorMsg: false })
+  await callServerFunc('TRPADM', 'SetRPAUserInfo', params, { isShowErrorMsg: false })
 }
 
 /** 通过手机号验证身份 */
 export const CheckPhoneCodeAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'CheckPhoneCodeLite', params)
+  const { data }: any = await callServerFunc('TRPADM', 'CheckPhoneCode', params)
   return data
 }
 
 /** 获取短信验证码 */
 export const SendPhoneCodeAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'SendPhoneCodeLite', params)
+  const { data }: any = await callServerFunc('TRPADM', 'SendPhoneCode', params)
   return data
 }
 
 /** 修改密码 */
 export const SetRPAUserNewPassAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'SetRPAUserNewPassLite', params)
+  const { data }: any = await callServerFunc('TRPADM', 'SetRPAUserNewPass', params)
   return data
 }
 
 /** 申请为开发者 */
 export const RPAApplyDeveloperAPI = async (params: any) => {
-  await callServerFunc('TRPADM', 'RPAApplyDeveloperLite', params)
+  await callServerFunc('TRPADM', 'RPAApplyDeveloper', params)
 }
 
 /** 获取用户发表的帖子 */
@@ -72,12 +72,12 @@ export const RPAGetUserIndexLiteAPI = async (params: any) => {
 
 /** 获取默认头像 */
 export const RPAGetUserIconAPI = async () => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserIconLite', {})
+  const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserIcon', {})
   return data.DefaulIcon
 }
 
 /** 上传头像 */
 export const RPAUploadIconAPI = async (params: any, options: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAUploadIconLite', params, options)
+  const { data }: any = await callServerFunc('TRPADM', 'RPAUploadIcon', params, options)
   return data
 }

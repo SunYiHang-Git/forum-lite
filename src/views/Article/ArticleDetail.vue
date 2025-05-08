@@ -18,6 +18,8 @@ import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import { convertMarkdownToHtml } from '@/utils/format'
 import { useUser } from '@/store/modules/user'
 import CommentArticle from '@/views/Article/components/CommentArticle.vue'
+import { storeToRefs } from 'pinia'
+const { userInfo } = storeToRefs(useUser())
 
 const router = useRouter()
 
@@ -138,6 +140,10 @@ const handleToBottom = () => {
 
 /** 评论 */
 const addReply = async () => {
+  if (!userInfo.value.loginId) {
+    KMessage.warning('请先登录!')
+    return
+  }
   await nextTick()
   if (!replyValue.value) {
     KMessage.warning('不能发布空内容!')
@@ -281,7 +287,7 @@ const styleTemplateDiv = {
   <div class="article-detail">
     <div class="detail-box">
       <div class="left">
-        <div class="flex-left">
+        <div v-if="userInfo.loginId" class="flex-left">
           <div class="flex-top">
             <div class="collect-box">
               <k-badge @click="handleCollect" :value="articleInfo.collectNum" type="info" class="item dfc">

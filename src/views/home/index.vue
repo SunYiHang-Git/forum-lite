@@ -61,11 +61,11 @@ getDataList()
             <Banner />
           </div>
           <div class="userInfo-box">
-            <UserCard />
+            <!-- <UserCard /> -->
           </div>
         </div>
         <div class="nav-box">
-          <NavCard />
+          <!-- <NavCard /> -->
         </div>
         <div class="official-announcement">
           <OfficialAnnouncement :isFetchData="isFetchHome" :noticeList="noticeNewList" :replyList="replyListData" />

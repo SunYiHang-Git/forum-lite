@@ -1,4 +1,6 @@
+import { getRPAUserAPI } from '@/api/home'
 import { useStorage } from '@/store/modules/storage'
+import { setToken } from '@ksware/micro-lib-web-temp'
 
 const KEY = '__K-RPA Lite__FORUM_'
 
@@ -104,6 +106,9 @@ export function getUrlParamByName(name: string | boolean = '') {
   }
   if (name === true) return result
   // 兼容大小写
+  const token = result[name as string] || result[String(name).toUpperCase()]
+  setToken(token)
+  getRPAUserAPI()
   return result[name as string] || result[String(name).toUpperCase()]
 }
 

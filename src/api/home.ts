@@ -405,7 +405,7 @@ function handleInteractionData(table: any) {
 /** 获取用户信息 */
 export const getRPAUserAPI = async () => {
   const { setUserInfo } = useUser()
-  const userInfoRes = await callServerFunc('TRPADM', 'GetRPAUserLite', {})
+  const userInfoRes = await callServerFunc('TRPADM', 'GetRPAUser', {})
   const {
     IsLite,
     IsAdmin,

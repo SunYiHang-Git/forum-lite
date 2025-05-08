@@ -5,13 +5,13 @@ import { callServerFunc, setToken, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 获取用户信息 */
 export const GetRPAUserAPI = async () => {
-  const { data } = await callServerFunc('TRPADM', 'GetRPAUserLite', { TokenError: true, HandleError: true })
+  const { data } = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true })
   return data
 }
 
 /** 账号登录登录 */
 export const loginByAccountAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAUserLoginLite', params, { isShowErrorMsg: false })
+  const { data }: any = await callServerFunc('TRPADM', 'RPAUserLogin', params, { isShowErrorMsg: false })
   const { ID, IsLite, LncDate, LoginID, PassWord, Token, User, UserID, UserName, IsForumLogin } = data
   setToken(Token)
   const userInfoRes: any = await GetRPAUserAPI()

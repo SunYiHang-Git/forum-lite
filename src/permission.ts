@@ -20,19 +20,19 @@ router.beforeEach((to, from, next) => {
     return
   }
   /** 没有 token */
-  if (!getToken() && to.path !== '/login') {
-    const { userInfo, exitLogin } = useUser()
-    /** 记住登录状态 */
-    if (userInfo.token && userInfo.rememberInfo) {
-      setToken(userInfo.token)
-      next(to.path)
-      return
-    }
-    /** 没有记住登录状态 */
-    exitLogin() // 清空信息
-    next('/login' + `?toRedirectPath=${to.fullPath}`)
-    return
-  }
+  // if (!getToken() && to.path !== '/login') {
+  //   const { userInfo, exitLogin } = useUser()
+  //   /** 记住登录状态 */
+  //   if (userInfo.token && userInfo.rememberInfo) {
+  //     setToken(userInfo.token)
+  //     next(to.path)
+  //     return
+  //   }
+  //   /** 没有记住登录状态 */
+  //   exitLogin() // 清空信息
+  //   next('/login' + `?toRedirectPath=${to.fullPath}`)
+  //   return
+  // }
   /** 校验进入页面的权限 */
   // if (permNameList.includes(to.path)) {
   //   if (!isAdminRolePermission()) {
