@@ -19,6 +19,7 @@ import { convertMarkdownToHtml } from '@/utils/format'
 import { useUser } from '@/store/modules/user'
 import CommentArticle from '@/views/Article/components/CommentArticle.vue'
 import { storeToRefs } from 'pinia'
+import { handleNoLoginClick } from '@/utils/auth'
 const { userInfo } = storeToRefs(useUser())
 
 const router = useRouter()
@@ -140,11 +141,13 @@ const handleToBottom = () => {
 
 /** 评论 */
 const addReply = async () => {
-  if (!userInfo.value.loginId) {
-    KMessage.warning('请先登录!')
-    return
-  }
+  await handleNoLoginClick()
   await nextTick()
+  await KMessageBox.confirm('确定要回复该内容吗?', '回复提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'success',
+  })
   if (!replyValue.value) {
     KMessage.warning('不能发布空内容!')
     return

@@ -1,6 +1,7 @@
 import { getRPAUserAPI } from '@/api/home'
 import { useStorage } from '@/store/modules/storage'
-import { setToken } from '@ksware/micro-lib-web-temp'
+import { KMessage } from '@ksware/ksw-ux'
+import { getToken, setToken } from '@ksware/micro-lib-web-temp'
 
 const KEY = '__K-RPA Lite__FORUM_'
 
@@ -107,8 +108,10 @@ export function getUrlParamByName(name: string | boolean = '') {
   if (name === true) return result
   // 兼容大小写
   const token = result[name as string] || result[String(name).toUpperCase()]
-  setToken(token)
-  getRPAUserAPI()
+  if (token) {
+    setToken(token)
+    getRPAUserAPI()
+  }
   return result[name as string] || result[String(name).toUpperCase()]
 }
 
@@ -125,4 +128,13 @@ export function removeTokenFromUrl(url: string) {
   // - ?token=xxxxx
   // - token=xxxxx& 或 token=xxxxx# 或 token=xxxxx（单独在末尾）
   return url.replace(/[?&]token=[0-9A-Fa-f]{32,}[^&#]*/g, '').replace(/([&?])$/, '')
+}
+
+/** 处理未登录时,不可触发后续方法 */
+export const handleNoLoginClick = () => {
+  const token = getToken()
+  if (token) return Promise.resolve(true)
+  KMessage.warning('请先进行登录')
+  // throw Error('没有登录,不可操作')
+  return Promise.reject(false)
 }

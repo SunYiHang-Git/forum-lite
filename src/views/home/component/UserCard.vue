@@ -4,8 +4,9 @@ import { useUser } from '@/store/modules/user'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { getUserASllTypeNumAPI } from '@/api/home'
-import { ref } from 'vue'
-import { MD5 } from '@ksware/micro-lib-web-temp'
+import { ref, watch } from 'vue'
+import { getToken, MD5 } from '@ksware/micro-lib-web-temp'
+import { handleNoLoginClick } from '@/utils/auth'
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
 
@@ -23,6 +24,8 @@ const classTypeNumObj = ref<{
 
 /** 获取用户的类别数据量 */
 const getUserAllTypeData = async () => {
+  const token = getToken()
+  if (!token) return
   const loginId = userInfo.value.loginId
   const { ArticleCount, QuestionCount, ReplyCount, CollectCount } = await getUserASllTypeNumAPI({
     User: loginId,
@@ -33,13 +36,26 @@ const getUserAllTypeData = async () => {
 getUserAllTypeData()
 /** 发帖 */
 const postArticle = async () => {
+  await handleNoLoginClick()
   router.push('/article/add/' + MD5('add'))
 }
 
 /* 去我的**/
-function goUserPage() {
+async function goUserPage() {
+  await handleNoLoginClick()
   router.push('/user')
 }
+watch(
+  () => userInfo.value,
+  () => {
+    if (userInfo.value.loginId) {
+      getUserAllTypeData()
+    } else {
+      classTypeNumObj.value = { ArticleCount: 0, QuestionCount: 0, ReplyCount: 0, CollectCount: 0 }
+    }
+  },
+  { deep: true },
+)
 </script>
 
 <template>

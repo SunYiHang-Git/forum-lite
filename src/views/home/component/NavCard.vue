@@ -26,7 +26,7 @@ const getHomeClassList = async () => {
       case '互动解答':
         homeNavIds.INTERACTION_ID = postsTypeId
         break
-      case '官方公告':
+      case '公告':
         homeNavIds.NOTICE_ID = postsTypeId
         break
       default:

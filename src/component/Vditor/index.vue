@@ -273,6 +273,7 @@ function initOption() {
       vditor.value?.setValue(props.modelValue)
     },
     input: (value: string) => {
+      console.log('value--->', value)
       content.value = value
       emit('update:modelValue', value)
     },
@@ -287,6 +288,7 @@ onMounted(() => {
 watch(
   () => props.modelValue,
   (newVal) => {
+    console.log('newVal--->', newVal)
     if (newVal !== content.value) {
       content.value = newVal
       vditor.value?.setValue(newVal)

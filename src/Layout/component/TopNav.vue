@@ -76,11 +76,9 @@ async function layout() {
   })
   const { exitLogin } = useUser()
   exitLogin()
-  clearLocalStorage()
-  clearSessionStorage()
   clearBreadcrumbList()
-  await nextTick()
-  router.replace('/login')
+  // await nextTick()
+  // router.replace('/login')
 }
 function handleCommand(name: string) {
   switch (name) {
@@ -128,7 +126,7 @@ const postArticle = async () => {
       </k-button>
     </div>
     <div class="search-box">
-      <KInput v-model="searchValue" style="width: 180px" placeholder="搜索..." suffix-icon="IconSearch" />
+      <!-- <KInput v-model="searchValue" style="width: 180px" placeholder="搜索..." suffix-icon="IconSearch" /> -->
     </div>
     <div v-if="!userInfo.loginStatus" class="opt-but">
       <k-button text @click="goLogin">登录</k-button>

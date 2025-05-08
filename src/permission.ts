@@ -41,7 +41,7 @@ router.beforeEach((to, from, next) => {
   //     return
   //   }
   // }
-  if (from.meta?.breadcrumb !== '') {
+  if (to.meta?.breadcrumb) {
     const { setBreadcrumbList, clearBreadcrumbList } = useRouterInfo()
     if (toRouterList.includes(to.path)) {
       clearBreadcrumbList()

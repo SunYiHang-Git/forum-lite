@@ -2,9 +2,10 @@
 import { addReplyForArticleAPI, getAllReplyNumAPI, getArticleInfoById, getReplyListAPI } from '@/api/home'
 import Vditor from '@/component/Vditor/index.vue'
 import { getSplitStrName, handleNameSuffixShow } from '@/utils/tools'
-import { KMessage } from '@ksware/ksw-ux'
+import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import { nextTick, ref, watch } from 'vue'
 import ReplyCard from '@/views/Article/components/ReplyCard.vue'
+import { handleNoLoginClick } from '@/utils/auth'
 
 interface IProps {
   /** 当前文章详情 */
@@ -93,7 +94,13 @@ const dialogCancel = () => {
 }
 /** 弹框回复帖子 */
 const dialogReply = async () => {
+  await handleNoLoginClick()
   await nextTick()
+  await KMessageBox.confirm('确定要回复该内容吗?', '回复提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'success',
+  })
   if (!replyValueDialog.value) {
     KMessage.warning('不能回复空内容!')
     return

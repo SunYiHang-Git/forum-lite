@@ -10,11 +10,16 @@ import KnowledgeShare from '@/views/home/component/KnowledgeShare.vue'
 import { getHomeAllDataAPI, getRPAUserAPI, getThirdTypeDataAPI } from '@/api/home'
 import { storeToRefs } from 'pinia'
 import { useUser } from '@/store/modules/user'
+import { getToken } from '@ksware/micro-lib-web-temp'
 const { userInfo } = storeToRefs(useUser())
 async function makeTokenLogin() {
   const { loginId } = userInfo.value
   if (loginId) return
-  await getRPAUserAPI()
+  const token = getToken()
+  console.log('token--->', token)
+  if (token) {
+    await getRPAUserAPI()
+  }
 }
 makeTokenLogin()
 /** 回帖周榜 */
@@ -61,11 +66,11 @@ getDataList()
             <Banner />
           </div>
           <div class="userInfo-box">
-            <!-- <UserCard /> -->
+            <UserCard />
           </div>
         </div>
         <div class="nav-box">
-          <!-- <NavCard /> -->
+          <NavCard />
         </div>
         <div class="official-announcement">
           <OfficialAnnouncement :isFetchData="isFetchHome" :noticeList="noticeNewList" :replyList="replyListData" />
