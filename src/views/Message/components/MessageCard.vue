@@ -40,7 +40,7 @@ const lookDetail = async (item: any) => {
       <div class="more-box">
         <k-button v-if="item.type !== '7'" text @click="lookDetail(item)">查看详情</k-button>
         <k-button v-if="item.type7 == '7'" text @click="setReadMessageById(item)">点击已读</k-button>
-        <div class="time">2025-04-27 15:38:39</div>
+        <div class="time">{{ item.time }}</div>
       </div>
     </div>
   </div>

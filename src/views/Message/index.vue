@@ -80,14 +80,12 @@ const getFormaInfoList = async () => {
     pageSize: pageSize.value,
     State: messageType.value,
     KeySearch: searchValue.value,
+    MessageType: 1,
   }
   if (tabType.value !== 0) {
     params.iType = tabType.value
   }
-  console.log('params--->', params)
   const { list, total } = await RPAInformationLiteAPI(params)
-  console.log('total--->', total)
-  console.log('list--->', list)
   totalMessage.value = total
   tableData.value = list
 }

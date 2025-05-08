@@ -90,7 +90,7 @@ const handleLookMore = () => {
 
 const tableData = ref<any[]>([])
 const getFormaInfoList = async (type: number | null = null) => {
-  const params: any = { pageNum: 0, pageSize: 5, State: 1 }
+  const params: any = { pageNum: 0, pageSize: 5, State: 1, MessageType: 1 }
   if (type) {
     params.iType = type
   }
