@@ -16,7 +16,6 @@ async function makeTokenLogin() {
   const { loginId } = userInfo.value
   if (loginId) return
   const token = getToken()
-  console.log('token--->', token)
   if (token) {
     await getRPAUserAPI()
   }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import PageList from './PageList.vue'
 import { getClassByIdAPI, getInteractionListAPI } from '@/api/home'
 
-const props = defineProps<{ pid: string }>()
+const props = defineProps<{ pid: string; searchVale: string }>()
 
 const activeName = ref('all')
 
@@ -20,6 +20,8 @@ const pageTotal = ref(0)
 const tableDataList = ref<any[]>([])
 /** 子类id */
 const sonClassId = ref('')
+/** 搜索值 */
+const searchVale = computed(() => props.searchVale)
 
 /** 获取互动解答,知识分享数据接口 */
 const getInteractionListData = async () => {
@@ -30,11 +32,18 @@ const getInteractionListData = async () => {
     PostsType: sonClassId.value,
     CollectNum: true,
     isFine: isFine.value === 1 ? '1' : '0',
+    Titles: searchVale.value,
   }
   const { list, total } = await getInteractionListAPI(params)
   tableDataList.value = list
   pageTotal.value = total
 }
+watch(
+  () => searchVale.value,
+  () => {
+    getInteractionListData()
+  },
+)
 
 /** 获取 tablist 数据 */
 const gatTabList = async () => {

@@ -6,6 +6,7 @@ import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import { homeNavIds } from '@/const/home'
+import { getArticleTypeListAPI } from '@/api/home'
 
 const route = useRoute()
 /** 父专栏 name */
@@ -16,7 +17,6 @@ const activePid = ref(homeNavIds.KNOWLEDGE_ID)
 function handleRouteQuery() {
   const name = route.name
   activeCardName.value = name as string
-  console.log('homeNavIds--->', homeNavIds)
   switch (name) {
     case 'knowledge':
       activePid.value = homeNavIds.KNOWLEDGE_ID
@@ -31,7 +31,36 @@ function handleRouteQuery() {
       break
   }
 }
-handleRouteQuery()
+
+/** 获取首页分类 */
+const getHomeClassList = async () => {
+  const { parentList } = await getArticleTypeListAPI()
+  parentList.forEach((item): any => {
+    const { postsTypeName, postsTypeId } = item
+    if (!postsTypeName) return
+    switch (postsTypeName) {
+      case '知识分享':
+        homeNavIds.KNOWLEDGE_ID = postsTypeId
+        break
+      case '互动解答':
+        homeNavIds.INTERACTION_ID = postsTypeId
+        break
+      case '公告':
+        homeNavIds.NOTICE_ID = postsTypeId
+        break
+      default:
+        break
+    }
+  })
+  handleRouteQuery()
+}
+getHomeClassList()
+
+/** 搜索值 */
+const searchVale = ref('')
+const searchPostList = (value: string) => {
+  searchVale.value = value
+}
 </script>
 
 <template>
@@ -41,11 +70,11 @@ handleRouteQuery()
         <Breadcrumb />
       </div>
       <div class="nav">
-        <NavClass :activeCardName="activeCardName" />
+        <NavClass :activeCardName="activeCardName" @searchPostList="searchPostList" />
       </div>
       <div class="main-box">
         <div class="main-list">
-          <TabList :pid="activePid" />
+          <TabList v-if="activePid" :pid="activePid" :searchVale="searchVale" />
         </div>
         <div class="user-right">
           <RightUser />

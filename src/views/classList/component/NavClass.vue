@@ -1,9 +1,49 @@
 <script setup lang="ts">
 import { NavCardList } from '@/const/home'
+import { useUser } from '@/store/modules/user'
+import { MD5 } from '@ksware/micro-lib-web-temp'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const { isAdminByUser } = useUser()
 
 const { activeCardName } = defineProps<{
   activeCardName: string
 }>()
+
+const emits = defineEmits<{
+  (e: 'searchPostList', value: string): void
+}>()
+
+/** 搜索值 */
+const searchVale = ref('')
+
+const handleChange = () => {
+  emits('searchPostList', searchVale.value)
+}
+const clearValue = () => {
+  emits('searchPostList', '')
+}
+
+const handlePostArticle = () => {
+  const findItem = NavCardList.find((item) => item.name === activeCardName)
+  if (!findItem) return
+  router.push('/article/add/' + MD5('add') + `?type=${findItem.label}`)
+}
+
+/** 是否显示 */
+const isShowPost = ref(true)
+
+/** 是否有管理员权限 */
+function initData() {
+  const isAdmin = isAdminByUser()
+  if (isAdmin) {
+    isShowPost.value = true
+  } else if (activeCardName === 'notice') {
+    isShowPost.value = false
+  }
+}
+initData()
 </script>
 
 <template>
@@ -21,9 +61,17 @@ const { activeCardName } = defineProps<{
     </div>
     <div class="right-btn dfc">
       <div class="search-box">
-        <k-input placeholder="搜索..." suffix-icon="IconSearch" style="width: 160px"></k-input>
+        <k-input
+          v-model="searchVale"
+          @keyup.enter="handleChange"
+          @clear="clearValue"
+          placeholder="搜索..."
+          suffix-icon="IconSearch"
+          style="width: 160px"
+          clearable
+        ></k-input>
       </div>
-      <k-button main>我要提问</k-button>
+      <k-button v-if="isShowPost" main @click="handlePostArticle">我要发帖</k-button>
     </div>
   </div>
 </template>

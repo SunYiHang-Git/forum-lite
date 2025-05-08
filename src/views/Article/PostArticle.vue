@@ -70,9 +70,17 @@ const getArticleInfo = async (id: string) => {
 const pageTitle = computed(() => (articleInfo.value?.id ? '编辑' : '发布'))
 const pageSubmitText = computed(() => (articleInfo.value?.id ? '修改发布' : '发布'))
 
+/** 专栏 Name */
+const typeName = ref('')
+
 /** 初始化,判断是发布还是编辑 */
 function getRouteId() {
   const { id } = route.params
+  const { type } = route.query
+  if (type) {
+    const name = type === '官方公告' ? '公告' : type
+    typeName.value = name as string
+  }
   if (id === MD5('add')) {
     // 发布
     return
@@ -88,6 +96,7 @@ const columnOptions = ref<any[]>([])
 /** 获取专栏 */
 const getHomeClassList = async () => {
   const { parentList, sonList } = await getArticleTypeListAPI()
+  const { isAdminByUser } = useUser()
   columnOptions.value = parentList.map(({ postsTypeId, postsTypeName }: any) => {
     const children = sonList
       .filter((item: any) => item.pid === postsTypeId)
@@ -96,6 +105,12 @@ const getHomeClassList = async () => {
       })
     return { value: postsTypeId, label: postsTypeName, children }
   })
+  if (!isAdminByUser()) {
+    columnOptions.value = columnOptions.value.filter((item) => item.label !== '公告')
+  }
+  const findItem = columnOptions.value.find((item) => item.label === typeName.value)
+  if (!findItem) return
+  ruleForm.type = findItem.value
 }
 getHomeClassList()
 const handleChange = (arr: any): void => {
