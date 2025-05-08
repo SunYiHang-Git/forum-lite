@@ -21,7 +21,6 @@ const env = import.meta.env
 const isDev = env.DEV
 
 /** 是否记住状态 */
-const isRememberStatus = ref<boolean>(false)
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   phone: '',
@@ -114,7 +113,6 @@ async function againRegister(data: any) {
       emits('goPage', 'login')
       KMessage.success('注册成功!')
     } catch (error) {
-      const p = { ...data, UserName: ruleForm.username + '#' + generateUniqueNumber() }
       againRegister({ ...data, UserName: ruleForm.username + '#' + generateUniqueNumber() })
     }
   } else {

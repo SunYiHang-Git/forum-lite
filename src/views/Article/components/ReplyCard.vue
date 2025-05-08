@@ -16,7 +16,7 @@ const replyShowDialog = (item: any) => {
 </script>
 
 <template>
-  <div class="reply-card">
+  <div class="reply-card markdown-body">
     <div :id="item.id">
       <div class="replyUser-box">
         <div class="replyUserName">
