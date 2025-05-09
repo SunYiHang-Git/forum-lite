@@ -30,6 +30,18 @@ const vditor = ref<Vditor>()
 const containerRef = ref<HTMLElement>()
 const content = ref(props.modelValue)
 
+// 定义一个公开的方法，用于外部通过 ref 调用聚焦
+function focusEditor() {
+  if (vditor.value) {
+    vditor.value.focus()
+  }
+}
+
+// 向外暴露 focusEditor 方法
+defineExpose({
+  focusEditor,
+})
+
 /** 图片上传前校验 */
 const validateImage = (file: File) => {
   const validTypes = ['image/jpeg', 'image/png']
@@ -288,7 +300,6 @@ onMounted(() => {
 watch(
   () => props.modelValue,
   (newVal) => {
-    console.log('newVal--->', newVal)
     if (newVal !== content.value) {
       content.value = newVal
       vditor.value?.setValue(newVal)

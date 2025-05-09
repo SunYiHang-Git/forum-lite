@@ -128,8 +128,8 @@ export const useUser = defineStore(
       clearUserInfoStore()
       clearLocalStorage()
       clearSessionStorage()
-      // removeToken()
-      sessionStorage.removeItem('rpa_micro_Token')
+      removeToken()
+      // sessionStorage.removeItem('rpa_micro_Token')
     }
     return {
       userInfo,

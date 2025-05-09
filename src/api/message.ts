@@ -45,8 +45,8 @@ function formatPost(item: any) {
   item.value = str
 }
 /** 获取消息中心的消息 */
-export const RPAInformationLiteAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('TRPADM', 'RPAInformationLite', params, { isShowLoading: false })
+export const RPAInformationLiteAPI = async (params: any, option = {}) => {
+  const { data }: any = await callServerFunc('TRPADM', 'RPAInformationLite', params, option)
   const table = new SQLTable(data.k_forum_information)
   const rows = []
   while (!table.eof()) {

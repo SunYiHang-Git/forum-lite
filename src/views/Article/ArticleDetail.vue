@@ -38,6 +38,8 @@ const articleInfo = ref<any>({})
 /** 帖子总数 */
 const articleAllNum = ref(0)
 
+const vditorComponent = ref<any>(null)
+
 /** 获取帖子详情 */
 const getArticleInfo = async (id: string) => {
   const params = { PostsID: id }
@@ -130,13 +132,54 @@ async function initWindow() {
 }
 initWindow()
 /** 去评论的位置 */
-const handleToBottom = () => {
+const handleToBottom = async () => {
   const { scrollHeight } = document.documentElement
   window.scrollTo({
     top: scrollHeight, // 滚动条总高度
     left: 0,
     behavior: 'smooth',
   })
+  // 监听滚动结束
+  let ticking = false
+  let rafId = 0 // 用于保存 requestAnimationFrame 的 ID
+
+  const checkScrollEnd = () => {
+    if (ticking) return
+    ticking = true
+
+    rafId = requestAnimationFrame(() => {
+      const currentScrollTop = window.scrollY || document.documentElement.scrollTop
+      const currentHeight = document.documentElement.scrollHeight
+
+      // 如果当前已经在底部附近，则判定为滚动结束
+      if (Math.abs(currentScrollTop + window.innerHeight - currentHeight) < 10) {
+        window.removeEventListener('scroll', onWindowScroll)
+        cancelAnimationFrame(rafId) //  正确地取消动画帧监听
+
+        // 执行聚焦操作
+        if (vditorComponent.value) {
+          vditorComponent.value.focusEditor()
+        }
+
+        ticking = false
+        return
+      }
+
+      ticking = false
+    })
+  }
+
+  const onWindowScroll = () => {
+    checkScrollEnd()
+  }
+
+  // 开始监听
+  window.addEventListener('scroll', onWindowScroll)
+
+  // 设置一个超时兜底（防止卡住）
+  setTimeout(() => {
+    window.removeEventListener('scroll', onWindowScroll)
+  }, 3000)
 }
 
 /** 评论 */
@@ -398,7 +441,7 @@ const styleTemplateDiv = {
           />
         </div>
         <div id="textareaTEditor" class="to-reply-box">
-          <Vditor v-model="replyValue" :placeholder="$t('forum.formContent')" />
+          <Vditor v-model="replyValue" ref="vditorComponent" :placeholder="$t('forum.formContent')" />
           <div class="submit-box">
             <k-button main @click="addReply">发 表</k-button>
           </div>

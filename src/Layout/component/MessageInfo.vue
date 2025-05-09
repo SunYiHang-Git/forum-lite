@@ -2,36 +2,18 @@
 import { RPAGetNotReadLiteAPI } from '@/api/message'
 import MessageCard from './MessageCard.vue'
 import { onMounted, onUnmounted, ref } from 'vue'
-
-/** 消息数量 */
-const messageCount = ref<number>(0)
-/** 全部消息 */
-const allCount = ref(0)
-/** 帖子消息 */
-const postCount = ref(0)
-/** 评论消息 */
-const replyCount = ref(0)
-/** 系统消息 */
-const systemCount = ref(0)
-
-/** 获取消息的数量 */
-const getNoteData = async () => {
-  const data = await RPAGetNotReadLiteAPI()
-  const { Count, PostsCount, ReplyCount, SystemCount } = data
-  messageCount.value = Count
-  allCount.value = Count
-  postCount.value = PostsCount
-  replyCount.value = ReplyCount
-  systemCount.value = SystemCount
-}
+import { useMessage } from '@/store/modules/useMessage'
+import { storeToRefs } from 'pinia'
+const { getMessageNoteData } = useMessage()
+const { messageCount } = storeToRefs(useMessage())
 
 let intervalId: null | number = null
 onMounted(() => {
-  getNoteData()
+  getMessageNoteData()
   // 设置每 15 分钟执行一次
   intervalId = setInterval(
     () => {
-      getNoteData()
+      getMessageNoteData()
     },
     15 * 60 * 1000,
   )
@@ -47,8 +29,8 @@ onUnmounted(() => {
 
 const popoverRef = ref<any>()
 const resetCount = () => {
-  getNoteData()
   popoverRef.value?.hide()
+  getMessageNoteData()
 }
 </script>
 
@@ -64,17 +46,21 @@ const resetCount = () => {
       "
       >
         <template #reference>
-          <k-badge :value="messageCount" :hidden="messageCount === 0" style="display: flex; align-items: center">
+          <k-badge
+            :value="messageCount.allCount"
+            :hidden="messageCount.allCount === 0"
+            style="display: flex; align-items: center"
+          >
             <IconBell :size="22" />
           </k-badge>
         </template>
         <template #default>
           <!-- 消息卡片 -->
           <MessageCard
-            :count="allCount"
-            :posts-count="postCount"
-            :reply-count="replyCount"
-            :system-count="systemCount"
+            :count="messageCount.allCount"
+            :posts-count="messageCount.postCount"
+            :reply-count="messageCount.replyCount"
+            :system-count="messageCount.systemCount"
             @resetCount="resetCount"
           />
         </template>

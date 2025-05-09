@@ -44,6 +44,7 @@ const rules = reactive<FormRules<RuleForm>>({
   title: [{ required: true, message: '此为必填项', trigger: 'blur' }],
   type: [{ required: true, message: '此为必选项', trigger: 'change' }],
   content: [{ required: true, message: '此为必填项', trigger: 'blur' }],
+  abstract: [{ required: true, message: '此为必填项', trigger: 'blur' }],
   cover: [{ required: true, message: '此为必填项', trigger: 'blur' }],
 })
 // 创建一个响应式变量用于存储图片的 Data URL
@@ -239,7 +240,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
               </div>
             </k-form-item>
             <div class="hr"></div>
-            <k-form-item label="摘要">
+            <k-form-item label="摘要" prop="abstract">
               <k-input
                 v-model.trim="ruleForm.abstract"
                 type="textarea"
@@ -294,7 +295,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
               <k-switch
                 v-model="ruleForm.syncData"
                 class="ml-2"
-                style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
+                style="--el-switch-on-color: #13ce66; --el-switch-off-color: #f3f3f3"
               />
             </k-form-item>
             <k-form-item>

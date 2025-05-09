@@ -1,22 +1,14 @@
 <script setup lang="ts">
 import { RPAInformationLiteAPI } from '@/api/message'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, useTemplateRef, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import MessageCard from '@/views/Message/components/MessageCard.vue'
 import EmptySvg from '@/assets/svg/no-notice.svg'
+import { storeToRefs } from 'pinia'
+import { useMessage } from '@/store/modules/useMessage'
 const router = useRouter()
-interface IProps {
-  count: number
-  postsCount: number
-  replyCount: number
-  systemCount: number
-}
-const props = withDefaults(defineProps<IProps>(), {
-  count: 0,
-  postsCount: 0,
-  replyCount: 0,
-  systemCount: 0,
-})
+const { messageCount } = storeToRefs(useMessage())
+
 const emits = defineEmits<{
   (e: 'resetCount'): void
 }>()
@@ -25,56 +17,29 @@ const tabList = ref<any[]>([
   {
     label: '全部消息',
     name: 'all',
-    count: props.count,
+    count: messageCount.value.allCount,
   },
   {
     label: '帖子消息',
     name: 'article',
-    count: props.postsCount,
+    count: messageCount.value.postCount,
   },
   {
     label: '评论消息',
     name: 'reply',
-    count: props.replyCount,
+    count: messageCount.value.replyCount,
   },
   {
     label: '系统消息',
     name: 'system',
-    count: props.systemCount,
+    count: messageCount.value.systemCount,
   },
 ])
 
+const ListBoxRef = useTemplateRef('ListBoxRef')
+
 const activeName = ref<string>('all')
 
-watch(
-  () => props,
-  () => {
-    tabList.value = [
-      {
-        label: '全部消息',
-        name: 'all',
-        count: props.count,
-      },
-      {
-        label: '帖子消息',
-        name: 'article',
-        count: props.postsCount,
-      },
-      {
-        label: '评论消息',
-        name: 'reply',
-        count: props.replyCount,
-      },
-      {
-        label: '系统消息',
-        name: 'system',
-        count: props.systemCount,
-      },
-    ]
-    handleSelectName(activeName.value)
-  },
-  { deep: true },
-)
 /** title 宽度 */
 const itemWidth = ref(67)
 // 获取当前激活项的 index
@@ -94,10 +59,12 @@ const getFormaInfoList = async (type: number | null = null) => {
   if (type) {
     params.iType = type
   }
-  const { list } = await RPAInformationLiteAPI(params)
+  const { list } = await RPAInformationLiteAPI(params, { loadingEl: ListBoxRef.value })
   tableData.value = list
 }
-getFormaInfoList()
+onMounted(() => {
+  getFormaInfoList()
+})
 
 /** tab 切换 */
 function handleSelectName(name: string) {
@@ -139,7 +106,7 @@ function handleSelectName(name: string) {
       <div class="indicator" :style="{ transform: `translateX(${activeIndex})` }"></div>
     </div>
     <div class="content-box">
-      <div class="lis-box" v-if="tableData.length">
+      <div class="lis-box" v-if="tableData.length" ref="ListBoxRef">
         <MessageCard :list="tableData" class="MessageCard" @resetCount="() => emits('resetCount')" />
       </div>
       <div class="empty" v-if="tableData.length === 0">

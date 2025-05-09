@@ -3,7 +3,9 @@ import { RPAGetNotReadLiteAPI, RPAInformationLiteAPI, RPASetReadMessageLiteAPI }
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import MessageCard from '@/views/Message/components/MessageCard.vue'
 import { KMessageBox } from '@ksware/ksw-ux'
-import { ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
+
+const ListBoxRef = useTemplateRef('ListBoxRef')
 
 const tabList = ref<any[]>([
   {
@@ -85,11 +87,13 @@ const getFormaInfoList = async () => {
   if (tabType.value !== 0) {
     params.iType = tabType.value
   }
-  const { list, total } = await RPAInformationLiteAPI(params)
+  const { list, total } = await RPAInformationLiteAPI(params, { loadingEl: ListBoxRef.value })
   totalMessage.value = total
   tableData.value = list
 }
-getFormaInfoList()
+onMounted(() => {
+  getFormaInfoList()
+})
 /** tab 切换事件 */
 const handleClick = (name: string) => {
   switch (name) {
@@ -151,7 +155,7 @@ const handleCurrentChange = () => {
       <div class="breadcrumb">
         <Breadcrumb />
       </div>
-      <div class="main-box">
+      <div class="main-box" ref="ListBoxRef">
         <k-tabs v-model="activeName" class="demo-tabs" @tab-change="handleClick">
           <k-tab-pane v-for="(item, index) in tabList" :key="index" :label="item.label" :name="item.name">
             <div class="component-box">
@@ -174,7 +178,7 @@ const handleCurrentChange = () => {
                   <k-button @click="allReady">全部已读</k-button>
                 </div>
               </div>
-              <MessageCard :list="tableData" class="MessageCard" />
+              <MessageCard :list="tableData" class="MessageCard" @resetCount="getFormaInfoList" />
               <div class="footer">
                 <k-pagination
                   v-model:current-page="currentPage"

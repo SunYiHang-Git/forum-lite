@@ -133,7 +133,7 @@ const postArticle = async () => {
       <k-button main @click="goRegister">注册</k-button>
     </div>
     <div v-if="userInfo.loginStatus" class="opt-but">
-      <k-button text color="#000" @click="postArticle">发帖</k-button>
+      <k-button text @click="postArticle">发帖</k-button>
       <div class="message-box">
         <MessageInfo />
       </div>

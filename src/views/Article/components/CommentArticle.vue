@@ -38,6 +38,8 @@ const dialogParams = ref<any>({})
 /** 记录 userName 重复的 userId */
 const userNameIdRepeatList = ref<any[]>([])
 
+const vditorComponent = ref<any>(null)
+
 function handleUserNameReply(item: any) {
   if (userNameIdRepeatList.value.includes(item.userId)) {
     const starName = getSplitStrName(item.userName)
@@ -59,10 +61,12 @@ const getReplyData = async () => {
   const { firstList, secondList } = await getReplyListAPI(params)
   firstList.forEach((item: any) => {
     const arr = secondList.filter((v) => v.initialID === item.id)
-    item.children = arr.map((v: any) => {
-      const findItem = arr.find(({ id }: any) => id === v.pid)
-      return { ...v, replyPerson: findItem?.userName ?? item.userName }
-    })
+    item.children = arr
+      .map((v: any) => {
+        const findItem = arr.find(({ id }: any) => id === v.pid)
+        return { ...v, replyPerson: findItem?.userName ?? item.userName }
+      })
+      .reverse()
   })
   userNameIdRepeatList.value = handleNameSuffixShow(firstList)
   firstList.forEach((item: any) => {
@@ -78,13 +82,19 @@ const getReplyData = async () => {
 }
 
 /** 显示回复弹框 */
-const replyShowDialog = (item: any) => {
+const replyShowDialog = async (item: any) => {
   showReplyDialog.value = true
   dialogParams.value = {
     PostsID: item.postId,
     PID: item.id,
     InitialID: item.initialID || item.id,
     userName: item.userName,
+  }
+  // 执行聚焦操作
+  await nextTick()
+  if (vditorComponent.value) {
+    await nextTick()
+    vditorComponent.value.focusEditor()
   }
 }
 /** 弹窗取消 */
@@ -142,7 +152,7 @@ watch(
   <k-dialog v-model="showReplyDialog" :title="'回复: ' + dialogParams.userName" width="700">
     <div class="reply-dialog-box">
       <div class="reply-dialog-edit">
-        <Vditor v-model="replyValueDialog" :placeholder="$t('forum.formContent')" />
+        <Vditor v-model="replyValueDialog" ref="vditorComponent" :placeholder="$t('forum.formContent')" />
       </div>
       <div class="btn-box">
         <k-button @click="dialogCancel">取 消</k-button>
