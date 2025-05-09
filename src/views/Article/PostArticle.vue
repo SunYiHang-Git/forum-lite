@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
-import type { FormInstance, FormRules, UploadInstance, UploadRawFile } from 'element-plus'
-import { computed, reactive, ref } from 'vue'
+import type { FormInstance, FormRules, InputInstance, UploadInstance, UploadRawFile } from 'element-plus'
+import { computed, nextTick, reactive, ref } from 'vue'
 import Vditor from '@/component/Vditor/index.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { callServerFunc, getGuid, MD5 } from '@ksware/micro-lib-web-temp'
@@ -45,7 +45,7 @@ const rules = reactive<FormRules<RuleForm>>({
   type: [{ required: true, message: '此为必选项', trigger: 'change' }],
   content: [{ required: true, message: '此为必填项', trigger: 'blur' }],
   abstract: [{ required: true, message: '此为必填项', trigger: 'blur' }],
-  cover: [{ required: true, message: '此为必填项', trigger: 'blur' }],
+  // cover: [{ required: true, message: '此为必填项', trigger: 'blur' }],
 })
 // 创建一个响应式变量用于存储图片的 Data URL
 const imageUrl = ref('')
@@ -160,6 +160,29 @@ async function delPicture() {
   upload.value?.clearFiles()
 }
 
+const inputValue = ref('')
+const inputVisible = ref(false)
+const InputRef = ref<InputInstance>()
+
+const handleClose = (tag: string) => {
+  ruleForm.tags.splice(ruleForm.tags.indexOf(tag), 1)
+}
+
+const showInput = () => {
+  inputVisible.value = true
+  nextTick(() => {
+    InputRef.value!.input!.focus()
+  })
+}
+
+const handleInputConfirm = () => {
+  if (inputValue.value) {
+    ruleForm.tags.push(inputValue.value)
+  }
+  inputVisible.value = false
+  inputValue.value = ''
+}
+
 /** 取消 */
 async function cancel(formEl: FormInstance | undefined) {
   if (!formEl) return
@@ -168,6 +191,7 @@ async function cancel(formEl: FormInstance | undefined) {
 }
 /** 提交 */
 const submitForm = async (formEl: FormInstance | undefined) => {
+  console.log('ruleForm--->', ruleForm)
   if (!formEl) return
   await formEl.validate()
   const { id } = articleInfo.value
@@ -251,14 +275,27 @@ const submitForm = async (formEl: FormInstance | undefined) => {
               />
             </k-form-item>
             <k-form-item label="标签">
-              <k-select
-                v-model="ruleForm.tags"
-                multiple
-                filterable
-                allow-create
-                default-first-option
-                :reserve-keyword="false"
-              ></k-select>
+              <div class="flex gap-2">
+                <k-tag
+                  v-for="tag in ruleForm?.tags || []"
+                  :key="tag"
+                  closable
+                  size="large"
+                  :disable-transitions="false"
+                  @close="handleClose(tag)"
+                >
+                  {{ tag }}
+                </k-tag>
+                <k-input
+                  v-if="inputVisible"
+                  ref="InputRef"
+                  v-model="inputValue"
+                  class="w-20"
+                  @keyup.enter="handleInputConfirm"
+                  @blur="handleInputConfirm"
+                />
+                <k-button v-else class="button-new-tag" @click="showInput">添加标签</k-button>
+              </div>
             </k-form-item>
             <k-form-item label="文章封面" prop="cover">
               <div class="upload-box">
@@ -368,7 +405,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           margin-top: 20px;
           margin-bottom: 30px;
           width: 100%;
-          height: 2px;
+          height: 1px;
           background-color: #eae8eb;
         }
         .upload-box {
