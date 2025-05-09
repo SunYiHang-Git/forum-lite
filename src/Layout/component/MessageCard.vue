@@ -86,6 +86,12 @@ function handleSelectName(name: string) {
       break
   }
 }
+
+/** 触发获取未读数据 */
+const handleGetCount = async () => {
+  emits('resetCount')
+  handleSelectName(activeName.value)
+}
 </script>
 
 <template>
@@ -107,7 +113,7 @@ function handleSelectName(name: string) {
     </div>
     <div class="content-box">
       <div class="lis-box" v-if="tableData.length" ref="ListBoxRef">
-        <MessageCard :list="tableData" class="MessageCard" @resetCount="() => emits('resetCount')" />
+        <MessageCard :list="tableData" class="MessageCard" @resetCount="handleGetCount" />
       </div>
       <div class="empty" v-if="tableData.length === 0">
         <div class="empty-icon">
