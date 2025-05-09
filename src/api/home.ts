@@ -2,6 +2,7 @@
 
 import { useUser } from '@/store/modules/user'
 import { convertKeysToLowerCase, handleUrlFormat, maturityDays } from '@/utils/format'
+import { getSplitStrName } from '@/utils/tools'
 import { fileHostUrl } from '@/views/home'
 import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 
@@ -427,6 +428,9 @@ export const getRPAUserAPI = async () => {
     UserID,
     UserName,
   }: any = userInfoRes.data
+  /** 拆分 userName 的 # 后缀 */
+  const userName = getSplitStrName(UserName)
+  const _suffix = getSplitStrName(UserName, '#', 1)
   const userInfoObj = {
     id: LoginID,
     isLite: IsLite,
@@ -437,7 +441,8 @@ export const getRPAUserAPI = async () => {
     token: Token,
     user: User,
     userId: UserID,
-    userName: UserName,
+    userName: userName,
+    userName_suffix: _suffix ? '#' + _suffix : _suffix,
     role: IsAdmin,
     isAdmin: IsAdmin === 1,
     loginStatus: true,

@@ -34,6 +34,8 @@ interface RuleForm {
   /** 个人简介 */
   signature: string
 }
+/** 昵称拼接后缀 */
+const userNameSuffix = ref()
 const { phone, userName, fullName, company, sex, city, avatar, signature, loginId, isDeveloper, userName_suffix } =
   userInfo.value
 let cityArr: any = []
@@ -96,6 +98,7 @@ async function retrySetUserInfo(params: any, userInfoObj: any) {
   try {
     await SetRPAUserInfoAPI(params)
     KMessage.success('保存资料成功!')
+    ruleForm.oldUserName = ruleForm.userName
     setUserInfo(userInfoObj)
   } catch (error: any) {
     if (error.sError.includes('当前昵称已被注册')) {
@@ -103,7 +106,7 @@ async function retrySetUserInfo(params: any, userInfoObj: any) {
         retryCount.value++
         const { userName } = ruleForm
         const data = { ...params, NewName: userName + '#' + generateUniqueNumber() }
-        retrySetUserInfo(data, userInfoObj)
+        retrySetUserInfo(data, { ...userInfoObj, userName_suffix: '#' + generateUniqueNumber() })
       }
     }
   }
@@ -122,7 +125,7 @@ const submitForm = async () => {
     const { userName, oldUserName, fullName, company, sex, city, signature } = ruleForm
     const cityStr = city.join('/')
     const params = {
-      UserName: oldUserName,
+      UserName: oldUserName + userName_suffix,
       NewName: userName + userName_suffix,
       ChangeName: oldUserName !== userName,
       FullName: fullName,
@@ -131,7 +134,6 @@ const submitForm = async () => {
       City: cityStr,
       Signature: signature,
     }
-    console.log('params--->', params)
     const userInfoObj = { userName, fullName, company, sex, city: cityStr, signature }
     retrySetUserInfo(params, userInfoObj)
   } catch (error: any) {
@@ -149,8 +151,8 @@ const editPhone = async () => {
     editDialogParams.value.visible = false
     const { userName, oldUserName, fullName, company, sex, city, signature } = ruleForm
     const params = {
-      UserName: oldUserName,
-      NewName: userName,
+      UserName: oldUserName + userName_suffix,
+      NewName: userName + userName_suffix,
       ChangeName: oldUserName !== userName,
       FullName: fullName,
       Sex: sex,
