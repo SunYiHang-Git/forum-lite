@@ -70,6 +70,10 @@ getHomeClassList()
     width: 100%;
     background-color: #fff;
     cursor: pointer;
+    transition: all 0.3s 0s;
+    &:hover {
+      transform: scaleX(1.04) scaleY(1.04) scaleZ(1.04);
+    }
     .nav-icon {
       display: flex;
       justify-content: center;

@@ -178,7 +178,7 @@ const goDetail = (item: any) => {
           align-items: center;
           width: 100%;
           height: 56px;
-          border-top: 1px solid #eae8eb;
+          border-top: 1px solid var(--k-gray-200);
           &:nth-child(1) {
             display: flex;
             flex-direction: column;
@@ -269,6 +269,9 @@ const goDetail = (item: any) => {
               font-weight: 500;
               color: #171717;
               cursor: pointer;
+              &:hover {
+                color: var(--k-blue-500);
+              }
             }
             .answer {
               font-size: 14px;

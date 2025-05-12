@@ -125,7 +125,6 @@ function lookMore() {
       display: flex;
       flex-direction: column;
       justify-content: start;
-      gap: 32px;
       width: 100%;
       overflow: hidden;
       .notice-lis {
@@ -133,9 +132,13 @@ function lookMore() {
         justify-content: start;
         align-items: center;
         width: 100%;
-        height: 24px;
+        /* height: 24px; */
         gap: 8px;
+        padding: 1rem 0;
         overflow: hidden;
+        &:not(:first-child) {
+          border-top: 1px solid var(--k-gray-200);
+        }
         .left-box {
           flex: 1;
           display: flex;
@@ -192,6 +195,9 @@ function lookMore() {
             text-overflow: ellipsis;
             text-wrap: nowrap;
             cursor: pointer;
+            &:hover {
+              color: var(--k-blue-500);
+            }
           }
         }
         .lis-time {
@@ -240,7 +246,7 @@ function lookMore() {
         gap: 14px;
         width: 100%;
         height: 32px;
-        cursor: pointer;
+        /* cursor: pointer; */
         .reply-icon {
           width: 32px;
           height: 32px;
@@ -252,6 +258,7 @@ function lookMore() {
               height: 100%;
               border-radius: 50%;
               background-color: #f5f5f5;
+              color: var(--k-gray-400);
             }
           }
         }

@@ -92,6 +92,7 @@ initData()
   padding: 24px 32px;
   gap: 24px;
   background-color: #fff;
+  border-radius: 12px;
   .left-name {
     flex: 1;
     justify-content: start;

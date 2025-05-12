@@ -137,24 +137,26 @@ const goDetail = (item: any) => {
       .know-content {
         display: flex;
         flex-direction: column;
-        gap: 1px;
+        gap: 0;
         width: 100%;
         flex: 1;
         overflow: hidden;
         .lis-hot-know {
           box-sizing: border-box;
-          padding-top: 10px;
           display: flex;
           flex-direction: column;
           // justify-content: space-between;
           gap: 10px;
           width: 100%;
-          height: 124px;
-          // padding: 10px 0;
+          /* height: 124px; */
+          padding-bottom: 1rem;
           // box-sizing: border-box;
-          border-top: 1px solid #eae8eb;
+          border-top: 1px solid var(--k-gray-200);
           &:nth-child(1) {
             border: none;
+          }
+          &:not(:first-child) {
+            padding-top: 1rem;
           }
           .lis-top {
             display: flex;
@@ -176,6 +178,9 @@ const goDetail = (item: any) => {
               color: #2563eb;
             }
             .hot-title {
+              &:hover {
+                color: var(--k-blue-500);
+              }
               flex: 1;
               height: 24px;
               line-height: 24px;
