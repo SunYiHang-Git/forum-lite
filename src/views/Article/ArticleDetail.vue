@@ -20,6 +20,7 @@ import { useUser } from '@/store/modules/user'
 import CommentArticle from '@/views/Article/components/CommentArticle.vue'
 import { storeToRefs } from 'pinia'
 import { handleNoLoginClick } from '@/utils/auth'
+import { getSplitStrName } from '@/utils/tools'
 const { userInfo } = storeToRefs(useUser())
 
 const router = useRouter()
@@ -422,7 +423,7 @@ const styleTemplateDiv = {
               <div class="avatar dfc">
                 <k-image :src="articleInfo.userIcon"></k-image>
               </div>
-              <div class="username ove">{{ articleInfo.userName }}</div>
+              <div class="username ove">{{ getSplitStrName(articleInfo.userName) }}</div>
             </div>
             <div class="publish-time">发布于 {{ articleInfo.lastTime }}</div>
             <div class="show-num">{{ articleInfo.hot }} 浏览</div>

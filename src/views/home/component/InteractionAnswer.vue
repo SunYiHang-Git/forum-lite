@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
+import { getSplitStrName } from '@/utils/tools'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -48,7 +49,7 @@ const goDetail = (item: any) => {
                   </template>
                 </k-image>
               </div>
-              <div class="user-name dfc">{{ item.userName }}</div>
+              <div class="user-name dfc">{{ getSplitStrName(item.userName) }}</div>
               <div class="page-vies dfc">浏览 {{ item.hot }}</div>
               <div class="answer">{{ item.replyNum }} 个回答</div>
             </div>
@@ -75,7 +76,7 @@ const goDetail = (item: any) => {
                   </template>
                 </k-image>
               </div>
-              <div class="user-name dfc">{{ item.userName }}</div>
+              <div class="user-name dfc">{{ getSplitStrName(item.userName) }}</div>
               <div class="page-vies dfc">浏览 {{ item.hot }}</div>
               <div class="answer">{{ item.replyNum }} 个回答</div>
             </div>
