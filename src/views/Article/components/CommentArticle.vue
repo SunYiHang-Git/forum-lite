@@ -40,19 +40,26 @@ const userNameIdRepeatList = ref<any[]>([])
 
 const vditorComponent = ref<any>(null)
 
+function processName(str: string): { name: string; suffix: string } {
+  const baseName = getSplitStrName(str)
+  const suffixPart = getSplitStrName(str, '#', 1)
+  return {
+    name: baseName,
+    suffix: suffixPart ? `#${suffixPart}` : '',
+  }
+}
+
 function handleUserNameReply(item: any) {
-  if (userNameIdRepeatList.value.includes(item.userId)) {
-    const starName = getSplitStrName(item.userName)
-    const endName = '#' + getSplitStrName(item.userName, '#', 1)
-    item.userName = starName
-    item.suffix = endName
-  }
-  if (userNameIdRepeatList.value.includes(item.replyPersonUserId)) {
-    const starReply = getSplitStrName(item.replyPerson)
-    const endReply = '#' + getSplitStrName(item.replyPerson, '#', 1)
-    item.replyPerson = starReply
-    item.replySuffix = endReply
-  }
+  const isUserRepeated = userNameIdRepeatList.value.includes(item.userId)
+  const isReplyRepeated = userNameIdRepeatList.value.includes(item.replyPersonUserId)
+  // 处理 userName
+  const userResult = isUserRepeated ? processName(item.userName) : { name: item.userName, suffix: '' }
+  item.userName = userResult.name
+  item.suffix = userResult.suffix
+  // 处理 replyPerson
+  const replyResult = isReplyRepeated ? processName(item.replyPerson) : { name: item.replyPerson, suffix: '' }
+  item.replyPerson = replyResult.name
+  item.replySuffix = replyResult.suffix
 }
 /** 获取帖子的回复数据 */
 const getReplyData = async () => {
