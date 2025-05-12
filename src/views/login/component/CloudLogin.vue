@@ -121,7 +121,7 @@ const handleGetCode = async () => {
     return KMessage.warning(t('common.checkTip', { cnt: ct('login.validity', 'login.phone') }))
   try {
     const data = { PhoneTo: ruleForm.phone, SendCodeType: 2 }
-    const res: any = await callServerFunc('TRPADM', 'SendPhoneCodeLite', data)
+    const res: any = await callServerFunc('TRPADM', 'SendPhoneCode', data)
     if (import.meta.env.DEV) {
       const { sPhoneCode } = res.data
       verificationCode.value = sPhoneCode

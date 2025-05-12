@@ -49,7 +49,7 @@ export const loginByAccountAPI = async (params: any) => {
 
 /** 验证码登录 */
 export const RPALitePhoneCodeLoginAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('THttpDM', 'RPALitePhoneCodeLoginLite', params, { isShowErrorMsg: false })
+  const { data }: any = await callServerFunc('THttpDM', 'RPALitePhoneCodeLogin', params, { isShowErrorMsg: false })
   const { ID, IsLite, LncDate, LoginID, RPALite: PassWord, Token, user, UserName, Phone } = data
   setToken(Token)
   const userInfoRes: any = await GetRPAUserAPI()
