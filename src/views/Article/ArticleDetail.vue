@@ -414,7 +414,9 @@ const styleTemplateDiv = {
           <div class="bread-box">
             <Breadcrumb />
           </div>
-          <div class="title ove">{{ articleInfo.title }}</div>
+          <div class="title">
+            {{ articleInfo.title }}
+          </div>
           <div class="tags-box">
             <div class="tag" v-for="(item, index) in articleInfo.tag" :key="index">{{ item }}</div>
           </div>
@@ -581,8 +583,7 @@ const styleTemplateDiv = {
       }
       .title {
         width: 100%;
-        height: 32px;
-
+        height: fit-content;
         font-size: 24px;
         font-weight: 500;
         color: #171717;
