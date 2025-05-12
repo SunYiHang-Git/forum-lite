@@ -132,6 +132,9 @@ const handleDetail = (item: any) => {
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
+          &:hover {
+            color: var(--k-blue-500);
+          }
         }
       }
       .desc-box {

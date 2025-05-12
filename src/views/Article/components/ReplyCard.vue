@@ -27,8 +27,8 @@ const replyShowDialog = (item: any) => {
             {{ item.userName }}
             <div v-if="item.suffix">{{ item.suffix }}</div>
           </div>
+          <div class="is-author" v-if="isAuthor">作者</div>
         </div>
-        <div class="is-author" v-if="isAuthor">作者</div>
         <div class="reply-time">{{ item.time }}</div>
       </div>
       <div class="reply-text-box" :innerHTML="convertMarkdownToHtml(item.content)"></div>
@@ -48,8 +48,8 @@ const replyShowDialog = (item: any) => {
               {{ child.userName }}
               <div v-if="child.suffix">{{ child.suffix }}</div>
             </div>
+            <div class="is-author" v-if="isAuthor">作者</div>
           </div>
-          <div class="is-author" v-if="isAuthor">作者</div>
           <div class="to-reply-person-box">
             <div class="reply-to-text">回复</div>
             <div class="reply-to-user-name">
@@ -75,7 +75,7 @@ const replyShowDialog = (item: any) => {
     display: flex;
     align-items: center;
     justify-content: start;
-    gap: 20px;
+    gap: 16px;
     width: 100%;
     height: 24px;
     .replyUserName {
@@ -186,11 +186,13 @@ const replyShowDialog = (item: any) => {
     width: fit-content;
     box-sizing: border-box;
     margin-left: 34px;
-
     font-size: 14px;
     font-weight: normal;
-    color: #737373;
+    color: var(--k-gray-400);
     cursor: pointer;
+    &:hover {
+      color: var(--k-blue-500);
+    }
   }
   .reply-children-box-list {
     display: flex;

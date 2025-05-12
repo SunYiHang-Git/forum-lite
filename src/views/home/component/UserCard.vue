@@ -113,6 +113,13 @@ watch(
     gap: 8px;
     width: 100%;
     overflow: hidden;
+    &:hover {
+      .userInfo {
+        .name {
+          color: var(--k-blue-500);
+        }
+      }
+    }
     .avatar {
       width: 48px;
       height: 48px;

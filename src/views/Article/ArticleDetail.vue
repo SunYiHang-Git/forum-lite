@@ -685,7 +685,7 @@ const styleTemplateDiv = {
               display: flex;
               align-items: center;
               justify-content: start;
-              gap: 20px;
+              gap: 16px;
               width: 100%;
               height: 24px;
               .replyUserName {
@@ -775,11 +775,13 @@ const styleTemplateDiv = {
               width: fit-content;
               box-sizing: border-box;
               margin-left: 34px;
-
               font-size: 14px;
               font-weight: normal;
               color: #737373;
               cursor: pointer;
+              &:hover {
+                color: var(--k-blue-500);
+              }
             }
             .reply-children-box-list {
               display: flex;

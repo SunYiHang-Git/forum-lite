@@ -35,7 +35,7 @@ const goDetail = (item: any) => {
         <div class="know-content" v-else>
           <div v-for="item in hotDataList" :key="item.id" class="lis-hot-know">
             <div class="lis-top">
-              <div class="icon dfc"><IconDocDetailFill color="#B6AFAF" /></div>
+              <div class="icon dfc"><IconDocDetailFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
               <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
             </div>
@@ -46,7 +46,7 @@ const goDetail = (item: any) => {
               </div>
               <div class="user-name dfc">{{ getSplitStrName(item.userName) }}</div>
               <div class="page-vies dfc">浏览 {{ item.hot }}</div>
-              <div class="answer">{{ item.replyNum }} 个回答</div>
+              <div class="answer">{{ item.replyNum }} 个回复</div>
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@ const goDetail = (item: any) => {
         <div class="know-content" v-else>
           <div v-for="item in newDataList" :key="item.id" class="lis-hot-know">
             <div class="lis-top">
-              <div class="icon dfc"><IconDocDetailFill color="#B6AFAF" /></div>
+              <div class="icon dfc"><IconDocDetailFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
               <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
             </div>
@@ -68,7 +68,7 @@ const goDetail = (item: any) => {
               </div>
               <div class="user-name dfc">{{ getSplitStrName(item.userName) }}</div>
               <div class="page-vies dfc">浏览 {{ item.hot }}</div>
-              <div class="answer">{{ item.replyNum }} 个回答</div>
+              <div class="answer">{{ item.replyNum }} 个回复</div>
             </div>
           </div>
         </div>
@@ -182,19 +182,17 @@ const goDetail = (item: any) => {
               overflow: hidden;
               text-overflow: ellipsis;
               text-wrap: nowrap;
-
               font-size: 16px;
-              font-weight: normal;
+              font-weight: 500;
               color: #171717;
               cursor: pointer;
             }
           }
           .lis-desc {
             width: 100%;
-
-            font-size: 12px;
+            font-size: 14px;
             font-weight: normal;
-            line-height: 20px;
+            line-height: 22px;
             letter-spacing: 0px;
             color: #6b7280;
             display: -webkit-box; /* 必须结合其他属性一起使用 */

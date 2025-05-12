@@ -184,9 +184,8 @@ function lookMore() {
             width: 100%;
             height: 25px;
             line-height: 25px;
-
             font-size: 14px;
-            font-weight: normal;
+            font-weight: 500;
             letter-spacing: 0px;
             color: #171717;
             overflow: hidden;

@@ -18,7 +18,7 @@ getDataList()
       <HotCard title="热门回答" icon="IconMessageFill" :list="hotInteractionDataList" />
     </div>
     <div class="hot-article">
-      <HotCard title="热门文章" icon="IconMessageFill" :list="hotKnowDataList" />
+      <HotCard title="热门文章" icon="IconDocDetailFill" :list="hotKnowDataList" />
     </div>
   </div>
 </template>

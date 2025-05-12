@@ -35,10 +35,10 @@ const goDetail = (item: any) => {
         <div class="card-list-box" v-else>
           <div class="lis-data" v-for="(item, index) in hotDataList" :key="item.id">
             <div class="main-content-top">
-              <div class="icon dfc"><IconMessageFill color="#999999" /></div>
+              <div class="icon dfc"><IconMessageFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
               <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
-              <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回答</div>
+              <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回复</div>
             </div>
             <div v-if="index === 0" class="hot-desc">{{ item.abstract }}</div>
             <div v-if="index === 0" class="hot-user-box">
@@ -51,7 +51,7 @@ const goDetail = (item: any) => {
               </div>
               <div class="user-name dfc">{{ getSplitStrName(item.userName) }}</div>
               <div class="page-vies dfc">浏览 {{ item.hot }}</div>
-              <div class="answer">{{ item.replyNum }} 个回答</div>
+              <div class="answer">{{ item.replyNum }} 个回复</div>
             </div>
           </div>
         </div>
@@ -62,10 +62,10 @@ const goDetail = (item: any) => {
         <div class="card-list-box" v-else>
           <div class="lis-data" v-for="(item, index) in newDataList" :key="item.id">
             <div class="main-content-top">
-              <div class="icon dfc"><IconMessageFill color="#999999" /></div>
+              <div class="icon dfc"><IconMessageFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
               <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
-              <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回答</div>
+              <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回复</div>
             </div>
             <div v-if="index === 0" class="hot-desc">{{ item.abstract }}</div>
             <div v-if="index === 0" class="hot-user-box">
@@ -78,7 +78,7 @@ const goDetail = (item: any) => {
               </div>
               <div class="user-name dfc">{{ getSplitStrName(item.userName) }}</div>
               <div class="page-vies dfc">浏览 {{ item.hot }}</div>
-              <div class="answer">{{ item.replyNum }} 个回答</div>
+              <div class="answer">{{ item.replyNum }} 个回复</div>
             </div>
           </div>
         </div>
@@ -189,10 +189,9 @@ const goDetail = (item: any) => {
             border: none;
             .hot-desc {
               width: 100%;
-
-              font-size: 12px;
+              font-size: 14px;
               font-weight: normal;
-              line-height: 20px;
+              line-height: 22px;
               letter-spacing: 0px;
               color: #6b7280;
               display: -webkit-box; /* 必须结合其他属性一起使用 */
@@ -219,7 +218,6 @@ const goDetail = (item: any) => {
               .user-name {
                 width: fit-content;
                 padding: 0 5px;
-
                 font-size: 14px;
                 font-weight: normal;
                 color: #afabb3;
@@ -267,9 +265,8 @@ const goDetail = (item: any) => {
               overflow: hidden;
               text-overflow: ellipsis;
               text-wrap: nowrap;
-
               font-size: 16px;
-              font-weight: normal;
+              font-weight: 500;
               color: #171717;
               cursor: pointer;
             }

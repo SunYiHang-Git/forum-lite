@@ -18,11 +18,11 @@ const goDetail = (item: any) => {
     <div class="NewAnnouncement">
       <div v-for="item in list" :key="item.id" class="lis-name">
         <div v-if="icon" class="icon">
-          <component :is="item.icon ?? icon" color="#999999" />
+          <component :is="item.icon ?? icon" color="var(--k-gray-400)" :size="16" />
         </div>
         <div v-if="item.icon" class="icon">
           <div class="dfc" style="width: 100%; height: 100%; border-radius: 50%; background-color: #eff6ff">
-            <component :is="item.icon ?? icon" :color="item.iconColor ?? '#999999'" />
+            <component :is="item.icon ?? icon" :color="item.iconColor ?? 'var(--k-gray-400)'" />
           </div>
         </div>
         <div class="title" @click="goDetail(item)">
@@ -69,12 +69,14 @@ const goDetail = (item: any) => {
     display: flex;
     align-items: center;
     justify-content: start;
-    gap: 8px;
+    gap: 4px;
     width: 100%;
     height: 24px;
+    color: var(--k-gray-700);
+    & :hover {
+      color: var(--k-blue-500);
+    }
     .icon {
-      width: 24px;
-      height: 24px;
       overflow: hidden;
     }
     .title {
@@ -87,7 +89,6 @@ const goDetail = (item: any) => {
 
       font-size: 16px;
       font-weight: normal;
-      color: #171717;
       cursor: pointer;
     }
   }
