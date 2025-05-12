@@ -53,9 +53,7 @@ function handleUserNameReply(item: any) {
   const isUserRepeated = userNameIdRepeatList.value.includes(item.userId)
   const isReplyRepeated = userNameIdRepeatList.value.includes(item.replyPersonUserId)
   // 处理 userName
-  const userResult = isUserRepeated
-    ? processName(item.userName)
-    : { name: getSplitStrName(item.getSplitStrName), suffix: '' }
+  const userResult = isUserRepeated ? processName(item.userName) : { name: getSplitStrName(item.userName), suffix: '' }
   item.userName = userResult.name
   item.suffix = userResult.suffix
   // 处理 replyPerson
