@@ -108,7 +108,7 @@ async function againRegister(data: any) {
   if (retryCount.value < 3) {
     try {
       retryCount.value++
-      await callServerFunc('TRPADM', 'RPAUserRegisterLite', data, { isShowErrorMsg: false })
+      await callServerFunc('TRPADM', 'RPAUserRegister', data, { isShowErrorMsg: false })
       retryCount.value = 0
       emits('goPage', 'login')
       KMessage.success('注册成功!')
@@ -136,7 +136,7 @@ const submitForm = async () => {
       FullName: 'RPA_Lite_' + ruleForm.username,
       Company: 'RPA_Lite_' + ruleForm.username,
     }
-    await callServerFunc('TRPADM', 'RPAUserRegisterLite', data, { isShowErrorMsg: false })
+    await callServerFunc('TRPADM', 'RPAUserRegister', data, { isShowErrorMsg: false })
     retryCount.value = 0
     emits('goPage', 'login')
     KMessage.success('注册成功!')
