@@ -13,10 +13,12 @@ const props = withDefaults(
     showUsername: true,
   },
 )
+const env = import.meta.env
 const router = useRouter()
 const handleDetail = (item: any) => {
   // router.push(`/detail/${item.id}`)
-  const newUrl = window.location.origin + `/#/detail/${item.id}`
+  const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
+  const newUrl = url + `#/detail/${item.id}`
   window.open(newUrl, '_blank')
 }
 </script>
