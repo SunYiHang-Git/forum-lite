@@ -123,6 +123,11 @@ function initDropDown() {
         icon: 'IconEdit',
         command: 'edit',
       },
+      {
+        name: '删除',
+        icon: 'IconDelete',
+        command: 'delete',
+      },
     ]
   }
 }
@@ -280,8 +285,10 @@ const confirmDelArticle = async () => {
   const { id } = articleInfo.value
   const params = { PostsID: id, Reason: delReasonValue.value, SyncData: false }
   await deleteArticleByIdAPI(params)
-  cancelDelArticle()
-  router.go(-1)
+  showDeleteDialog.value = false
+  delReasonValue.value = ''
+  await nextTick()
+  router.push('/')
 }
 
 /** 去编辑页面 */
@@ -347,12 +354,7 @@ const styleTemplateDiv = {
                 <IconMessageOne :size="26" />
               </k-badge>
             </div>
-            <k-dropdown
-              v-if="dropDownItemList.length > 1"
-              placement="left-start"
-              trigger="click"
-              @command="handleCommand"
-            >
+            <k-dropdown placement="left-start" trigger="click" @command="handleCommand">
               <template #title>
                 <div class="more-box">
                   <IconMore
@@ -385,7 +387,7 @@ const styleTemplateDiv = {
                 </k-dropdown-item>
               </template>
             </k-dropdown>
-            <div class="more-box" v-if="dropDownItemList.length === 1">
+            <!-- <div class="more-box" v-if="dropDownItemList.length === 1">
               <IconEdit
                 :size="26"
                 style="
@@ -400,7 +402,7 @@ const styleTemplateDiv = {
                 "
                 @click="goEditPage"
               />
-            </div>
+            </div> -->
           </div>
           <div class="goTop">
             <div @click="goTop" class="top-icon dfc">

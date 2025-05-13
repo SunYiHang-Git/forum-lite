@@ -30,6 +30,7 @@ import TopNav from './component/TopNav.vue'
     flex-direction: column;
     justify-content: start;
     align-items: center;
+    box-sizing: border-box;
     .el-header {
       position: fixed;
       top: 0;
@@ -49,6 +50,7 @@ import TopNav from './component/TopNav.vue'
       padding: 0;
       width: 100%;
       overflow: visible;
+      box-sizing: border-box;
       // overflow-x: hidden;
     }
   }

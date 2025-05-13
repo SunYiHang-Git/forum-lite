@@ -8,8 +8,8 @@ const { getMessageNoteData } = useMessage()
 const { messageCount } = storeToRefs(useMessage())
 
 let intervalId: null | number = null
-onMounted(() => {
-  getMessageNoteData()
+onMounted(async () => {
+  await getMessageNoteData()
   // 设置每 15 分钟执行一次
   intervalId = setInterval(
     () => {
@@ -56,13 +56,7 @@ const resetCount = () => {
         </template>
         <template #default>
           <!-- 消息卡片 -->
-          <MessageCard
-            :count="messageCount.allCount"
-            :posts-count="messageCount.postCount"
-            :reply-count="messageCount.replyCount"
-            :system-count="messageCount.systemCount"
-            @resetCount="resetCount"
-          />
+          <MessageCard @resetCount="resetCount" />
         </template>
       </k-popover>
     </div>

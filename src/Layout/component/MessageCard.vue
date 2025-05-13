@@ -17,24 +17,56 @@ const tabList = ref<any[]>([
   {
     label: '全部消息',
     name: 'all',
-    count: messageCount.value.allCount,
+    count: 0,
   },
   {
     label: '帖子消息',
     name: 'article',
-    count: messageCount.value.postCount,
+    count: 0,
   },
   {
     label: '评论消息',
     name: 'reply',
-    count: messageCount.value.replyCount,
+    count: 0,
   },
   {
     label: '系统消息',
     name: 'system',
-    count: messageCount.value.systemCount,
+    count: 0,
   },
 ])
+watch(
+  () => messageCount.value,
+  () => {
+    if (messageCount.value.allCount === 0) return
+    tabList.value = [
+      {
+        label: '全部消息',
+        name: 'all',
+        count: messageCount.value.allCount,
+      },
+      {
+        label: '帖子消息',
+        name: 'article',
+        count: messageCount.value.postCount,
+      },
+      {
+        label: '评论消息',
+        name: 'reply',
+        count: messageCount.value.replyCount,
+      },
+      {
+        label: '系统消息',
+        name: 'system',
+        count: messageCount.value.systemCount,
+      },
+    ]
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
+)
 
 const ListBoxRef = useTemplateRef('ListBoxRef')
 

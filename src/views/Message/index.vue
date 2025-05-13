@@ -101,10 +101,10 @@ const handleClick = (name: string) => {
       tabType.value = 0
       break
     case 'article':
-      tabType.value = 1
+      tabType.value = 2
       break
     case 'reply':
-      tabType.value = 2
+      tabType.value = 1
       break
     case 'system':
       tabType.value = 3
