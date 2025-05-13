@@ -64,7 +64,7 @@ const goDetail = (item: any) => {
             <div class="main-content-top">
               <div class="icon dfc"><IconMessageFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
+              <div class="hot-title" @click="goDetail(item)" :title="item.title">{{ item.title }}</div>
               <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回复</div>
             </div>
             <div v-if="index === 0" class="hot-desc">{{ item.abstract }}</div>

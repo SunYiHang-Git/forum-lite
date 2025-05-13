@@ -51,7 +51,7 @@ const resetCount = () => {
             :hidden="messageCount.allCount === 0"
             style="display: flex; align-items: center"
           >
-            <IconBell :size="22" />
+            <IconBell :size="20" />
           </k-badge>
         </template>
         <template #default>
@@ -73,8 +73,6 @@ const resetCount = () => {
 .message-info {
   display: flex;
   align-items: center;
-  width: 100%;
-  height: 100%;
   .icon {
     display: flex;
     align-items: center;

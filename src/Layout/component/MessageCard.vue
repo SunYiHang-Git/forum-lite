@@ -203,7 +203,7 @@ const handleGetCount = async () => {
     .footer-box {
       width: 100%;
       height: 88px;
-      padding: 24px 32px;
+      padding: 24px 0;
       .button-box {
         text-align: center;
         width: 100%;

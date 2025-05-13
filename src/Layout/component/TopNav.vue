@@ -217,8 +217,18 @@ const postArticle = async () => {
     width: fit-content;
     gap: 32px;
     .message-box {
-      width: fit-content;
-      height: 30px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      /* width: 32px;
+      height: 32px; */
+      border-radius: 6px;
+      font-size: 20px;
+      padding: 4px;
+      &:hover {
+        background-color: var(--k-gray-100);
+        cursor: pointer;
+      }
     }
     .k-button {
       font-size: 14px;

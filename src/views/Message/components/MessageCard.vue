@@ -68,12 +68,12 @@ const lookDetail = async (item: any) => {
       width: 100%;
       display: flex;
       align-items: start;
+      align-items: center;
       .tag {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 12px;
-        height: 20px;
+        margin-right: 8px;
         .cur {
           width: 6px;
           height: 6px;
@@ -102,7 +102,7 @@ const lookDetail = async (item: any) => {
       height: 22px;
       padding-left: 25px;
       .k-button {
-        margin-left: 12px;
+        margin-left: 14px;
       }
       .time {
         font-size: 14px;

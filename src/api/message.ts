@@ -7,37 +7,37 @@ function formatPost(item: any) {
   let str = ''
   switch (item.type) {
     case '1':
-      str = `"${item.userName}" 评论了您的帖子。"${item.title}" `
+      str = `${item.userName} 评论了您的帖子“${item.title}”`
       break
     case '2':
-      str = `"${item.userName}" 评论了该帖子。"${item.title}"`
+      str = `${item.userName} 评论了您参与的帖子“${item.title}”`
       break
     case '3':
-      str = `"${item.userName}" 回复了您的评论。"${item.title}"`
+      str = `${item.userName} 回复了您在“${item.title}”中的评论`
       break
     case '4':
-      str = `"${item.userName}" 发布了帖子。"${item.title}"`
+      str = `${item.userName} 发布了新帖子“${item.title}”`
       break
     case '5':
-      str = `"${item.countNum}" 个用户评论了帖子。"${item.title}"`
+      str = `共有 ${item.countNum} 位用户评论了您的帖子“${item.title}”`
       break
     case '6':
-      str = `"${item.userName}" 修改了帖子。"${item.title}"`
+      str = `${item.userName} 修改了帖子“${item.title}”`
       break
     case '7':
-      str = `"${item.userName}" 删除了帖子。"${item.title}"`
+      str = `${item.userName} 删除了帖子“${item.title}”`
       break
     case '8':
-      str = `"${item.userName}" 发送了消息。`
+      str = `${item.userName} 给您发送了一条私信`
       break
     case '9':
-      str = `您的帖子"${item.title}"被管理员锁定!`
+      str = `您的帖子“${item.title}”已被管理员锁定`
       break
     case '10':
-      str = `您的帖子"${item.title}"被管理员置顶!`
+      str = `您的帖子“${item.title}”已被管理员置顶`
       break
     case '11':
-      str = `您的帖子"${item.title}"被管理员设置为精华!`
+      str = `您的帖子“${item.title}”已被设为精华帖`
       break
     default:
       break
