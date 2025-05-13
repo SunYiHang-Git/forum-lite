@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import PageList from './PageList.vue'
 import { getClassByIdAPI, getInteractionListAPI } from '@/api/home'
 
@@ -47,12 +47,16 @@ watch(
 
 /** 获取 tablist 数据 */
 const gatTabList = async () => {
+  console.log('{ id: props.pid }--->', { id: props.pid })
+  pageClassList.value = []
   pageClassList.value = await getClassByIdAPI({ id: props.pid })
   const one = { postsTypeName: '全部', postsTypeId: 'all', postsTypeDesc: '全部数据' }
   pageClassList.value.unshift(one)
   await getInteractionListData()
 }
-gatTabList()
+onMounted(() => {
+  gatTabList()
+})
 
 const activeBtnValue = ref('onFine')
 const filterChangeBtn = (name: string) => {

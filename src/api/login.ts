@@ -4,8 +4,8 @@ import { fileHostUrl } from '@/views/home'
 import { callServerFunc, setToken, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 获取用户信息 */
-export const GetRPAUserAPI = async () => {
-  const { data } = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true })
+export const GetRPAUserAPI = async (params = {}) => {
+  const { data } = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true, ...params })
   return data
 }
 

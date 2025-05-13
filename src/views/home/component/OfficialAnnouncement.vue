@@ -43,7 +43,7 @@ function lookMore() {
               </div>
             </div>
             <div class="lis-title-box">
-              <div class="title" @click="goDetail(item)">
+              <div class="title" @click="goDetail(item)" :title="item.title">
                 {{ item.title }}
               </div>
             </div>

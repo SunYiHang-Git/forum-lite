@@ -37,9 +37,9 @@ const goDetail = (item: any) => {
             <div class="lis-top">
               <div class="icon dfc"><IconDocDetailFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
+              <div class="hot-title" @click="goDetail(item)" :title="item.title">{{ item.title }}</div>
             </div>
-            <div class="lis-desc">{{ item.abstract }}</div>
+            <div class="lis-desc" :title="item.abstract">{{ item.abstract }}</div>
             <div class="hot-user-box">
               <div class="user-avatar dfc">
                 <k-image :src="RPA_LOGO" />
@@ -59,9 +59,9 @@ const goDetail = (item: any) => {
             <div class="lis-top">
               <div class="icon dfc"><IconDocDetailFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
+              <div class="hot-title" @click="goDetail(item)" :title="item.title">{{ item.title }}</div>
             </div>
-            <div class="lis-desc">{{ item.abstract }}</div>
+            <div class="lis-desc" :title="item.abstract">{{ item.abstract }}</div>
             <div class="hot-user-box">
               <div class="user-avatar dfc">
                 <k-image :src="RPA_LOGO" />

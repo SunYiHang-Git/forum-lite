@@ -8,6 +8,8 @@ const { list } = defineProps<{
 const emits = defineEmits<{
   (e: 'resetCount'): void
 }>()
+
+const env = import.meta.env
 /** 设置消息为已读 */
 async function setReadMessageById(item: any) {
   const params = { MessageID: item.id, MessageState: 0 }
@@ -21,8 +23,8 @@ const lookDetail = async (item: any) => {
   await setReadMessageById(item)
   if (Number(item.type) !== 7) {
     // 跳转帖子详情页
-    const newUrl =
-      window.location.origin + `/#/detail/message?postId=${item.postId}&commentId=${item.commentId}&token=${getToken()}`
+    const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
+    const newUrl = url + `#/detail/message?postId=${item.postId}&commentId=${item.commentId}&token=${getToken()}`
     window.open(newUrl, '_blank')
   }
 }

@@ -37,10 +37,14 @@ const goDetail = (item: any) => {
             <div class="main-content-top">
               <div class="icon dfc"><IconMessageFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title" @click="goDetail(item)">{{ item.title }}</div>
+              <div class="hot-title" @click="goDetail(item)" :title="item.title">
+                {{ item.title }}
+              </div>
               <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回复</div>
             </div>
-            <div v-if="index === 0" class="hot-desc">{{ item.abstract }}</div>
+            <div v-if="index === 0" class="hot-desc" :title="item.abstract">
+              {{ item.abstract }}
+            </div>
             <div v-if="index === 0" class="hot-user-box">
               <div class="user-avatar dfc">
                 <k-image :src="item.userIcon" class="dfc" style="width: 100%; height: 100%">
@@ -67,7 +71,7 @@ const goDetail = (item: any) => {
               <div class="hot-title" @click="goDetail(item)" :title="item.title">{{ item.title }}</div>
               <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回复</div>
             </div>
-            <div v-if="index === 0" class="hot-desc">{{ item.abstract }}</div>
+            <div v-if="index === 0" class="hot-desc" :title="item.abstract">{{ item.abstract }}</div>
             <div v-if="index === 0" class="hot-user-box">
               <div class="user-avatar dfc">
                 <k-image :src="item.userIcon" class="dfc" style="width: 100%; height: 100%">

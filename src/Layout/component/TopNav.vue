@@ -10,6 +10,7 @@ import { helpDocumentUel, liteHomeUrl } from '@/views/home'
 import { MD5 } from '@ksware/micro-lib-web-temp'
 import { useRouterInfo } from '@/store/modules/useRouterInfo'
 import MessageInfo from './MessageInfo.vue'
+import { GetRPAUserAPI } from '@/api/login'
 const { clearBreadcrumbList } = useRouterInfo()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
@@ -103,6 +104,19 @@ function goRegister() {
 const postArticle = async () => {
   router.push('/article/add/' + MD5('add'))
 }
+
+/** 获取用户信息 */
+const getUserInfo = async () => {
+  try {
+    await GetRPAUserAPI({ isShowErrorMsg: false })
+  } catch (error) {
+    // 退出登录
+    const { exitLogin } = useUser()
+    exitLogin()
+    clearBreadcrumbList()
+  }
+}
+getUserInfo()
 </script>
 
 <template>

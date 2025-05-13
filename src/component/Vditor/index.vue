@@ -103,6 +103,10 @@ const uploadConfig: any = {
 function initOption() {
   if (!containerRef.value) return
   vditor.value = new Vditor(containerRef.value, {
+    toolbarConfig: {
+      pin: true, // 固定工具栏，防止随滚动条滚动而消失
+    },
+
     height: '100%',
     width: '100%',
     theme: 'classic',
@@ -262,14 +266,14 @@ function initOption() {
       //   name: 'devtools',
       //   tip: '开发者工具'
       // },
-      {
-        name: 'info',
-        tip: '版本信息',
-      },
-      {
-        name: 'help',
-        tip: '帮助文档',
-      },
+      // {
+      //   name: 'info',
+      //   tip: '版本信息',
+      // },
+      // {
+      //   name: 'help',
+      //   tip: '帮助文档',
+      // },
       {
         name: 'br',
         tip: '换行符',
@@ -285,7 +289,6 @@ function initOption() {
       vditor.value?.setValue(props.modelValue)
     },
     input: (value: string) => {
-      console.log('value--->', value)
       content.value = value
       emit('update:modelValue', value)
     },
@@ -347,12 +350,21 @@ onUnmounted(() => {
 .edit-box {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  // overflow: hidden;
   .vditor-container {
     border-radius: 4px;
-    overflow: hidden;
+    // overflow: hidden;
     width: 100%;
     height: 100%;
+    &.vditor--fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 99999;
+      background-color: white; /* 根据需要调整背景颜色 */
+    }
   }
 }
 </style>

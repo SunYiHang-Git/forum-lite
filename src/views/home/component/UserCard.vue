@@ -66,7 +66,7 @@ watch(
       </div>
       <div class="userInfo">
         <div class="name">{{ userInfo.userName || '你好' }}</div>
-        <div class="desc">
+        <div class="desc" :title="userInfo.signature ? userInfo.signature : ''">
           {{ userInfo.signature ? userInfo.signature : '欢迎登录...' }}
         </div>
       </div>

@@ -3,7 +3,7 @@ import NavClass from './component/NavClass.vue'
 import TabList from './component/TabList.vue'
 import RightUser from './component/RightUser.vue'
 import { useRoute } from 'vue-router'
-import { ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import { homeNavIds } from '@/const/home'
 import { getArticleTypeListAPI } from '@/api/home'
@@ -12,7 +12,7 @@ const route = useRoute()
 /** 父专栏 name */
 const activeCardName = ref('knowledge')
 /** 父专栏 ID */
-const activePid = ref(homeNavIds.KNOWLEDGE_ID)
+const activePid = ref('')
 /** 解析跳转路由参数 */
 function handleRouteQuery() {
   const name = route.name
@@ -61,6 +61,10 @@ const searchVale = ref('')
 const searchPostList = (value: string) => {
   searchVale.value = value
 }
+
+onUnmounted(() => {
+  activePid.value = ''
+})
 </script>
 
 <template>

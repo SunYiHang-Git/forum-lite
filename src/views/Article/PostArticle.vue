@@ -176,6 +176,11 @@ const showInput = () => {
 }
 
 const handleInputConfirm = () => {
+  const pattern = /^[a-zA-Z0-9\u4e00-\u9fa5]+$/
+  if (!pattern.test(inputValue.value)) {
+    KMessage.warning(`只能输入汉字,字母,数字`)
+    return
+  }
   if (inputValue.value) {
     ruleForm.tags.push(inputValue.value)
   }
@@ -314,7 +319,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                       <div class="icon">
                         <IconUpload :size="24" />
                       </div>
-                      <div class="text">仅支持JPG,PNG格式(最大1MB)</div>
+                      <div class="text">仅支持JPG,PNG格式(最大2MB)</div>
                     </div>
                   </template>
                 </k-upload>
