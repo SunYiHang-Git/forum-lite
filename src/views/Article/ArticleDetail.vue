@@ -335,6 +335,22 @@ const styleTemplateDiv = {
   justifyContent: 'space-between',
   gap: '16px',
 }
+
+/** 大屏预览图片 */
+const currentLargeImage = ref('')
+const showPreview = ref(false)
+const handleClickImg = (e: any) => {
+  if (!e) return
+  const target = e.target.localName
+  if (target === 'img') {
+    currentLargeImage.value = e.target.currentSrc
+    showPreview.value = true
+  }
+}
+
+const closePreview = () => {
+  showPreview.value = false
+}
 </script>
 
 <template>
@@ -354,7 +370,7 @@ const styleTemplateDiv = {
                 <IconMessageOne :size="26" />
               </k-badge>
             </div>
-            <k-dropdown placement="left-start" trigger="click" @command="handleCommand">
+            <k-dropdown v-if="dropDownItemList.length" placement="left-start" trigger="click" @command="handleCommand">
               <template #title>
                 <div class="more-box">
                   <IconMore
@@ -432,7 +448,11 @@ const styleTemplateDiv = {
             <div class="publish-time">发布于 {{ articleInfo.lastTime }}</div>
             <div class="show-num">{{ articleInfo.hot }} 浏览</div>
           </div>
-          <div class="content-box-text markdown-body" :innerHTML="convertMarkdownToHtml(articleInfo.content)"></div>
+          <div
+            class="content-box-text markdown-body"
+            @click="handleClickImg"
+            :innerHTML="convertMarkdownToHtml(articleInfo.content)"
+          ></div>
         </div>
         <div class="comment-box">
           <CommentArticle
@@ -455,6 +475,13 @@ const styleTemplateDiv = {
       <div class="right">
         <RightHotCard />
       </div>
+    </div>
+  </div>
+  <!-- 大图预览模态框 -->
+  <div v-if="showPreview" class="preview-modal" @click="closePreview">
+    <div class="preview-content">
+      <img :src="currentLargeImage" class="large-image" />
+      <button class="close-btn" @click.stop="closePreview">×</button>
     </div>
   </div>
   <k-dialog v-model="showDeleteDialog" title="删除原因" width="700">
@@ -862,6 +889,39 @@ const styleTemplateDiv = {
     width: 100%;
     padding-right: 25px;
     height: 35px;
+  }
+}
+.preview-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  .preview-content {
+    position: relative;
+    max-width: 80%;
+    max-height: 80%;
+    .large-image {
+      width: 100%;
+      height: 80vh;
+      display: block;
+    }
+    .close-btn {
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      outline: none;
+    }
   }
 }
 </style>

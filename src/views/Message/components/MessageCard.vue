@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RPASetReadMessageLiteAPI } from '@/api/message'
+import { showDialog } from '@ksware/ksw-ux'
 import { getToken } from '@ksware/micro-lib-web-temp'
 
 const { list } = defineProps<{
@@ -21,7 +22,15 @@ async function setReadMessageById(item: any) {
 /** 跳转详情页 */
 const lookDetail = async (item: any) => {
   await setReadMessageById(item)
-  if (Number(item.type) !== 7) {
+  if (Number(item.type) == 8) {
+    //系统线下
+    showDialog({
+      title: item.value,
+      slots: {
+        default: () => item.content,
+      },
+    })
+  } else if (Number(item.type) !== 7) {
     // 跳转帖子详情页
     const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
     const newUrl = url + `#/detail/message?postId=${item.postId}&commentId=${item.commentId}&token=${getToken()}`
@@ -41,7 +50,7 @@ const lookDetail = async (item: any) => {
       </div>
       <div class="more-box">
         <k-button v-if="item.type !== '7'" text @click="lookDetail(item)">查看详情</k-button>
-        <k-button v-if="item.type7 == '7'" text @click="setReadMessageById(item)">点击已读</k-button>
+        <k-button v-if="item.type == '7'" text @click="setReadMessageById(item)">点击已读</k-button>
         <div class="time">{{ item.time }}</div>
       </div>
     </div>

@@ -38,7 +38,6 @@ const tabList = ref<any[]>([
 watch(
   () => messageCount.value,
   () => {
-    if (messageCount.value.allCount === 0) return
     tabList.value = [
       {
         label: '全部消息',

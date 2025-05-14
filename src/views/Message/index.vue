@@ -4,6 +4,7 @@ import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import MessageCard from '@/views/Message/components/MessageCard.vue'
 import { KMessageBox } from '@ksware/ksw-ux'
 import { onMounted, ref, useTemplateRef } from 'vue'
+import { useMessage } from '@/store/modules/useMessage'
 
 const ListBoxRef = useTemplateRef('ListBoxRef')
 
@@ -90,6 +91,9 @@ const getFormaInfoList = async () => {
   const { list, total } = await RPAInformationLiteAPI(params, { loadingEl: ListBoxRef.value })
   totalMessage.value = total
   tableData.value = list
+  console.log('tableData.value--->', tableData.value)
+  const { getMessageNoteData } = useMessage()
+  getMessageNoteData()
 }
 onMounted(() => {
   getFormaInfoList()
