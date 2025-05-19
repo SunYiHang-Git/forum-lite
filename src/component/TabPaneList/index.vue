@@ -14,6 +14,8 @@ const props = withDefaults(
     active: string
     /** 页码 */
     pageTotal?: number
+    /** 页面尺寸 */
+    pageSize?: number
     /** 是否显示分页 */
     showPagination?: boolean
   }>(),
@@ -54,7 +56,7 @@ const handleCurrentChange = () => {
     <div class="footer" v-if="showPagination">
       <k-pagination
         v-model:current-page="currentPage"
-        :page-size="20"
+        :page-size="props.pageSize"
         layout="total,->, prev, pager, next, jumper"
         :total="props.pageTotal"
         :pager-count="5"

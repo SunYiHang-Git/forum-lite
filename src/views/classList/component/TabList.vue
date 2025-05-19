@@ -7,13 +7,15 @@ const props = defineProps<{ pid: string; searchVale: string }>()
 
 const activeName = ref('all')
 
-const isFine = ref(0)
+const isFine = ref<'1' | ''>('')
 
 /** 页面分配 */
 const pageClassList = ref<any[]>([])
 
 /** 当前页 */
 const currentPage = ref(1)
+/** 页面数据尺寸 */
+const pageSize = ref(20)
 /** 总共页数 */
 const pageTotal = ref(0)
 /** 数据 */
@@ -26,14 +28,15 @@ const searchVale = computed(() => props.searchVale)
 /** 获取互动解答,知识分享数据接口 */
 const getInteractionListData = async () => {
   const params = {
-    PageNum: currentPage.value - 1 + '',
-    PageSize: '20',
+    PageNum: currentPage.value - 1,
+    PageSize: pageSize.value,
     PostsTypePID: props.pid,
     PostsType: sonClassId.value,
     CollectNum: true,
-    isFine: isFine.value === 1 ? '1' : '0',
-    Titles: searchVale.value,
+    isFine: isFine.value,
+    Title: searchVale.value,
   }
+  console.log('专栏params--->', params)
   const { list, total } = await getInteractionListAPI(params)
   tableDataList.value = list
   pageTotal.value = total
@@ -47,7 +50,6 @@ watch(
 
 /** 获取 tablist 数据 */
 const gatTabList = async () => {
-  console.log('{ id: props.pid }--->', { id: props.pid })
   pageClassList.value = []
   pageClassList.value = await getClassByIdAPI({ id: props.pid })
   const one = { postsTypeName: '全部', postsTypeId: 'all', postsTypeDesc: '全部数据' }
@@ -61,9 +63,9 @@ onMounted(() => {
 const activeBtnValue = ref('onFine')
 const filterChangeBtn = (name: string) => {
   if (name === 'isFine') {
-    isFine.value = 1
+    isFine.value = '1'
   } else {
-    isFine.value = 0
+    isFine.value = ''
   }
   activeBtnValue.value = name
   getInteractionListData()
@@ -111,7 +113,7 @@ const handleCurrentChange = () => {
     <div class="page-footer">
       <k-pagination
         v-model:current-page="currentPage"
-        :page-size="20"
+        :page-size="pageSize"
         layout="total,->, prev, pager, next, jumper"
         :total="pageTotal"
         :pager-count="5"

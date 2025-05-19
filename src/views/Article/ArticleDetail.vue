@@ -5,6 +5,7 @@ import {
   getAllReplyNumAPI,
   getArticleInfoById,
   getReplyListAPI,
+  RPAAuditPostLiteAPI,
   setArticleAuditAPI,
   setArticleMenuStatusAPI,
   setCollectArticleAPI,
@@ -47,6 +48,7 @@ const getArticleInfo = async (id: string) => {
   articleAllNum.value = await getAllReplyNumAPI(params)
   const data = await getArticleInfoById(params)
   articleInfo.value = data
+  console.log('articleInfo.value--->', articleInfo.value)
 }
 /** 获取传入 ID */
 function getRouteId() {
@@ -83,6 +85,7 @@ const dropDownItemList = ref<any[]>([])
 /** 初始化下拉菜单 */
 function initDropDown() {
   const { isAdminByUser, userInfo } = useUser()
+  const { isAudit, isFine, isTop } = articleInfo.value
   const arr = [
     {
       name: '编辑',
@@ -90,17 +93,17 @@ function initDropDown() {
       command: 'edit',
     },
     {
-      name: articleInfo.value.isFine ? '取消精选' : '精选',
+      name: isFine ? '取消精选' : '精选',
       icon: 'IconJinghuaColor',
       command: 'essence',
     },
     {
-      name: articleInfo.value.isTop ? '取消置顶' : '置顶',
+      name: isTop ? '取消置顶' : '置顶',
       icon: 'IconSortTop',
       command: 'top',
     },
     {
-      name: '锁定',
+      name: isAudit === 1 ? '取消锁定' : '锁定',
       icon: 'IconLocked',
       command: 'lock',
     },
@@ -240,6 +243,7 @@ const onTop = async () => {
   const params = { PostsID: id, Field: 'IsTop', Value: topValue }
   await setArticleMenuStatusAPI(params)
   articleInfo.value.isTop = topValue
+  initDropDown()
 }
 
 /** 生精 */
@@ -254,16 +258,27 @@ const onEssence = async () => {
   const params = { PostsID: id, Field: 'IsFine', Value: fineValue }
   await setArticleMenuStatusAPI(params)
   articleInfo.value.isFine = fineValue
+  initDropDown()
 }
 
 /** 锁定 */
 const onAuditArticle = async () => {
-  await KMessageBox.confirm(`是否确定要锁定该帖子?`, `锁定提示`, {
+  const { isAudit, id } = articleInfo.value
+  await KMessageBox.confirm(`是否确定要${isAudit === 1 ? '取消' : ''}锁定该帖子?`, `锁定提示`, {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     type: 'warning',
   })
-  await setArticleAuditAPI({ PostsID: articleInfo.value.id })
+  if (isAudit === 1) {
+    await RPAAuditPostLiteAPI({ PostsID: id, Value: 0 })
+    articleInfo.value.isAudit = 0
+    KMessage.success('已取消锁定')
+  } else {
+    await setArticleAuditAPI({ PostsID: id })
+    articleInfo.value.isAudit = 1
+    KMessage.success('已锁定')
+  }
+  initDropDown()
 }
 
 /** 删除帖子 */
@@ -293,6 +308,11 @@ const confirmDelArticle = async () => {
 
 /** 去编辑页面 */
 const goEditPage = () => {
+  const { isAudit } = articleInfo.value
+  if (isAudit === 1) {
+    KMessage.warning('此帖子已被锁定')
+    return
+  }
   router.push(`/article/edit/${articleInfo.value.id}`)
 }
 const handleCommand = (command: string) => {

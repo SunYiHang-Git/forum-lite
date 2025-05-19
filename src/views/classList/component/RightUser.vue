@@ -26,10 +26,10 @@ onMounted(() => {
       <Banner :height="114" />
     </div>
     <div class="now-box">
-      <HotCard title="最新公告" :list="noticeListData" />
+      <HotCard title="最新公告" :list="noticeListData" :isClick="true" />
     </div>
     <div class="hot-box">
-      <HotCard icon="IconMessageFill" title="本周热门" :list="weekHotListData" />
+      <HotCard icon="IconMessageFill" title="本周热门" :list="weekHotListData" :isClick="true" />
     </div>
   </div>
 </template>

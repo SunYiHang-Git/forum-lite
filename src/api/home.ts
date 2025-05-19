@@ -340,6 +340,11 @@ export const setArticleAuditAPI = async (params: any) => {
   return data
 }
 
+/** 取消帖子锁定(审核) */
+export const RPAAuditPostLiteAPI = async (params: any) => {
+  await callServerFunc('TRPADM', 'RPAAuditPostLite', params)
+}
+
 /** 删除帖子 */
 export const deleteArticleByIdAPI = async (params: any) => {
   const { data } = await callServerFunc('TRPADM', 'RPADelPostsLite', params)

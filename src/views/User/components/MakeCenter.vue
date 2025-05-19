@@ -34,7 +34,7 @@ const { params } = defineProps<{
     </div>
     <div class="bottom">
       <div class="post">
-        <div class="num">{{ params.ArticleCount + params.QuestionCount || 0 }}</div>
+        <div class="num">{{ params.PostCount || 0 }}</div>
         <div class="type-name">帖子</div>
       </div>
       <div class="collect">

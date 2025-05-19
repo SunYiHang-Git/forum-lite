@@ -1,13 +1,20 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
-const { title, list, icon } = defineProps<{
+const { title, list, icon, isClick } = defineProps<{
   title: string
   list: any
   icon?: string
+  /** 是否可以点击跳转 */
+  isClick?: boolean
 }>()
 
 const goDetail = (item: any) => {
+  console.log('isClick--->', isClick)
+  if (!isClick) {
+    return
+  }
   router.push(`/detail/${item.id}`)
 }
 </script>

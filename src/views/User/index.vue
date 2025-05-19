@@ -34,6 +34,7 @@ const getCardData = async () => {
     City,
     Signature,
   } = res
+
   cardDataInfo.value = {
     ArticleCount,
     ByCollectCount,
@@ -81,12 +82,13 @@ getCardData()
 const activeName = ref('question')
 /** 数据总页数 */
 const pageTotal = ref(0)
+const pageSize = ref(20)
 /** 当前页 */
 const currentPage = ref(1)
 /** 父专栏 id */
 const postsTypeId = ref('')
 /** tab 切换 Type */
-const tabType = ref<'1' | '0'>('0')
+const tabType = ref<1 | 0>(0)
 /** 是否显示分页 */
 const showPagination = ref(true)
 const parentInfo = ref<any>({})
@@ -124,11 +126,21 @@ const tabList = ref([
 
 /** 获取我的发表 */
 async function getMyPostArticle() {
-  const params: any = { Type: tabType.value, User: userInfo.value.loginId, CollectNum: true }
+  const params: any = {
+    Type: tabType.value,
+    User: userInfo.value.loginId,
+    CollectNum: true,
+    PageNum: currentPage.value - 1,
+    PageSize: pageSize.value,
+  }
   if (activeName.value !== 'collect') {
     params.PostsTypePID = postsTypeId.value
-    params.PageNum = (currentPage.value - 1) * 20
-    params.PageSize = 20
+    // params.PageNum = currentPage.value - 1
+    // params.PageSize = pageSize.value
+  } else {
+    // params.PageNum = currentPage.value - 1
+    // params.PageSize = pageSize.value
+    params.Order = 'Hot'
   }
   const { list, total }: any = await RPAGetUserIndexLiteAPI(params)
   pageTotal.value = total
@@ -139,7 +151,7 @@ async function getMyPostArticle() {
 
 const tabClick = async (name: string) => {
   activeName.value = name
-  tabType.value = '0'
+  tabType.value = 0
   showPagination.value = true
   switch (name) {
     case 'question':
@@ -151,8 +163,8 @@ const tabClick = async (name: string) => {
       postsTypeId.value = pid2
       break
     case 'collect':
-      tabType.value = '1'
-      showPagination.value = false
+      tabType.value = 1
+      // showPagination.value = false
       break
     default:
       break
@@ -194,6 +206,7 @@ const handleEditInfo = () => {
         <TabList
           :active="activeName"
           :pageTotal="pageTotal"
+          :pageSize="pageSize"
           :tabList="tabList"
           :showPagination="showPagination"
           @tabClick="tabClick"
@@ -202,7 +215,7 @@ const handleEditInfo = () => {
       </div>
       <div class="right-aside-box djc">
         <MakeCenter :params="cardDataInfo" />
-        <HotCard title="个人成就" :list="personList" />
+        <HotCard title="个人成就" :list="personList" :isClick="false" />
       </div>
     </div>
   </div>

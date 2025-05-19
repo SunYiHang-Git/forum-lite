@@ -15,10 +15,10 @@ getDataList()
 <template>
   <div class="right-card">
     <div class="hot-answer">
-      <HotCard title="热门回答" icon="IconMessageFill" :list="hotInteractionDataList" />
+      <HotCard title="热门回答" icon="IconMessageFill" :list="hotInteractionDataList" :isClick="true" />
     </div>
     <div class="hot-article">
-      <HotCard title="热门文章" icon="IconDocDetailFill" :list="hotKnowDataList" />
+      <HotCard title="热门文章" icon="IconDocDetailFill" :list="hotKnowDataList" :isClick="true" />
     </div>
   </div>
 </template>
