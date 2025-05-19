@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import topSvg from '@/assets/svg/top.svg'
 interface ITableData {
   [key: string]: any
 }
@@ -28,8 +27,10 @@ const handleDetail = (item: any) => {
     <div class="list-box">
       <div class="lis-box" v-for="item in props.tableData" :key="item.id">
         <div class="title-box">
-          <div class="tags">
-            <div v-if="item.isTop === '1'" class="img-box dfc"><img :src="topSvg" /></div>
+          <div v-if="item.isTop === '1' || item.isFine === '1'" class="tags">
+            <div v-if="item.isTop === '1'" class="img-box dfc">
+              <IconTOP :size="20" color="var(--k-red-500)" />
+            </div>
             <div v-if="item.isFine === '1'" class="tag dfc">精华</div>
           </div>
           <div class="title" @click="handleDetail(item)">{{ item.title }}</div>
@@ -82,7 +83,6 @@ const handleDetail = (item: any) => {
       align-items: start;
       gap: 12px;
       width: 100%;
-      height: 131px;
       box-sizing: border-box;
       padding: 20px 0;
       border-bottom: 1px solid #e5e5e5;
@@ -163,7 +163,7 @@ const handleDetail = (item: any) => {
         font-size: 14px;
         font-weight: normal;
         color: #afabb3;
-        padding-left: 8px;
+        /* padding-left: 8px; */
         .left-user {
           display: flex;
           justify-content: start;

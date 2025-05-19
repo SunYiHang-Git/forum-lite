@@ -760,7 +760,7 @@ const closePreview = () => {
                 width: fit-content;
                 height: 100%;
                 width: 200px;
-                gap: 20px;
+                gap: 8px;
                 .reply-to-text {
                   height: 24px;
                   line-height: 24px;

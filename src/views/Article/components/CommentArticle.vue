@@ -189,7 +189,7 @@ watch(
     display: flex;
     flex-direction: column;
     justify-content: start;
-    gap: 16px;
+    /* gap: 16px; */
     margin-top: 24px;
     .lis-reply {
       &:first-child {

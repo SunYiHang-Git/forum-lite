@@ -219,7 +219,6 @@ const handleGetCount = async () => {
       .empty-icon {
         width: 200px;
         height: 150px;
-        border: 1px dashed #dad9d9;
         display: flex;
         justify-content: center;
         align-items: center;

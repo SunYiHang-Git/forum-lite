@@ -29,7 +29,7 @@ onMounted(() => {
       <HotCard title="最新公告" :list="noticeListData" />
     </div>
     <div class="hot-box">
-      <HotCard icon="IconMessageFill" title="热门" :list="weekHotListData" />
+      <HotCard icon="IconMessageFill" title="本周热门" :list="weekHotListData" />
     </div>
   </div>
 </template>

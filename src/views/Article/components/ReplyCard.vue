@@ -21,7 +21,13 @@ const replyShowDialog = (item: any) => {
       <div class="replyUser-box">
         <div class="replyUserName">
           <div class="avatar">
-            <k-image :src="item.userIcon" />
+            <k-image :src="item.userIcon">
+              <template #error>
+                <div class="flex items-center justify-center size-6 bg-gray-100">
+                  <IconUserColor :size="24" />
+                </div>
+              </template>
+            </k-image>
           </div>
           <div class="user-name">
             {{ item.userName }}
@@ -37,7 +43,7 @@ const replyShowDialog = (item: any) => {
         回复
       </div>
     </div>
-    <div class="reply-children-box-list">
+    <div v-if="item.children && item.children.length" class="reply-children-box-list">
       <div class="children-lis-reply" v-for="child in item.children" :key="child.id" :id="child.id">
         <div class="replyUser-box">
           <div class="replyUserName">
@@ -75,7 +81,7 @@ const replyShowDialog = (item: any) => {
     display: flex;
     align-items: center;
     justify-content: start;
-    gap: 16px;
+    gap: 8px;
     width: 100%;
     height: 24px;
     .replyUserName {
@@ -95,17 +101,14 @@ const replyShowDialog = (item: any) => {
         width: fit-content;
         height: 24px;
         line-height: 24px;
-
         font-size: 14px;
         font-weight: 500;
-
-        color: #736f78;
+        color: var(--k-gray-500);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         div {
           height: 24px;
-
           font-size: 14px;
           font-weight: normal;
           line-height: 24px;
@@ -131,7 +134,7 @@ const replyShowDialog = (item: any) => {
       width: fit-content;
       height: 100%;
       width: fit-content;
-      gap: 20px;
+      gap: 8px;
       .reply-to-text {
         height: 24px;
         line-height: 24px;
@@ -204,7 +207,6 @@ const replyShowDialog = (item: any) => {
     // width: 100%;
     height: fit-content;
     overflow: hidden;
-
     .children-lis-reply {
       display: flex;
       flex-direction: column;

@@ -121,11 +121,12 @@ getUserInfo()
 
 <template>
   <div class="top-nav">
-    <div class="logo-box">
+    <div class="logo-box" @click="routerToPage('社区', '/home')">
       <div class="logo">
         <img :src="logoSvg" />
       </div>
-      <div class="logo-title">K-RPA Lite 社区</div>
+      <div class="w-[1px] h-5 bg-gray-300"></div>
+      <div class="logo-title">社区</div>
     </div>
     <div class="top-menu">
       <k-button
@@ -191,18 +192,24 @@ getUserInfo()
     display: flex;
     align-items: center;
     justify-content: start;
-    gap: 15px;
+    gap: 12px;
     width: fit-content;
+    &:hover {
+      cursor: pointer;
+    }
     .logo {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 35px;
-      height: 30px;
+      height: 20px;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+      }
     }
     .logo-title {
-      font-size: 22.59px;
-      font-weight: bold;
+      font-size: 20px;
+      /* font-weight: bold; */
       color: #000;
     }
   }
