@@ -17,10 +17,10 @@ const router = useRouter()
 const searchValue = ref<string>('')
 const menuList = ref([
   {
-    name: 'home',
-    label: '首页',
-    src: liteHomeUrl,
-    color: '#171717',
+    name: 'community',
+    label: '社区',
+    src: '/home',
+    color: '#0A5CFF',
   },
   {
     name: 'document',
@@ -29,10 +29,10 @@ const menuList = ref([
     color: '#171717',
   },
   {
-    name: 'community',
-    label: '社区',
-    src: '/home',
-    color: '#0A5CFF',
+    name: 'home',
+    label: 'Lite',
+    src: liteHomeUrl,
+    color: '#171717',
   },
 ])
 
@@ -121,7 +121,7 @@ getUserInfo()
 
 <template>
   <div class="top-nav">
-    <div class="logo-box" @click="routerToPage('社区', '/home')">
+    <div class="logo-box" @click="routerToPage('community', '/home')">
       <div class="logo">
         <img :src="logoSvg" />
       </div>

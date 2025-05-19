@@ -1,8 +1,6 @@
 <script setup>
-import { isInset } from '@ksware/micro-lib-web-temp/index'
 import { onMounted, ref } from 'vue'
 
-import MenuTool from './component/MenuTool.vue'
 import { useRouterCacheStore } from './store/routerCache'
 
 const useStore = useRouterCacheStore()
@@ -21,7 +19,6 @@ onMounted(() => {
     <component :is="Component" :key="route.path" />
   </router-view>
   <!-- 开发模式显示的路由切换工具 -->
-  <!-- <MenuTool v-if="!isInset && isDev"></MenuTool> -->
 </template>
 
 <style lang="scss"></style>

@@ -51,6 +51,7 @@ import TopNav from './component/TopNav.vue'
       width: 100%;
       overflow: visible;
       box-sizing: border-box;
+      overflow-x: hidden;
       // overflow-x: hidden;
     }
   }
