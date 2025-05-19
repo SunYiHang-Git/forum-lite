@@ -2,7 +2,7 @@
 import { Expand } from '@element-plus/icons-vue'
 import { reactive, ref, watch } from 'vue'
 
-import router, { routeList } from '@/utils/router'
+import router, { routeList } from '@/router/router'
 
 // 当前选中的path
 const activePath = ref('/')

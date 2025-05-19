@@ -1,5 +1,5 @@
 import { getToken, setToken } from '@ksware/micro-lib-web-temp'
-import router from './utils/router'
+import router from './router/router'
 import { getUrlParamByName, removeTokenFromUrl } from '@/utils/auth'
 import { useRouterInfo, type IBreadcrumbs } from '@/store/modules/useRouterInfo'
 import { useUser } from './store/modules/user'
@@ -41,19 +41,19 @@ router.beforeEach((to, from, next) => {
   //     return
   //   }
   // }
-  if (to.meta?.breadcrumb) {
-    const { setBreadcrumbList, clearBreadcrumbList } = useRouterInfo()
-    if (toRouterList.includes(to.path)) {
-      clearBreadcrumbList()
-    } else {
-      const obj: IBreadcrumbs = {
-        path: to.path,
-        name: to.name as string,
-        label: (to.meta?.breadcrumb as string) ?? '',
-      }
-      setBreadcrumbList(obj)
-    }
-  }
+  // if (to.meta?.breadcrumb) {
+  //   const { setBreadcrumbList, clearBreadcrumbList } = useRouterInfo()
+  //   if (toRouterList.includes(to.path)) {
+  //     clearBreadcrumbList()
+  //   } else {
+  //     const obj: IBreadcrumbs = {
+  //       path: to.path,
+  //       name: to.name as string,
+  //       label: (to.meta?.breadcrumb as string) ?? '',
+  //     }
+  //     setBreadcrumbList(obj)
+  //   }
+  // }
   const title = to.meta && to.meta.title ? to.meta.title : 'RPA Lite 论坛'
   document.title = title as string
   next()

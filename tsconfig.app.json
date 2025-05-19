@@ -10,7 +10,7 @@
     "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "src/utils/router.js",
+    "src/router/router.ts",
     "src/store/routerCache.js",
     "types/**/*.d.ts"
   ],

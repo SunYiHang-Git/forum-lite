@@ -36,7 +36,6 @@ const getInteractionListData = async () => {
     isFine: isFine.value,
     Title: searchVale.value,
   }
-  console.log('专栏params--->', params)
   const { list, total } = await getInteractionListAPI(params)
   tableDataList.value = list
   pageTotal.value = total

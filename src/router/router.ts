@@ -1,8 +1,15 @@
 import { initGlobalVariable } from '@ksware/micro-lib-web-temp'
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
 import Layout from '@/Layout/index.vue'
+interface IMyRouter {
+  /** 开发阶段,是否显示辅助路由 */
+  isShow?: boolean
+}
 
-export const routeList = [
+/** 路由参数 */
+export type IRouteRawLite = RouteRecordRaw & IMyRouter
+
+export const routeList: Array<IRouteRawLite> = [
   {
     path: '/',
     redirect: '/home',
@@ -85,13 +92,13 @@ export const routeList = [
         path: ':id',
         name: 'detail',
         component: () => import('@/views/Article/ArticleDetail.vue'),
-        // meta: { title: '帖子详情', icon: 'el-icon-s-home', breadcrumb: '帖子详情' },
+        meta: { title: '帖子详情', icon: 'el-icon-s-home', breadcrumb: '帖子详情' },
       },
       {
         path: 'message',
         name: 'message-detail',
         component: () => import('@/views/Article/ArticleDetail.vue'),
-        // meta: { title: '帖子详情', icon: 'el-icon-s-home', breadcrumb: '帖子详情' },
+        meta: { title: '帖子详情', icon: 'el-icon-s-home', breadcrumb: '帖子详情' },
       },
     ],
   },
@@ -124,7 +131,6 @@ export const routeList = [
 
 routeList.forEach((item) => {
   !item.meta && (item.meta = {})
-  // item.meta.keepAlive === undefined && (item.meta.keepAlive = true)
 })
 
 const router = createRouter({
