@@ -110,7 +110,7 @@ const goDetail = (item: any) => {
   padding: 20px 0;
   .knowledge-card-box {
     width: 100%;
-    height: 628px;
+    /* height: 628px; */
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
@@ -129,7 +129,6 @@ const goDetail = (item: any) => {
       overflow: hidden;
       .header-title-card {
         height: 28px;
-
         line-height: 28px;
         font-size: 20px;
         font-weight: 600;
@@ -149,14 +148,15 @@ const goDetail = (item: any) => {
           gap: 10px;
           width: 100%;
           /* height: 124px; */
-          padding-bottom: 1rem;
+          padding: 1rem 0;
           // box-sizing: border-box;
           border-top: 1px solid var(--k-gray-200);
-          &:nth-child(1) {
+          &:first-child {
             border: none;
+            padding-top: 0rem;
           }
-          &:not(:first-child) {
-            padding-top: 1rem;
+          &:last-child {
+            padding-bottom: 0rem;
           }
           .lis-top {
             display: flex;
@@ -223,8 +223,7 @@ const goDetail = (item: any) => {
             }
             .user-name {
               width: fit-content;
-              padding: 0 5px;
-
+              margin-left: 8px;
               font-size: 14px;
               font-weight: normal;
               color: #afabb3;
@@ -232,9 +231,7 @@ const goDetail = (item: any) => {
             .page-vies {
               flex: 1;
               justify-content: start;
-              margin-left: 10px;
-              padding: 0 5px;
-
+              margin-left: 8px;
               font-size: 14px;
               font-weight: normal;
               color: #afabb3;

@@ -221,7 +221,7 @@ const goDetail = (item: any) => {
               }
               .user-name {
                 width: fit-content;
-                padding: 0 5px;
+                margin-left: 8px;
                 font-size: 14px;
                 font-weight: normal;
                 color: #afabb3;
@@ -229,9 +229,7 @@ const goDetail = (item: any) => {
               .page-vies {
                 flex: 1;
                 justify-content: start;
-                margin-left: 10px;
-                padding: 0 5px;
-
+                margin-left: 8px;
                 font-size: 14px;
                 font-weight: normal;
                 color: #afabb3;

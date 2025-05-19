@@ -24,7 +24,7 @@ const replyShowDialog = (item: any) => {
             <k-image :src="item.userIcon">
               <template #error>
                 <div class="flex items-center justify-center size-6 bg-gray-100">
-                  <IconUserColor :size="24" />
+                  <IconUser2GrayColor :size="24" />
                 </div>
               </template>
             </k-image>
@@ -86,6 +86,7 @@ const replyShowDialog = (item: any) => {
     height: 24px;
     .replyUserName {
       display: flex;
+      align-items: center;
       gap: 8px;
       height: 24px;
       .avatar {
@@ -117,14 +118,13 @@ const replyShowDialog = (item: any) => {
       }
     }
     .is-author {
-      height: 24px;
-      line-height: 24px;
-      padding: 0 8px;
-      background-color: #f5f5f5;
-
+      height: 20px;
+      line-height: 20px;
+      padding: 0 4px;
+      background-color: var(--k-gray-100);
       font-size: 12px;
       font-weight: normal;
-      color: #6b7280;
+      color: var(--k-gray-500);
       border-radius: 5px;
     }
     .to-reply-person-box {
