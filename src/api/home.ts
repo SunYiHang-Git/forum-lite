@@ -112,7 +112,7 @@ export const getInteractionListAPI = async (params: any) => {
       sex: table.s('Sex'),
       userIcon: handleUrlFormat(fileHostUrl + table.s('UserIcon')),
       isAdmin: table.s('IsAdmin'),
-      userName: table.s('UserName'),
+      userName: getSplitStrName(table.s('UserName')),
     }
     rows.push(row)
     table.next()
@@ -400,7 +400,7 @@ function handleInteractionData(table: any) {
       sex: table.s('Sex'),
       userIcon: handleUrlFormat(fileHostUrl + table.s('UserIcon')),
       isAdmin: table.s('IsAdmin'),
-      userName: table.s('UserName'),
+      userName: getSplitStrName(table.s('UserName')),
     }
     rows.push(row)
     table.next()
