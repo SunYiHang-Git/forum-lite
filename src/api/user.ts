@@ -33,7 +33,6 @@ export const RPAApplyDeveloperAPI = async (params: any) => {
 /** 获取用户发表的帖子 */
 export const RPAGetUserIndexLiteAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAGetUserIndexLite', params)
-  console.log('data--->', data)
 
   const rows = []
   if (params.Type === 1) {

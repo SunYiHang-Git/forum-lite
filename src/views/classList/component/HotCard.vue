@@ -9,13 +9,15 @@ const { title, list, icon, isClick } = defineProps<{
   /** 是否可以点击跳转 */
   isClick?: boolean
 }>()
-
+const env = import.meta.env
 const goDetail = (item: any) => {
-  console.log('isClick--->', isClick)
   if (!isClick) {
     return
   }
-  router.push(`/detail/${item.id}`)
+  // router.push(`/detail/${item.id}`)
+  const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
+  const newUrl = url + `#/detail/${item.id}`
+  window.open(newUrl, '_blank')
 }
 </script>
 

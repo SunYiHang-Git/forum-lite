@@ -22,12 +22,16 @@ export const useRouterInfo = defineStore(
     ])
     /** 设置路由信息 */
     function setBreadcrumbList(data: IBreadcrumbs) {
-      const findIndex = breadcrumbList.value.findIndex((item) => item.path === data.path)
-      if (findIndex !== -1) {
-        breadcrumbList.value.splice(findIndex + 1)
-        return
-      }
+      // const findIndex = breadcrumbList.value.findIndex((item) => item.path === data.path)
+      // if (findIndex !== -1) {
+      //   breadcrumbList.value.splice(findIndex + 1)
+      //   return
+      // }
       breadcrumbList.value.push(data)
+    }
+    /** 移除其中某一个路由 */
+    function filterBreadcrumbList(name: string) {
+      breadcrumbList.value = breadcrumbList.value.filter((item) => item.name !== name)
     }
     /** 清空路由信息 */
     function clearBreadcrumbList() {
@@ -39,7 +43,7 @@ export const useRouterInfo = defineStore(
         },
       ]
     }
-    return { breadcrumbList, setBreadcrumbList, clearBreadcrumbList }
+    return { breadcrumbList, setBreadcrumbList, clearBreadcrumbList, filterBreadcrumbList }
   },
   {
     persist: {

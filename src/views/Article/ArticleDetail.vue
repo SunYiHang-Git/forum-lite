@@ -22,6 +22,9 @@ import CommentArticle from '@/views/Article/components/CommentArticle.vue'
 import { storeToRefs } from 'pinia'
 import { handleNoLoginClick } from '@/utils/auth'
 import { getSplitStrName } from '@/utils/tools'
+import { useRouterInfo } from '@/store/modules/useRouterInfo'
+const { setBreadcrumbList, filterBreadcrumbList } = useRouterInfo()
+const { breadcrumbList } = storeToRefs(useRouterInfo())
 const { userInfo } = storeToRefs(useUser())
 
 const router = useRouter()
@@ -42,13 +45,30 @@ const articleAllNum = ref(0)
 
 const vditorComponent = ref<any>(null)
 
+/** 处理分类面包屑 */
+function handleClassBread(name: string) {
+  let data: any = {}
+  if (name === '互动解答') {
+    data = { path: '/class/interaction', label: name, name: 'interaction' }
+  } else if (name === '知识分享') {
+    data = { path: '/class/knowledge', label: name, name: 'knowledge' }
+  } else if (name === '公告') {
+    data = { path: '/class/notice', label: name, name: 'notice' }
+  }
+  if (breadcrumbList.value.length === 0) return
+  const popData = breadcrumbList.value.at(-1)
+  filterBreadcrumbList(popData?.name || '')
+  setBreadcrumbList(data)
+  setBreadcrumbList(popData as any)
+}
+
 /** 获取帖子详情 */
 const getArticleInfo = async (id: string) => {
   const params = { PostsID: id }
   articleAllNum.value = await getAllReplyNumAPI(params)
   const data = await getArticleInfoById(params)
   articleInfo.value = data
-  console.log('articleInfo.value--->', articleInfo.value)
+  handleClassBread(articleInfo.value.typePName || articleInfo.value.typeName)
 }
 /** 获取传入 ID */
 function getRouteId() {
