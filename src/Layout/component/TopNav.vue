@@ -16,6 +16,12 @@ const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
 const searchValue = ref<string>('')
 const menuList = ref([
+  // {
+  //   name: 'home',
+  //   label: '首页',
+  //   src: liteHomeUrl,
+  //   color: '#171717',
+  // },
   {
     name: 'community',
     label: '社区',
@@ -24,14 +30,8 @@ const menuList = ref([
   },
   {
     name: 'document',
-    label: '文档',
+    label: '帮助文档',
     src: helpDocumentUel,
-    color: '#171717',
-  },
-  {
-    name: 'home',
-    label: 'Lite',
-    src: liteHomeUrl,
     color: '#171717',
   },
 ])
@@ -121,12 +121,12 @@ getUserInfo()
 
 <template>
   <div class="top-nav">
-    <div class="logo-box" @click="routerToPage('community', '/home')">
-      <div class="logo">
+    <div class="logo-box">
+      <div class="logo" @click="routerToPage('home', liteHomeUrl)">
         <img :src="logoSvg" />
       </div>
       <div class="w-[1px] h-5 bg-gray-300"></div>
-      <div class="logo-title">社区</div>
+      <div class="logo-title" @click="routerToPage('community', '/home')">社区</div>
     </div>
     <div class="top-menu">
       <k-button
@@ -194,14 +194,14 @@ getUserInfo()
     justify-content: start;
     gap: 12px;
     width: fit-content;
-    &:hover {
-      cursor: pointer;
-    }
     .logo {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 20px;
+      &:hover {
+        cursor: pointer;
+      }
       img {
         max-width: 100%;
         max-height: 100%;
@@ -209,8 +209,10 @@ getUserInfo()
     }
     .logo-title {
       font-size: 20px;
-      /* font-weight: bold; */
       color: #000;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
   .top-menu {
