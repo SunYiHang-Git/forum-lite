@@ -5,8 +5,51 @@ import { callServerFunc, setToken, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 获取用户信息 */
 export const GetRPAUserAPI = async (params = {}) => {
-  const { data } = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true, ...params })
-  return data
+  const { data }: any = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true, ...params })
+  const {
+    IsAdmin,
+    Phone,
+    City,
+    Company,
+    DeveloperState,
+    FullName,
+    IsDeveloper,
+    Sex,
+    Signature,
+    UserIcon,
+    LncDate,
+    LoginID,
+    PassWord,
+    Token,
+    UserID,
+    UserName,
+  } = data
+  setToken(Token)
+  /** 拆分 userName 的 # 后缀 */
+  const userName = getSplitStrName(UserName)
+  const _suffix = getSplitStrName(UserName, '#', 1)
+  const userInfoObj = {
+    remainDays: maturityDays(LncDate),
+    loginId: LoginID,
+    passWord: PassWord,
+    token: Token,
+    user: UserID,
+    userId: UserID,
+    userName: userName,
+    userName_suffix: _suffix ? '#' + _suffix : _suffix,
+    role: IsAdmin,
+    isAdmin: IsAdmin === 1,
+    phone: Phone,
+    city: City,
+    company: Company,
+    developerState: DeveloperState,
+    isDeveloper: IsDeveloper,
+    sex: Sex,
+    signature: Signature,
+    avatar: fileHostUrl + UserIcon,
+    fullName: FullName,
+  }
+  return userInfoObj
 }
 
 /** 账号登录登录 */

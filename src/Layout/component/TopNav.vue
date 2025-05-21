@@ -4,7 +4,6 @@ import { nextTick, onMounted, ref } from 'vue'
 import { useUser } from '@/store/modules/user'
 import { KMessageBox } from '@ksware/ksw-ux'
 import { useRouter } from 'vue-router'
-import { clearLocalStorage, clearSessionStorage } from '@/utils/auth'
 import { storeToRefs } from 'pinia'
 import { helpDocumentUel, liteHomeUrl } from '@/views/home'
 import { MD5 } from '@ksware/micro-lib-web-temp'
@@ -107,8 +106,10 @@ const postArticle = async () => {
 
 /** 获取用户信息 */
 const getUserInfo = async () => {
+  const { setUserInfo } = useUser()
   try {
-    await GetRPAUserAPI({ isShowErrorMsg: false })
+    const data = await GetRPAUserAPI({ isShowErrorMsg: false })
+    setUserInfo(data)
   } catch (error) {
     // 退出登录
     const { exitLogin } = useUser()

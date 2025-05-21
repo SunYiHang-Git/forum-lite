@@ -35,15 +35,23 @@ interface RuleForm {
   signature: string
 }
 /** 昵称拼接后缀 */
-const userNameSuffix = ref()
-const { phone, userName, fullName, company, sex, city, avatar, signature, loginId, isDeveloper, userName_suffix } =
-  userInfo.value
+const { phone, userName, fullName, company, sex, city, signature, loginId, userName_suffix } = userInfo.value
 let cityArr: any = []
 if (Array.isArray(city)) {
   cityArr = city
 } else {
   cityArr = city.split('/')
 }
+/**
+ * IsDeveloper 是否申请为开发者 DeveloperState 管理员是否审核，RPAApplyDeveloper 这个接口，将用户 修改为处于 申请 开发者的状态，此时 IsDeveloper = 1
+ * DeveloperState = 0，此时处于 待审核状态，当 DeveloperState = 1 ，IsDeveloper = 1 的时候，表示 当前用户申请开发的审核，已经通过，当前用户已经处于 开发者的状态
+ */
+/** 开发者的状态 return 0=不是开发者 1=申请为开发者 2=是开发者 */
+const developerStatus = computed(() => {
+  if (userInfo.value.isDeveloper === 1 && userInfo.value.developerState === 0) return 1
+  if (userInfo.value.isDeveloper === 1 && userInfo.value.developerState === 1) return 2
+  return 0
+})
 const env = import.meta.env
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
@@ -216,6 +224,7 @@ const handleDeveloper = async () => {
   const params = { LoginId: loginId }
   await RPAApplyDeveloperAPI(params)
   KMessage.success('已提交,等待确认!')
+  setUserInfo({ isDeveloper: 1 })
 }
 const props = {
   expandTrigger: 'hover' as const,
@@ -307,8 +316,11 @@ const props = {
         <div class="row-account">
           <div class="row-name">开发者权限</div>
           <div class="row-value">
-            <div v-show="isDeveloper === 0" text @click="handleDeveloper">申请成为开发者</div>
-            <span v-show="isDeveloper === 1">是开发者</span>
+            <!-- <div v-show="userInfo.isDeveloper === 1" text @click="handleDeveloper">申请成为开发者</div> -->
+            <!-- <span v-show="userInfo.isDeveloper === 1">是开发者</span> -->
+            <k-button text v-show="developerStatus === 0" @click="handleDeveloper">申请成为开发者</k-button>
+            <span v-show="developerStatus === 1">申请中</span>
+            <span v-show="developerStatus === 2">是开发者</span>
           </div>
         </div>
         <div class="row-account">
