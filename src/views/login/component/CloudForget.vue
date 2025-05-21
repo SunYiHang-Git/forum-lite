@@ -46,7 +46,7 @@ const getPhoneCode = async () => {
   let timer: any = 0
   const data = { PhoneTo: ruleForm.phone, SendCodeType: 1 }
   try {
-    const res: any = await callServerFunc('TRPADM', 'SendPhoneCodeLite', data)
+    const res: any = await callServerFunc('TRPADM', 'SendPhoneCode', data)
     if (isDev) {
       const { sPhoneCode } = res
       ruleForm.code = sPhoneCode

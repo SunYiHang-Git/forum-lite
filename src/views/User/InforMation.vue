@@ -157,7 +157,7 @@ const editPhone = async () => {
       FullName: fullName,
       Sex: sex,
       Company: company,
-      City: city,
+      City: city.join('/'),
       Signature: signature,
       Phone: data.phone,
       PhoneCode: data.code,
@@ -188,7 +188,7 @@ const handleEditPhone = () => {
     editDialogParams.value.type = 'authentication'
     editDialogParams.value.confirm = async (code: any) => {
       const params = { Phone: phone, PhoneCode: code }
-      await CheckPhoneCodeAPI(params)
+      // await CheckPhoneCodeAPI(params)
       editPhone()
     }
   } catch (error) {
