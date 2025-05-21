@@ -4,7 +4,6 @@ import {
   deleteArticleByIdAPI,
   getAllReplyNumAPI,
   getArticleInfoById,
-  getReplyListAPI,
   RPAAuditPostLiteAPI,
   setArticleAuditAPI,
   setArticleMenuStatusAPI,
@@ -294,9 +293,10 @@ const onAuditArticle = async () => {
     articleInfo.value.isAudit = 0
     KMessage.success('已取消锁定')
   } else {
-    await setArticleAuditAPI({ PostsID: id })
+    await setArticleAuditAPI({ PostsID: id, Value: 1 })
     articleInfo.value.isAudit = 1
     KMessage.success('已锁定')
+    await getArticleInfo(ArticleId.value)
   }
   initDropDown()
 }

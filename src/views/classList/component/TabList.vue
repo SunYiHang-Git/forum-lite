@@ -35,6 +35,7 @@ const getInteractionListData = async () => {
     CollectNum: true,
     isFine: isFine.value,
     Title: searchVale.value,
+    Order: 'LastTime',
   }
   const { list, total } = await getInteractionListAPI(params)
   tableDataList.value = list
