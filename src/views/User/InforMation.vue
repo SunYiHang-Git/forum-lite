@@ -172,7 +172,7 @@ const editPhone = async () => {
       phone: data.phone,
       userId: data.phone,
     }
-    await SetRPAUserInfoAPI(params)
+    await SetRPAUserInfoAPI(params, { isShowErrorMsg: true })
     setUserInfo(userInfoObj)
     KMessage.success('修改手机号成功!')
   }
@@ -188,7 +188,7 @@ const handleEditPhone = () => {
     editDialogParams.value.type = 'authentication'
     editDialogParams.value.confirm = async (code: any) => {
       const params = { Phone: phone, PhoneCode: code }
-      // await CheckPhoneCodeAPI(params)
+      await CheckPhoneCodeAPI(params)
       editPhone()
     }
   } catch (error) {

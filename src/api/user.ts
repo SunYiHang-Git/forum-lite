@@ -3,8 +3,8 @@ import { fileHostUrl } from '@/views/home'
 import { callServerFunc, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 保存用户资料 */
-export const SetRPAUserInfoAPI = async (params: any) => {
-  await callServerFunc('TRPADM', 'SetRPAUserInfo', params, { isShowErrorMsg: false })
+export const SetRPAUserInfoAPI = async (params: any, options = {}) => {
+  await callServerFunc('TRPADM', 'SetRPAUserInfo', params, { isShowErrorMsg: false, ...options })
 }
 
 /** 通过手机号验证身份 */
