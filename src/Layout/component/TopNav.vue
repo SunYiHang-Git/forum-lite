@@ -23,7 +23,7 @@ const menuList = ref([
   // },
   {
     name: 'community',
-    label: '社区',
+    label: '首页',
     src: '/home',
     color: '#0A5CFF',
   },
