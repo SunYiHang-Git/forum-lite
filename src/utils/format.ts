@@ -3,6 +3,8 @@ import moment from 'moment'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 import TurndownService from 'turndown'
+import { postDetailUrl } from '@/const/home'
+import { getToken, isInset } from '@ksware/micro-lib-web-temp'
 
 /**
  * 使用定点表示法将数值转为字符串。如果结果为 "0.00"，就转为 "0"。 参考 Number.prototype.toFixed。
@@ -186,4 +188,14 @@ export function isMarkdown(str: string): boolean {
     }
   }
   return false
+}
+
+/** 处理跳转详情页 */
+export const handlePostDetailUrl = (url: string): string => {
+  const newUrl = postDetailUrl + url
+  if (isInset) {
+    const joinText = /\?/.test(url) ? '&' : '?'
+    return newUrl + `${joinText}token=${getToken()}`
+  }
+  return newUrl
 }

@@ -55,7 +55,8 @@ function handleClassBread(name: string) {
     data = { path: '/class/notice', label: name, name: 'notice' }
   }
   if (breadcrumbList.value.length === 0) return
-  const popData = breadcrumbList.value.at(-1)
+  const popData: any = breadcrumbList.value.at(-1)
+  popData.path = `/detail/${ArticleId.value}`
   filterBreadcrumbList(popData?.name || '')
   setBreadcrumbList(data)
   setBreadcrumbList(popData as any)

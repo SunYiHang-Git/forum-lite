@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { handlePostDetailUrl } from '@/utils/format'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -15,8 +16,9 @@ const goDetail = (item: any) => {
     return
   }
   // router.push(`/detail/${item.id}`)
-  const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
-  const newUrl = url + `#/detail/${item.id}`
+  // const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
+  // const newUrl = url + `#/detail/${item.id}`
+  const newUrl = handlePostDetailUrl(`#/detail/${item.id}`)
   window.open(newUrl, '_blank')
 }
 </script>

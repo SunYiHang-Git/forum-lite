@@ -45,3 +45,10 @@ export const NavCardList = [
     imgSvg: helpSvg,
   },
 ]
+
+/** 项目打包后的文件名称 */
+export const distFileName = 'krpalite'
+
+const env = import.meta.env
+/** 跳转帖子详情页路由 */
+export const postDetailUrl = env.DEV ? window.location.origin + '/' : `/${distFileName}/index.html`

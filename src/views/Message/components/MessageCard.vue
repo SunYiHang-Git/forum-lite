@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RPASetReadMessageLiteAPI } from '@/api/message'
+import { postDetailUrl } from '@/const/home'
 import { showDialog } from '@ksware/ksw-ux'
 import { getToken } from '@ksware/micro-lib-web-temp'
 
@@ -32,8 +33,10 @@ const lookDetail = async (item: any) => {
     })
   } else if (Number(item.type) !== 7) {
     // 跳转帖子详情页
-    const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
-    const newUrl = url + `#/detail/message?postId=${item.postId}&commentId=${item.commentId}&token=${getToken()}`
+    // const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
+    // const newUrl = url + `#/detail/message?postId=${item.postId}&commentId=${item.commentId}&token=${getToken()}`
+    const newUrl =
+      postDetailUrl + `#/detail/message?postId=${item.postId}&commentId=${item.commentId}&token=${getToken()}`
     window.open(newUrl, '_blank')
   }
 }

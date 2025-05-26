@@ -14,8 +14,11 @@ repairKeepAlive()
 const { VITE_APP_HOST } = loadEnv('development', process.cwd())
 
 // 当前应用名称,默认获取当前文件的文件夹名称
-const appName = __dirname.substring(__dirname.lastIndexOf('\\') + 1)
+// const appName = __dirname.substring(__dirname.lastIndexOf('\\') + 1)
+const appName = path.basename(__dirname)
 const outDirFolder = 'dist'
+/** 项目打包后的文件名称 */
+const distFileName = 'krpalite'
 
 export default defineConfig({
   optimizeDeps: {
@@ -80,7 +83,8 @@ export default defineConfig({
         },
       },
     },
-    outDir: path.resolve(__dirname, `${outDirFolder}/app-dist-${appName}`),
+    // outDir: path.resolve(__dirname, `${outDirFolder}/app-dist-${appName}`),
+    outDir: path.resolve(__dirname, `${outDirFolder}/${distFileName}`),
     assetsDir: 'static',
     emptyOutDir: true,
     // default，最低为es2015
@@ -88,7 +92,7 @@ export default defineConfig({
     // default
     cssCodeSplit: true,
     // default
-    sourcemap: true,
+    sourcemap: false,
   },
   server: {
     host: '0.0.0.0',
