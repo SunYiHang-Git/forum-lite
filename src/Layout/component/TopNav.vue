@@ -106,6 +106,9 @@ const postArticle = async () => {
 
 /** 获取用户信息 */
 const getUserInfo = async () => {
+  const { loginStatus } = userInfo.value
+  /** 没有登录,不获取身份信息 */
+  if (!loginStatus) return
   const { setUserInfo } = useUser()
   try {
     const data = await GetRPAUserAPI({ isShowErrorMsg: false })

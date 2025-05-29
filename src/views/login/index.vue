@@ -64,7 +64,7 @@ watch(
   width: 100vw;
   min-width: 1200px;
   min-height: 100vh;
-  background-color: gradient(238deg, rgba(239, 246, 255, 0.5) 2%, rgba(245, 243, 255, 0.5) 100%), #ffffff;
+  background-color: linear-gradient(238deg, rgba(239, 246, 255, 0.5) 2%, rgba(245, 243, 255, 0.5) 100%), #ffffff;
   overflow: auto;
 }
 .login-box {

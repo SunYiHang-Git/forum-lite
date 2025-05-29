@@ -1,5 +1,18 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia'
 import TopNav from './component/TopNav.vue'
+import { useUser } from '@/store/modules/user'
+import { getToken, setToken } from '@ksware/micro-lib-web-temp'
+const { userInfo } = storeToRefs(useUser())
+function init() {
+  /** 解决记住密码登录问题 */
+  const { rememberInfo, token } = userInfo.value
+  if (!rememberInfo) return
+  if (getToken()) return
+  /** 没有 token 才存 token */
+  setToken(token)
+}
+init()
 </script>
 
 <template>
