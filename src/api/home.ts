@@ -464,3 +464,17 @@ export const getRPAUserAPI = async () => {
   }
   setUserInfo(userInfoObj)
 }
+
+/** token 保活 */
+export const addTokenActiveTime = () => {
+  callServerFunc('TSystemDM', 'GetBackupServer', {}, { isShowLoading: false, isShowErrorMsg: false })
+    .catch(() => {})
+    .finally(() => {
+      setTimeout(
+        () => {
+          addTokenActiveTime()
+        },
+        1000 * 60 * 10,
+      )
+    })
+}

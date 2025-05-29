@@ -7,6 +7,7 @@ import { useUser } from '@/store/modules/user'
 import { loginByAccountAPI, RPALitePhoneCodeLoginAPI } from '@/api/login'
 import { KMessage } from '@ksware/ksw-ux'
 import { useCI18n } from '@/i18n'
+import { addTokenActiveTime } from '@/api/home'
 const { ct, t } = useCI18n()
 
 const emits = defineEmits<{
@@ -81,6 +82,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     rememberInfo: isRememberStatus.value,
   }
   setUserInfo(userInfoObj)
+  addTokenActiveTime()
   emits('loginSuccess')
 }
 
