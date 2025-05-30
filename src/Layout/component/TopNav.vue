@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import logoSvg from '@/assets/svg/logo.svg'
-import { nextTick, onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { useUser } from '@/store/modules/user'
 import { KMessageBox } from '@ksware/ksw-ux'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { helpDocumentUel, liteHomeUrl } from '@/views/home'
-import { MD5 } from '@ksware/micro-lib-web-temp'
+import { isInset, MD5 } from '@ksware/micro-lib-web-temp'
 import { useRouterInfo } from '@/store/modules/useRouterInfo'
 import MessageInfo from './MessageInfo.vue'
 import { GetRPAUserAPI } from '@/api/login'
 const { clearBreadcrumbList } = useRouterInfo()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
-const searchValue = ref<string>('')
 const menuList = ref([
   // {
   //   name: 'home',
@@ -157,7 +156,7 @@ getUserInfo()
         <MessageInfo />
       </div>
 
-      <k-dropdown trigger="click" @command="handleCommand">
+      <k-dropdown v-if="!isInset" trigger="click" @command="handleCommand">
         <template #title>
           <div class="user-box dfc">
             <div class="icon dfc">
