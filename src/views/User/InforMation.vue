@@ -40,7 +40,7 @@ let cityArr: any = []
 if (Array.isArray(city)) {
   cityArr = city
 } else {
-  cityArr = city.split('/')
+  cityArr = ''
 }
 /**
  * IsDeveloper 是否申请为开发者 DeveloperState 管理员是否审核，RPAApplyDeveloper 这个接口，将用户 修改为处于 申请 开发者的状态，此时 IsDeveloper = 1

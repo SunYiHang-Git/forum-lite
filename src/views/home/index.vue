@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import Footer from '@/views/home/Footer/index.vue'
 import { onMounted, ref } from 'vue'
+import { GetRPAUserAPI } from '@/api/login'
 import Banner from '@/views/home/component/Banner.vue'
 import UserCard from '@/views/home/component/UserCard.vue'
 import NavCard from '@/views/home/component/NavCard.vue'
 import OfficialAnnouncement from '@/views/home/component/OfficialAnnouncement.vue'
 import InteractionAnswer from '@/views/home/component/InteractionAnswer.vue'
 import KnowledgeShare from '@/views/home/component/KnowledgeShare.vue'
-import { getHomeAllDataAPI, getRPAUserAPI, getThirdTypeDataAPI } from '@/api/home'
+import { getHomeAllDataAPI, getThirdTypeDataAPI } from '@/api/home'
 import { storeToRefs } from 'pinia'
 import { useUser } from '@/store/modules/user'
 import { getToken } from '@ksware/micro-lib-web-temp'
@@ -17,7 +18,7 @@ async function makeTokenLogin() {
   if (loginId) return
   const token = getToken()
   if (token) {
-    await getRPAUserAPI()
+    await GetRPAUserAPI()
   }
 }
 makeTokenLogin()

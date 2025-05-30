@@ -5,7 +5,12 @@ import { callServerFunc, setToken, SQLTable } from '@ksware/micro-lib-web-temp'
 
 /** 获取用户信息 */
 export const GetRPAUserAPI = async (params = {}) => {
-  const { data }: any = await callServerFunc('TRPADM', 'GetRPAUser', { TokenError: true, HandleError: true, ...params })
+  const { data }: any = await callServerFunc('TRPADM', 'GetRPAUser', {
+    TokenError: true,
+    HandleError: true,
+    IsLite: true,
+    ...params,
+  })
   const {
     IsAdmin,
     Phone,

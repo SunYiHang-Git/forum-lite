@@ -1,4 +1,4 @@
-import { getRPAUserAPI } from '@/api/home'
+import { GetRPAUserAPI } from '@/api/login'
 import { useStorage } from '@/store/modules/storage'
 import { KMessage } from '@ksware/ksw-ux'
 import { getToken, setToken } from '@ksware/micro-lib-web-temp'
@@ -110,7 +110,7 @@ export function getUrlParamByName(name: string | boolean = '') {
   const token = result[name as string] || result[String(name).toUpperCase()]
   if (token) {
     setToken(token)
-    getRPAUserAPI()
+    GetRPAUserAPI()
   }
   return result[name as string] || result[String(name).toUpperCase()]
 }
