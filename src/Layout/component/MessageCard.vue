@@ -13,6 +13,8 @@ const emits = defineEmits<{
   (e: 'resetCount'): void
 }>()
 
+const activeName = ref<string>('all')
+
 const tabList = ref<any[]>([
   {
     label: '全部消息',
@@ -35,41 +37,8 @@ const tabList = ref<any[]>([
     count: 0,
   },
 ])
-watch(
-  () => messageCount.value,
-  () => {
-    tabList.value = [
-      {
-        label: '全部消息',
-        name: 'all',
-        count: messageCount.value.allCount,
-      },
-      {
-        label: '帖子消息',
-        name: 'article',
-        count: messageCount.value.postCount,
-      },
-      {
-        label: '评论消息',
-        name: 'reply',
-        count: messageCount.value.replyCount,
-      },
-      {
-        label: '系统消息',
-        name: 'system',
-        count: messageCount.value.systemCount,
-      },
-    ]
-  },
-  {
-    immediate: true,
-    deep: true,
-  },
-)
 
 const ListBoxRef = useTemplateRef('ListBoxRef')
-
-const activeName = ref<string>('all')
 
 /** title 宽度 */
 const itemWidth = ref(67)
@@ -96,6 +65,39 @@ const getFormaInfoList = async (type: number | null = null) => {
 onMounted(() => {
   getFormaInfoList()
 })
+
+watch(
+  () => messageCount.value,
+  () => {
+    tabList.value = [
+      {
+        label: '全部消息',
+        name: 'all',
+        count: messageCount.value.allCount,
+      },
+      {
+        label: '帖子消息',
+        name: 'article',
+        count: messageCount.value.postCount,
+      },
+      {
+        label: '评论消息',
+        name: 'reply',
+        count: messageCount.value.replyCount,
+      },
+      {
+        label: '系统消息',
+        name: 'system',
+        count: messageCount.value.systemCount,
+      },
+    ]
+    handleSelectName(activeName.value)
+  },
+  {
+    immediate: true,
+    deep: true,
+  },
+)
 
 /** tab 切换 */
 function handleSelectName(name: string) {
@@ -146,7 +148,7 @@ const handleGetCount = async () => {
       <div class="lis-box" v-if="tableData.length" ref="ListBoxRef">
         <MessageCard :list="tableData" class="MessageCard" @resetCount="handleGetCount" />
       </div>
-      <div class="empty" v-if="tableData.length === 0">
+      <div class="empty" v-else>
         <div class="empty-icon">
           <img :src="EmptySvg" />
         </div>

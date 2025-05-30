@@ -91,7 +91,6 @@ const getFormaInfoList = async () => {
   const { list, total } = await RPAInformationLiteAPI(params, { loadingEl: ListBoxRef.value })
   totalMessage.value = total
   tableData.value = list
-  console.log('tableData.value--->', tableData.value)
   const { getMessageNoteData } = useMessage()
   getMessageNoteData()
 }
