@@ -1,6 +1,3 @@
-//
-
-import { useUser } from '@/store/modules/user'
 import { convertKeysToLowerCase, handleUrlFormat, maturityDays } from '@/utils/format'
 import { getSplitStrName } from '@/utils/tools'
 import { fileHostUrl } from '@/views/home'

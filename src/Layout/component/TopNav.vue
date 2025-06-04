@@ -13,13 +13,12 @@ import { GetRPAUserAPI } from '@/api/login'
 const { clearBreadcrumbList } = useRouterInfo()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
+interface IMenu {
+  label: string
+  name: string
+  src?: string
+}
 const menuList = ref([
-  // {
-  //   name: 'home',
-  //   label: '首页',
-  //   src: liteHomeUrl,
-  //   color: '#171717',
-  // },
   {
     name: 'community',
     label: '首页',
@@ -34,30 +33,22 @@ const menuList = ref([
   },
 ])
 
-const userDownList = ref([
+const userDownList = ref<IMenu[]>([
   {
     label: '我的主页',
     name: 'myHome',
-    click: myHome,
+    src: '/user',
   },
   {
     label: '账号资料',
     name: 'accountInformation',
-    click: accountInfo,
+    src: '/user-info',
   },
   {
     label: '退出',
     name: 'exit',
   },
 ])
-/** 账号资料 */
-function accountInfo() {
-  router.push('/user-info')
-}
-/** 我的主页 */
-function myHome() {
-  router.push('/user')
-}
 const routerToPage = (name: string, src: string) => {
   if (src === '') return
   if (name === 'community') {
@@ -85,6 +76,9 @@ function handleCommand(name: string) {
       layout()
       return
     default:
+      const findItem = userDownList.value.find((item) => item.name === name)
+      if (!findItem) return
+      findItem.src && router.push(findItem.src)
       return
   }
 }
@@ -112,6 +106,14 @@ const getUserInfo = async () => {
   try {
     const data = await GetRPAUserAPI({ isShowErrorMsg: false })
     setUserInfo(data)
+    if (userInfo.value.isAdmin) {
+      // 更新下拉菜单---管理员才有后台管理页面--跳转远程
+      userDownList.value.unshift({
+        label: '后台管理',
+        name: 'adminManage',
+        src: '/admin/user',
+      })
+    }
   } catch (error) {
     // 退出登录
     const { exitLogin } = useUser()
@@ -167,7 +169,7 @@ getUserInfo()
         </template>
         <template #default>
           <k-dropdown-item v-for="(item, index) in userDownList" :key="index" :command="item.name">
-            <div @click="item.click" style="width: 100%; display: flex; justify-content: center">
+            <div style="width: 100%; display: flex; justify-content: center">
               {{ item.label }}
             </div>
           </k-dropdown-item>

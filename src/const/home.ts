@@ -52,3 +52,8 @@ export const distFileName = 'krpalite'
 const env = import.meta.env
 /** 跳转帖子详情页路由 */
 export const postDetailUrl = env.DEV ? window.location.origin + '/' : `/${distFileName}/index.html`
+
+/** 后台管理页面 */
+// export const adminManagementUrl =
+//   (env.DEV ? 'http://192.168.104.81:8080/' : 'http://www.rpa-china.cn:12580/forum/index.html') +
+//   `#/admin/reply?token=${getToken()}&isLite=${true}`

@@ -60,7 +60,6 @@ getHomeClassList()
 const searchVale = ref('')
 const searchPostList = (value: string) => {
   searchVale.value = value
-  console.log('searchVale.value--->', searchVale.value)
 }
 
 onUnmounted(() => {

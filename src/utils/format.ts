@@ -199,3 +199,21 @@ export const handlePostDetailUrl = (url: string): string => {
   }
   return newUrl
 }
+/** 截取 url 后面的部分 */
+export function getUrlPathAfterDomain(domain: string, url: string): string {
+  // 先确保 domain 是标准格式（去除末尾的 / 或其他字符）
+  const normalizedDomain = domain.replace(/\/+$/, '/')
+
+  // 如果 url 不是以 domain 开头，说明不是该域名下的路径，返回空或抛出错误
+  if (!url.startsWith(normalizedDomain)) {
+    return ''
+  }
+
+  // 截取 domain 后面的部分
+  const pathAndQueryHash = url.slice(normalizedDomain.length)
+
+  // 可选：如果你只想获取路径 + 查询参数，去掉 hash 部分：
+  const pathWithQueryOnly = pathAndQueryHash.split('#')[0]
+
+  return pathWithQueryOnly
+}

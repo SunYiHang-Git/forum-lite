@@ -1,11 +1,10 @@
-import { getToken, setToken } from '@ksware/micro-lib-web-temp'
+import { setToken } from '@ksware/micro-lib-web-temp'
 import router from './router/router'
 import { getUrlParamByName, removeTokenFromUrl } from '@/utils/auth'
-import { useRouterInfo, type IBreadcrumbs } from '@/store/modules/useRouterInfo'
-import { useUser } from './store/modules/user'
+import { isAdmin } from './utils/check'
+import { KMessage } from '@ksware/ksw-ux'
 
-const toRouterList = ['/home', '/login']
-const permNameList = ['/application']
+const permNameList = ['/admin']
 /** 从那个页面来 */
 // 路由执行前加载缓存数据
 router.beforeEach((to, from, next) => {
@@ -33,25 +32,21 @@ router.beforeEach((to, from, next) => {
   //   next('/login' + `?toRedirectPath=${to.fullPath}`)
   //   return
   // }
+  const isProtectedByPrefix = permNameList.some((path) => to.path.startsWith(path))
+  // 或者通过 meta 标记需要权限
+  const isProtectedByMeta = to.meta.requiresAuth
+  if (isProtectedByPrefix || isProtectedByMeta) {
+    if (!isAdmin()) {
+      KMessage.error('没有权限进入该页面!')
+      return
+    }
+  }
   /** 校验进入页面的权限 */
   // if (permNameList.includes(to.path)) {
   //   if (!isAdminRolePermission()) {
   //     KMessage.error('没有权限进入该页面!')
   //     next('/store')
   //     return
-  //   }
-  // }
-  // if (to.meta?.breadcrumb) {
-  //   const { setBreadcrumbList, clearBreadcrumbList } = useRouterInfo()
-  //   if (toRouterList.includes(to.path)) {
-  //     clearBreadcrumbList()
-  //   } else {
-  //     const obj: IBreadcrumbs = {
-  //       path: to.path,
-  //       name: to.name as string,
-  //       label: (to.meta?.breadcrumb as string) ?? '',
-  //     }
-  //     setBreadcrumbList(obj)
   //   }
   // }
   const title = to.meta && to.meta.title ? to.meta.title : 'RPA Lite 论坛'

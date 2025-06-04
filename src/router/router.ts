@@ -1,6 +1,7 @@
 import { initGlobalVariable } from '@ksware/micro-lib-web-temp'
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
 import Layout from '@/Layout/index.vue'
+import { adminRouter } from './module/admin'
 interface IMyRouter {
   /** 开发阶段,是否显示辅助路由 */
   isShow?: boolean
@@ -148,7 +149,7 @@ const router = createRouter({
     return savedPosition || { top: 0 }
   },
 })
-
+router.addRoute(adminRouter)
 initGlobalVariable('routerInstance', router)
 
 export default router

@@ -196,7 +196,6 @@ async function cancel(formEl: FormInstance | undefined) {
 }
 /** 提交 */
 const submitForm = async (formEl: FormInstance | undefined) => {
-  console.log('ruleForm--->', ruleForm)
   if (!formEl) return
   await formEl.validate()
   const { id } = articleInfo.value

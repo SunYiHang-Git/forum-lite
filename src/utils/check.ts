@@ -1,3 +1,4 @@
+import { useUser } from '@/store/modules/user'
 import { KMessage } from '@ksware/ksw-ux'
 
 /**
@@ -75,4 +76,10 @@ export function matchKeywords(input: string): { matched: boolean; matches: strin
     matched: matches.length > 0, // 如果有匹配项，则matched为true
     matches: matches, // 返回所有匹配到的字符串
   }
+}
+
+/** 是否是管理员 */
+export const isAdmin = () => {
+  const { isAdminByUser } = useUser()
+  return isAdminByUser() ?? false
 }

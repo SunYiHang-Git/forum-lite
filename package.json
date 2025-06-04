@@ -22,6 +22,7 @@
     "@ksware/ksw-ux": "^1.1.22-beta",
     "@ksware/micro-lib-web-temp": "^1.8.3",
     "@tinymce/tinymce-vue": "^6.1.0",
+    "@vitejs/plugin-vue-jsx": "^4.2.0",
     "@vue/runtime-dom": "^3.5.13",
     "axios": "^1.7.9",
     "crypto-js": "^4.2.0",
@@ -97,6 +98,6 @@
     "typescript-eslint": "^8.24.0",
     "vite": "^6.1.0",
     "vite-plugin-vue-devtools": "^7.7.1",
-    "vue-tsc": "^2.2.0"
+    "vue-tsc": "^2.2.10"
   }
 }
