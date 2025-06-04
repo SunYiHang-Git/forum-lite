@@ -217,3 +217,28 @@ export function getUrlPathAfterDomain(domain: string, url: string): string {
 
   return pathWithQueryOnly
 }
+
+/**
+ * 根据指定天数计算目标日期，并返回格式化后的日期字符串。
+ *
+ * @example
+ *
+ * getFutureDate(7) // 返回：当前日期 + 7 天 的日期，如 "2025-06-11"
+ *
+ * getFutureDate(-3, '2025-06-05') // 返回："2025-06-02"
+ *
+ * getFutureDate(10, '2025-01-01', 'YYYY年MM月DD日') // 返回："2025年01月11日"
+ *
+ * @param daysToAdd - 要添加的天数，可以是正数（未来日期）或负数（过去日期）
+ * @param inputDate - 可选的起始日期，可以是字符串或 Date 对象，默认为当前日期
+ * @param formatString - 返回日期的格式字符串，默认为 "YYYY-MM-DD"
+ * @returns 格式化后的日期字符串
+ */
+export const getFutureDate = (
+  daysToAdd: number,
+  inputDate?: string | Date,
+  formatString: string = 'YYYY-MM-DD',
+): string => {
+  const date = dayjs(inputDate)
+  return date.add(daysToAdd, 'day').format(formatString)
+}
