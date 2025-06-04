@@ -10,16 +10,21 @@ const isCollapse = ref(true)
 const menuList = ref<IMenu[]>([
   {
     icon: 'IconUser',
+    label: '论坛首页',
+    router: '/home',
+  },
+  {
+    icon: 'IconUser',
     label: '用户管理',
     router: '/admin/user',
   },
   {
-    icon: 'IconUser',
+    icon: 'IconKey',
     label: '授权管理',
     router: '/admin/license',
   },
   {
-    icon: 'IconRPASystemOpenDirColor',
+    icon: 'IconGfaomParameterConfiguration',
     label: '专栏管理',
     router: '/admin/group',
   },
@@ -29,7 +34,7 @@ const menuList = ref<IMenu[]>([
     router: '/admin/reply',
   },
   {
-    icon: 'IconRPASystemFileCopyColor',
+    icon: 'IconMessageOne',
     label: '评论管理',
     router: '/admin/comment',
   },

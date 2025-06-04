@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { KMessageBox } from '@ksware/ksw-ux'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -29,7 +30,14 @@ const activeName = computed(() => {
   return name
 })
 
-const handleRouter = (item: IMenu) => {
+const handleRouter = async (item: IMenu) => {
+  if (item.label === '论坛首页') {
+    await KMessageBox.confirm('此操作将返回首页,是否继续?', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    })
+  }
   router.push(item.router)
 }
 </script>
