@@ -182,7 +182,7 @@ const onAllow = async (item: any) => {
     <div class="main-box">
       <div class="table-box">
         <k-tree-table
-          :widgets="['refresh']"
+          :widgets="['refresh', 'transfer', 'sizeControl']"
           :data="tableData"
           :column="column"
           hight="100%"

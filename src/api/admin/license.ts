@@ -29,3 +29,7 @@ export const GetRpaLiteAuthorizeAPI = async (params: any) => {
 export const SetRpaLiteAuthorizeAPI = async (params: any) => {
   await callServerFunc('TRPADM', 'SetRpaLiteAuthorize', params)
 }
+/** 推送消息 */
+export const RPASendMessageLiteAPI = async (params: any) => {
+  await callServerFunc('TRPADM', 'RPASendMessageLite', params)
+}

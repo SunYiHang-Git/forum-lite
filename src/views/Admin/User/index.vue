@@ -14,6 +14,7 @@ import { fileHostUrl } from '@/views/home'
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import { generateUniqueNumber, getSplitStrName } from '@/utils/tools'
 import { MD5 } from '@ksware/micro-lib-web-temp'
+import { RPASendMessageLiteAPI } from '@/api/admin/license'
 
 interface IFromType {
   /** 昵称 */
@@ -25,6 +26,8 @@ interface IFromType {
   /** 是否为开发者 */
   isDeveloper: string | number
 }
+
+const treeTableRef = ref<any>(null)
 
 const form = reactive<IFromType>({
   userName: '',
@@ -54,6 +57,11 @@ const paramsValue = computed(() => {
 })
 
 const column = ref([
+  {
+    type: 'checkbox',
+    width: '50',
+    align: 'center',
+  },
   {
     field: 'userIcon',
     title: '头像',
@@ -266,6 +274,33 @@ const handleLogOff = async (row: any) => {
   KMessage.success(`注销用户"${row.name}"成功!`)
   initWindow()
 }
+
+/** 消息推送 */
+const onMessageSend = async () => {
+  if (!treeTableRef.value) return
+  const rows = treeTableRef.value.getCheckboxRecords()
+  if (rows.length === 0) {
+    KMessage.warning('请先选择用户!')
+    return
+  }
+  const ids = rows.map((item: any) => item.id).filter(Boolean)
+  const { value } = await KMessageBox.prompt('管理员请输入密码确认', '管理员确认', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputType: 'textarea',
+    inputPattern: /\S/,
+    inputErrorMessage: '内容不能为空',
+  })
+  await KMessageBox.confirm(`是否推送消息"${value.trim()}"给选中的${ids.length}个用户?`, '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'success',
+  })
+  const params = { Content: value.trim(), ID: ids.join(','), MessageFrom: '' }
+  await RPASendMessageLiteAPI(params)
+  KMessage.success('推送成功!')
+  treeTableRef.value.clearCheckboxRow()
+}
 </script>
 
 <template>
@@ -283,12 +318,13 @@ const handleLogOff = async (row: any) => {
       </k-select>
       <k-button icon-left="IconSearch" main @click="searchTable">搜索</k-button>
       <k-button icon-left="IconRotateClockwise" main @click="reset">重置</k-button>
-      <k-button icon-left="IconPaperAirplane" main>消息推送</k-button>
+      <k-button icon-left="IconPaperAirplane" main @click="onMessageSend">消息推送</k-button>
     </div>
     <div class="main-box">
       <div class="table-box">
         <k-tree-table
-          :widgets="['refresh']"
+          ref="treeTableRef"
+          :widgets="['refresh', 'transfer', 'sizeControl']"
           :data="tableData"
           :column="column"
           hight="100%"
