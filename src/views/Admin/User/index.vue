@@ -360,26 +360,26 @@ const onMessageSend = async () => {
             <k-tag :type="row.isApply ? 'primary' : 'info'">{{ row.isApply ? '是' : '否' }}</k-tag>
           </template>
           <template #marketAdmin="{ row }">
-            <k-checkbox v-model="row.marketAdmin" label="" size="large" class="mr-4" @change="changeMarketAdmin(row)" />
+            <k-checkbox v-model="row.marketAdmin" label="" size="lg" class="mr-4" @change="changeMarketAdmin(row)" />
           </template>
           <template #cloudDevelopment="{ row }">
             <k-checkbox
               v-model="row.cloudDevelopment"
               label=""
-              size="large"
+              size="lg"
               class="mr-4"
               @change="changeCloudDevelop(row)"
             />
           </template>
           <template #isDeveloper="{ row }">
-            <k-checkbox v-model="row.isDeveloper" label="" size="large" class="mr-4" @change="chageDeveloper(row)" />
+            <k-checkbox v-model="row.isDeveloper" label="" size="lg" class="mr-4" @change="chageDeveloper(row)" />
           </template>
           <template #isAdmin="{ row }">
-            <k-checkbox v-model="row.isAdmin" label="" size="large" class="mr-4" @change="chageAdmin(row)" />
+            <k-checkbox v-model="row.isAdmin" label="" size="lg" class="mr-4" @change="chageAdmin(row)" />
           </template>
           <template #opt="{ row }">
-            <k-button main size="small" @click="editUser(row)">编辑</k-button>
-            <k-button type="danger" main size="small" @click="handleLogOff(row)">注销</k-button>
+            <k-button main size="sm" @click="editUser(row)">编辑</k-button>
+            <k-button type="danger" main size="sm" @click="handleLogOff(row)">注销</k-button>
           </template>
         </k-tree-table>
       </div>
@@ -391,7 +391,7 @@ const onMessageSend = async () => {
 <style lang="scss" scoped>
 .user-index {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   .header-search {
     display: flex;
     align-items: center;
@@ -406,8 +406,7 @@ const onMessageSend = async () => {
     justify-content: start;
     align-items: center;
     width: 100%;
-    height: calc(100vh - 120px);
-    padding: 10px;
+    height: calc(100vh - 130px);
     .table-box {
       height: 100%;
       width: 100%;

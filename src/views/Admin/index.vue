@@ -90,6 +90,7 @@ const menuList = ref<IMenu[]>([
       font-size: 16px;
       color: white;
       overflow: hidden;
+      border-right: 1px solid #dcdfe6;
       .menu-box {
         max-width: 200px;
         min-width: 0px;
@@ -111,6 +112,7 @@ const menuList = ref<IMenu[]>([
       min-width: 300px;
       height: 100%;
       overflow: hidden;
+      padding: 0 10px;
     }
   }
 }

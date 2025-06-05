@@ -221,7 +221,7 @@ const onAllow = async (item: any) => {
 <style lang="scss" scoped>
 .license-index {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   .header-search {
     display: flex;
     align-items: center;
@@ -236,8 +236,7 @@ const onAllow = async (item: any) => {
     justify-content: start;
     align-items: center;
     width: 100%;
-    height: calc(100vh - 120px);
-    padding: 10px;
+    height: calc(100vh - 130px);
     .table-box {
       height: 100%;
       width: 100%;

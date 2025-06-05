@@ -7,31 +7,31 @@ export const adminRouter: IRouteRawLite = {
   children: [
     {
       path: 'user',
-      name: 'user',
+      name: 'admin-user',
       component: () => import('@/views/Admin/User/index.vue'),
       meta: { title: '用户管理', icon: 'el-icon-s-home' },
     },
     {
       path: 'license',
-      name: 'license',
+      name: 'admin-license',
       component: () => import('@/views/Admin/License/index.vue'),
       meta: { title: '授权管理', icon: 'el-icon-s-home' },
     },
     {
       path: 'group',
-      name: 'group',
+      name: 'admin-group',
       component: () => import('@/views/Admin/Group/index.vue'),
       meta: { title: '专栏管理', icon: 'el-icon-s-home' },
     },
     {
       path: 'reply',
-      name: 'reply',
+      name: 'admin-reply',
       component: () => import('@/views/Admin/Reply/index.vue'),
       meta: { title: '帖子管理', icon: 'el-icon-s-home' },
     },
     {
       path: 'comment',
-      name: 'comment',
+      name: 'admin-comment',
       component: () => import('@/views/Admin/Comment/index.vue'),
       meta: { title: '评论管理', icon: 'el-icon-s-home' },
     },

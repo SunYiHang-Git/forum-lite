@@ -10,6 +10,7 @@ import { isInset, MD5 } from '@ksware/micro-lib-web-temp'
 import { useRouterInfo } from '@/store/modules/useRouterInfo'
 import MessageInfo from './MessageInfo.vue'
 import { GetRPAUserAPI } from '@/api/login'
+import { handlePostDetailUrl } from '@/utils/format'
 const { clearBreadcrumbList } = useRouterInfo()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
@@ -74,6 +75,12 @@ function handleCommand(name: string) {
   switch (name) {
     case 'exit':
       layout()
+      return
+    case 'adminManage':
+      const adminManage = userDownList.value.find((item) => item.name === name)
+      if (!adminManage) return
+      const newUrl = handlePostDetailUrl(`#${adminManage.src}`)
+      window.open(newUrl, '_blank')
       return
     default:
       const findItem = userDownList.value.find((item) => item.name === name)
