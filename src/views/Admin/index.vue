@@ -2,43 +2,59 @@
 import { ref } from 'vue'
 import menuPage, { type IMenu } from '@/views/Admin/components/MenuPage/index.vue'
 import { useRouter } from 'vue-router'
+import { adminRouter } from '@/router/module/admin'
 
 const router = useRouter()
 /** 控制是否折叠 */
 const isCollapse = ref(true)
 
 const menuList = ref<IMenu[]>([
-  {
-    icon: 'IconUser',
+  // {
+  //   icon: 'IconHomeFill',
+  //   label: '论坛首页',
+  //   router: '/home',
+  // },
+  // {
+  //   icon: 'IconUser',
+  //   label: '用户管理',
+  //   router: '/admin/user',
+  // },
+  // {
+  //   icon: 'IconKey',
+  //   label: '授权管理',
+  //   router: '/admin/license',
+  // },
+  // {
+  //   icon: 'IconGfaomParameterConfiguration',
+  //   label: '专栏管理',
+  //   router: '/admin/group',
+  // },
+  // {
+  //   icon: 'IconRPASystemSetContentForClipboardColor',
+  //   label: '帖子管理',
+  //   router: '/admin/reply',
+  // },
+  // {
+  //   icon: 'IconMessageOne',
+  //   label: '评论管理',
+  //   router: '/admin/comment',
+  // },
+])
+
+function initMenu() {
+  const { path, children } = adminRouter
+  const arr = children?.map((item) => {
+    const { meta } = item
+    return { icon: meta?.icon ?? '', label: meta?.title ?? '', router: `${path}/${item.path}` }
+  })
+  arr?.unshift({
+    icon: 'IconHomeFill',
     label: '论坛首页',
     router: '/home',
-  },
-  {
-    icon: 'IconUser',
-    label: '用户管理',
-    router: '/admin/user',
-  },
-  {
-    icon: 'IconKey',
-    label: '授权管理',
-    router: '/admin/license',
-  },
-  {
-    icon: 'IconGfaomParameterConfiguration',
-    label: '专栏管理',
-    router: '/admin/group',
-  },
-  {
-    icon: 'IconRPASystemSetContentForClipboardColor',
-    label: '帖子管理',
-    router: '/admin/reply',
-  },
-  {
-    icon: 'IconMessageOne',
-    label: '评论管理',
-    router: '/admin/comment',
-  },
-])
+  })
+  menuList.value = arr as IMenu[]
+}
+initMenu()
 </script>
 
 <template>
