@@ -242,3 +242,43 @@ export const getFutureDate = (
   const date = dayjs(inputDate)
   return date.add(daysToAdd, 'day').format(formatString)
 }
+
+/**
+ * 将扁平化的对象数组转换为树形嵌套结构。
+ *
+ * @example 示例数据结构： [ { id: 1, pid: 0, name: '一级菜单' }, { id: 2, pid: 1, name: '二级菜单' } ]
+ *
+ * @param data - 要处理的对象数组，每个对象必须包含唯一标识字段（如 id）和父级标识字段（如 pid）
+ * @param idKey - 对象中表示唯一标识的字段名，默认为 'id'
+ * @param parentIdKey - 对象中表示父级标识的字段名，默认为 'pid'
+ * @param childrenKey - 父级对象中存放子级的字段名，默认为 'children'
+ * @returns 树形嵌套结构的数组，顶层节点位于返回数组的根层级
+ */
+export function buildTree<T extends Record<string, any>>(
+  data: T[],
+  idKey: keyof T = 'id' as keyof T,
+  parentIdKey: keyof T = 'pid' as keyof T,
+  childrenKey: string = 'children',
+): Array<T & { [childrenKey]: Array<T & { [childrenKey]: any[] }> }> {
+  const result: Array<T & { [childrenKey]: any[] }> = []
+  const map: Record<string | number, T & { [childrenKey]: any[] }> = {}
+  data.forEach((item) => {
+    const id = item[idKey]
+    map[id] = {
+      ...item,
+      [childrenKey]: [],
+    }
+  })
+  data.forEach((item) => {
+    const id = item[idKey]
+    const parentId = item[parentIdKey]
+    const currentItem = map[id]
+    if (parentId && map[parentId]) {
+      map[parentId][childrenKey].push(currentItem)
+    } else if (!parentId) {
+      result.push(currentItem)
+    }
+  })
+
+  return result
+}
