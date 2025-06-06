@@ -141,9 +141,7 @@ const addGroup = async () => {
       KMessage.success('新增专栏成功!')
       initWindow()
     },
-    cancel: () => {
-      KMessage.error('cancel')
-    },
+    cancel: () => {},
   })
 }
 

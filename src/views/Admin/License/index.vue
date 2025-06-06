@@ -2,8 +2,14 @@
 import { GetRpaLiteAuthorizeAPI, SetRpaLiteAuthorizeAPI } from '@/api/admin/license'
 import { getFutureDate } from '@/utils/format'
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
-import { computed, ref } from 'vue'
+import { computed, ref, nextTick } from 'vue'
 import EditLicenseDialog from './EditLicenseDialog.vue'
+import { useEnterSubmit } from '@/hooks/useEnterSubmit'
+
+// 回车搜索逻辑
+const { onEnter, onCompositionStart, onCompositionEnd } = useEnterSubmit(() => {
+  searchTable()
+})
 
 const selectValue = ref('')
 const searchValue = ref('')
@@ -172,10 +178,18 @@ const onAllow = async (item: any) => {
 <template>
   <div class="license-index">
     <div class="header-search">
-      <k-select v-model="selectValue" clearable placeholder="是否申请" style="width: 180px">
+      <k-select v-model="selectValue" clearable placeholder="是否申请" style="width: 180px" @change="searchTable">
         <k-option v-for="item in selectOptions" :key="item.value" :label="item.label" :value="item.value" />
       </k-select>
-      <KInput v-model="searchValue" style="width: 180px" placeholder="搜索" />
+      <KInput
+        v-model="searchValue"
+        style="width: 180px"
+        placeholder="搜索"
+        @compositionstart="onCompositionStart"
+        @compositionend="onCompositionEnd"
+        @keydown.enter="onEnter"
+      />
+      <!-- <KInput v-model="searchValue" style="width: 180px" placeholder="搜索" v-enter-submit="searchTable" /> -->
       <k-button icon-left="IconSearch" main @click="searchTable">搜索</k-button>
       <k-button icon-left="IconRotateClockwise" main @click="reset">重置</k-button>
     </div>

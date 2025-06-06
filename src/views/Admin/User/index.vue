@@ -6,7 +6,7 @@ import {
   RPAEditUserAPI,
   RPAUserQueryAPI,
 } from '@/api/admin/user'
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import defaultAvatar from '@/assets/svg/default-avatar.svg'
 import EditUserDialog from './EditUserDialog.vue'
 import { getUrlPathAfterDomain } from '@/utils/format'
@@ -15,6 +15,12 @@ import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import { generateUniqueNumber, getSplitStrName } from '@/utils/tools'
 import { MD5 } from '@ksware/micro-lib-web-temp'
 import { RPASendMessageLiteAPI } from '@/api/admin/license'
+import { useEnterSubmit } from '@/hooks/useEnterSubmit'
+
+// 回车搜索逻辑
+const { onEnter, onCompositionStart, onCompositionEnd } = useEnterSubmit(() => {
+  searchTable()
+})
 
 interface IFromType {
   /** 昵称 */
@@ -306,15 +312,37 @@ const onMessageSend = async () => {
 <template>
   <div class="user-index">
     <div class="header-search">
-      <KInput v-model="form.userName" style="width: 180px" placeholder="用户昵称" />
-      <KInput v-model="form.phone" style="width: 180px" placeholder="用户手机" />
-      <k-select v-model="form.isApply" clearable placeholder="是否申请" style="width: 180px">
-        <k-option label="是" :value="1" />
-        <k-option label="否" :value="0" />
+      <KInput
+        v-model="form.userName"
+        style="width: 180px"
+        placeholder="用户昵称"
+        @compositionstart="onCompositionStart"
+        @compositionend="onCompositionEnd"
+        @keydown.enter="onEnter"
+      />
+      <KInput
+        v-model="form.phone"
+        style="width: 180px"
+        placeholder="用户手机"
+        @compositionstart="onCompositionStart"
+        @compositionend="onCompositionEnd"
+        @keydown.enter="onEnter"
+      />
+      <k-select v-model="form.isApply" clearable placeholder="是否申请" style="width: 180px" @change="searchTable">
+        <k-option label="全部" value="" />
+        <k-option label="是" value="1" />
+        <k-option label="否" value="0" />
       </k-select>
-      <k-select v-model="form.isDeveloper" clearable placeholder="是否为开发者" style="width: 200px">
-        <k-option label="是" :value="1" />
-        <k-option label="否" :value="0" />
+      <k-select
+        v-model="form.isDeveloper"
+        clearable
+        placeholder="是否为开发者"
+        style="width: 200px"
+        @change="searchTable"
+      >
+        <k-option label="全部" value="" />
+        <k-option label="是" value="1" />
+        <k-option label="否" value="0" />
       </k-select>
       <k-button icon-left="IconSearch" main @click="searchTable">搜索</k-button>
       <k-button icon-left="IconRotateClockwise" main @click="reset">重置</k-button>

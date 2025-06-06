@@ -2,6 +2,12 @@
 import { RPADelReplyLiteAPI, RPAReplyQueryLiteAPI } from '@/api/admin/comment'
 import { KMessageBox } from '@ksware/ksw-ux'
 import { ref } from 'vue'
+import { useEnterSubmit } from '@/hooks/useEnterSubmit'
+
+// 回车搜索逻辑
+const { onEnter, onCompositionStart, onCompositionEnd } = useEnterSubmit(() => {
+  searchTable()
+})
 
 const widgets: string[] = ['search', 'refresh', 'transfer', 'custom1', 'sizeControl']
 
@@ -93,7 +99,14 @@ const onDelComment = async (row: any) => {
       <k-select v-model="selectTypeValue" clearable placeholder="是否申请" style="width: 180px">
         <k-option v-for="item in selectType" :key="item.value" :label="item.label" :value="item.value" />
       </k-select>
-      <KInput v-model="searchValue" style="width: 180px" placeholder="搜索内容" @keydown.enter="searchTable" />
+      <KInput
+        v-model="searchValue"
+        style="width: 180px"
+        placeholder="搜索内容"
+        @compositionstart="onCompositionStart"
+        @compositionend="onCompositionEnd"
+        @keydown.enter="onEnter"
+      />
       <k-button icon-left="IconSearch" main @click="searchTable">搜索</k-button>
       <k-button icon-left="IconRotateClockwise" main @click="reset">重置</k-button>
     </div>

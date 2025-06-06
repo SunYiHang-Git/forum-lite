@@ -21,7 +21,6 @@ import router from '@/router/router'
 import i18n from '@/i18n'
 import '@/permission.ts'
 import App from './App.vue'
-import { authDirective } from './directives/auth'
 const app = createApp(App)
 app.directive('ClickOutside', ClickOutside)
 app.use(KswIcon)
@@ -35,6 +34,4 @@ app.component('SvgIcon', SvgIcon)
 app.component('FontIcon', FontIcon)
 app.component('AppContainer', AppContainer)
 app.use(i18n)
-app.directive('auth', authDirective)
-
 app.mount('#app')

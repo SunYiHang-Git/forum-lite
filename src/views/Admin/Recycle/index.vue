@@ -57,12 +57,16 @@ const getList = async () => {
 }
 /** 初始化 */
 async function initWindow() {
+  currentPage.value = 1
   getList()
 }
 
 initWindow()
 
-const pageChange = () => {}
+const pageChange = (page: number) => {
+  currentPage.value = page
+  getList()
+}
 
 /** 回复帖子 */
 const onRecovery = async (row: any) => {
