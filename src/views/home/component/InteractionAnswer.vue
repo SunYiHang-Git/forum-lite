@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
+import { openPostDetail } from '@/utils/tools'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
@@ -14,10 +15,6 @@ const { hotDataList, newDataList, isFetchData } = defineProps<{
 
 function lookMore() {
   router.push('/class/interaction')
-}
-
-const goDetail = (item: any) => {
-  router.push(`/detail/${item.id}`)
 }
 </script>
 
@@ -36,7 +33,7 @@ const goDetail = (item: any) => {
             <div class="main-content-top">
               <div class="icon dfc"><IconMessageFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title" @click="goDetail(item)" :title="item.title">
+              <div class="hot-title" @click="openPostDetail(item.id)" :title="item.title">
                 {{ item.title }}
               </div>
               <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回复</div>
@@ -67,7 +64,7 @@ const goDetail = (item: any) => {
             <div class="main-content-top">
               <div class="icon dfc"><IconMessageFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title" @click="goDetail(item)" :title="item.title">{{ item.title }}</div>
+              <div class="hot-title" @click="openPostDetail(item.id)" :title="item.title">{{ item.title }}</div>
               <div class="answer" v-if="index !== 0">{{ item.replyNum }} 个回复</div>
             </div>
             <div v-if="index === 0" class="hot-desc" :title="item.abstract">{{ item.abstract }}</div>

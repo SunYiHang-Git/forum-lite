@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { handlePostDetailUrl } from '@/utils/format'
-import { useRouter } from 'vue-router'
+import { openPostDetail } from '@/utils/tools'
 interface ITableData {
   [key: string]: any
 }
@@ -14,13 +13,8 @@ const props = withDefaults(
   },
 )
 const env = import.meta.env
-const router = useRouter()
 const handleDetail = (item: any) => {
-  // router.push(`/detail/${item.id}`)
-  // const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
-  // const newUrl = postDetailUrl + `#/detail/${item.id}`
-  const newUrl = handlePostDetailUrl(`#/detail/${item.id}`)
-  window.open(newUrl, '_blank')
+  openPostDetail(item.id)
 }
 </script>
 

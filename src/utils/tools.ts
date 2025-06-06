@@ -1,3 +1,5 @@
+import { handlePostDetailUrl } from './format'
+
 /**
  * 生成随机数
  *
@@ -72,4 +74,23 @@ export const handleNameSuffixShow = (list: any[]) => {
     arr.push(...userIdList)
   })
   return arr
+}
+
+/**
+ * 打开新页签,跳转页面
+ *
+ * @param url 新页面 地址
+ */
+export const openNewUrl = (url: string) => {
+  const newUrl = handlePostDetailUrl(url)
+  window.open(newUrl, '_blank')
+}
+
+/**
+ * 打开新页签,跳转帖子页面
+ *
+ * @param id 帖子Id
+ */
+export const openPostDetail = (id: string) => {
+  openNewUrl(`#/detail/${id}`)
 }

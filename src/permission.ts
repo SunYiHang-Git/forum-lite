@@ -38,6 +38,7 @@ router.beforeEach((to, from, next) => {
   if (isProtectedByPrefix || isProtectedByMeta) {
     if (!isAdmin()) {
       KMessage.error('没有权限进入该页面!')
+      next('/')
       return
     }
   }

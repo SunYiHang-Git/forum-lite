@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
+import { openPostDetail } from '@/utils/tools'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -14,10 +15,6 @@ const { hotDataList, newDataList, isFetchData } = defineProps<{
 
 function lookMore() {
   router.push('/class/knowledge')
-}
-
-const goDetail = (item: any) => {
-  router.push(`/detail/${item.id}`)
 }
 </script>
 
@@ -36,7 +33,7 @@ const goDetail = (item: any) => {
             <div class="lis-top">
               <div class="icon dfc"><IconDocDetailFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title" @click="goDetail(item)" :title="item.title">{{ item.title }}</div>
+              <div class="hot-title" @click="openPostDetail(item.id)" :title="item.title">{{ item.title }}</div>
             </div>
             <div class="lis-desc" :title="item.abstract">{{ item.abstract }}</div>
             <div class="hot-user-box">
@@ -58,7 +55,7 @@ const goDetail = (item: any) => {
             <div class="lis-top">
               <div class="icon dfc"><IconDocDetailFill color="var(--k-gray-400)" /></div>
               <div class="system dfc">{{ item.typeName }}</div>
-              <div class="hot-title" @click="goDetail(item)" :title="item.title">{{ item.title }}</div>
+              <div class="hot-title" @click="openPostDetail(item.id)" :title="item.title">{{ item.title }}</div>
             </div>
             <div class="lis-desc" :title="item.abstract">{{ item.abstract }}</div>
             <div class="hot-user-box">

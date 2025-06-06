@@ -4,6 +4,7 @@ import secondSvg from '@/assets/svg/second.svg'
 import thirdSvg from '@/assets/svg/third.svg'
 import importantSvg from '@/assets/svg/important.svg'
 import { useRouter } from 'vue-router'
+import { openPostDetail } from '@/utils/tools'
 
 const { noticeList, replyList, isFetchData } = defineProps<{
   /** 公告 */
@@ -14,9 +15,6 @@ const { noticeList, replyList, isFetchData } = defineProps<{
   isFetchData?: boolean
 }>()
 const router = useRouter()
-const goDetail = (item: any) => {
-  router.push(`/detail/${item.id}`)
-}
 
 function lookMore() {
   router.push('/class/notice')
@@ -43,7 +41,7 @@ function lookMore() {
               </div>
             </div>
             <div class="lis-title-box">
-              <div class="title" @click="goDetail(item)" :title="item.title">
+              <div class="title" @click="openPostDetail(item.id)" :title="item.title">
                 {{ item.title }}
               </div>
             </div>

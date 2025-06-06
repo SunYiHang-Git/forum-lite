@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { handlePostDetailUrl } from '@/utils/format'
-import { computed } from 'vue'
+import { openPostDetail } from '@/utils/tools'
 import { useRouter } from 'vue-router'
 const router = useRouter()
 const { title, list, icon, isClick } = defineProps<{
@@ -15,11 +14,7 @@ const goDetail = (item: any) => {
   if (!isClick) {
     return
   }
-  // router.push(`/detail/${item.id}`)
-  // const url = env.DEV ? window.location.origin + '/' : '/forum-lite/index.html'
-  // const newUrl = url + `#/detail/${item.id}`
-  const newUrl = handlePostDetailUrl(`#/detail/${item.id}`)
-  window.open(newUrl, '_blank')
+  openPostDetail(item.id)
 }
 </script>
 
