@@ -62,6 +62,7 @@ const httpRequestFile = async ({ file }: { file: UploadRawFile }) => {
   <div class="upload-image-box">
     <k-upload
       :show-file-list="false"
+      action="#"
       :accept="acceptTypes"
       :before-upload="beforeAvatarUpload"
       :http-request="httpRequestFile"
