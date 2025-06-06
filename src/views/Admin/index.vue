@@ -8,38 +8,7 @@ const router = useRouter()
 /** 控制是否折叠 */
 const isCollapse = ref(true)
 
-const menuList = ref<IMenu[]>([
-  // {
-  //   icon: 'IconHomeFill',
-  //   label: '论坛首页',
-  //   router: '/home',
-  // },
-  // {
-  //   icon: 'IconUser',
-  //   label: '用户管理',
-  //   router: '/admin/user',
-  // },
-  // {
-  //   icon: 'IconKey',
-  //   label: '授权管理',
-  //   router: '/admin/license',
-  // },
-  // {
-  //   icon: 'IconGfaomParameterConfiguration',
-  //   label: '专栏管理',
-  //   router: '/admin/group',
-  // },
-  // {
-  //   icon: 'IconRPASystemSetContentForClipboardColor',
-  //   label: '帖子管理',
-  //   router: '/admin/reply',
-  // },
-  // {
-  //   icon: 'IconMessageOne',
-  //   label: '评论管理',
-  //   router: '/admin/comment',
-  // },
-])
+const menuList = ref<IMenu[]>([])
 
 function initMenu() {
   const { path, children } = adminRouter
@@ -48,7 +17,7 @@ function initMenu() {
     return { icon: meta?.icon ?? '', label: meta?.title ?? '', router: `${path}/${item.path}` }
   })
   arr?.unshift({
-    icon: 'IconHomeFill',
+    icon: 'IconHome',
     label: '论坛首页',
     router: '/home',
   })

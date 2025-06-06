@@ -27,7 +27,7 @@ export const adminRouter: IRouteRawLite = {
       path: 'reply',
       name: 'admin-reply',
       component: () => import('@/views/Admin/Reply/index.vue'),
-      meta: { title: '帖子管理', icon: 'IconRPASystemSetContentForClipboardColor' },
+      meta: { title: '帖子管理', icon: 'IconFileDescription' },
     },
     {
       path: 'comment',

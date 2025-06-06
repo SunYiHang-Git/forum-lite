@@ -20,7 +20,8 @@ interface RuleForm {
   password: string
 }
 
-const { setUserInfo } = useUser()
+const { setUserInfo, exitLogin } = useUser()
+exitLogin()
 
 /** 是否记住状态 */
 const isRememberStatus = ref<boolean>(false)
