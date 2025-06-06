@@ -284,7 +284,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                   v-for="tag in ruleForm?.tags || []"
                   :key="tag"
                   closable
-                  size="large"
+                  size="lg"
                   :disable-transitions="false"
                   @close="handleClose(tag)"
                 >

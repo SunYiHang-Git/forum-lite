@@ -21,10 +21,6 @@ export const RPAReplyQueryLiteAPI = async (params: any) => {
   return { rows, total: data.DataCount }
 }
 
-/** 修改帖子信息 */
-// export const RPAEditPostsLiteAPI = async (params: any) => {
-//   await callServerFunc('TRPADM', 'RPAEditPostsLite', params)
-// }
 /** 删除评论 */
 export const RPADelReplyLiteAPI = async (params: any) => {
   await callServerFunc('TRPADM', 'RPADelReplyLite', params)

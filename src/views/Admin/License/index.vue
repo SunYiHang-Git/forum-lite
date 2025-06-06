@@ -208,8 +208,8 @@ const onAllow = async (item: any) => {
             </k-tag>
           </template>
           <template #opt="{ row }">
-            <k-button main text size="small" @click="editUser(row)">编辑</k-button>
-            <k-button text main size="small" @click="onAllow(row)">同意试用</k-button>
+            <k-button main text size="sm" @click="editUser(row)">编辑</k-button>
+            <k-button text main size="sm" @click="onAllow(row)">同意试用</k-button>
           </template>
         </k-tree-table>
       </div>
