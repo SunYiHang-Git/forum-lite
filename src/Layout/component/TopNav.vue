@@ -109,11 +109,11 @@ const getUserInfo = async () => {
   const { loginStatus } = userInfo.value
   /** 没有登录,不获取身份信息 */
   if (!loginStatus) return
-  const { setUserInfo } = useUser()
+  const { setUserInfo, isAdminByUser } = useUser()
   try {
     const data = await GetRPAUserAPI({ isShowErrorMsg: false })
     setUserInfo(data)
-    if (userInfo.value.isAdmin) {
+    if (isAdminByUser()) {
       // 更新下拉菜单---管理员才有后台管理页面--跳转远程
       userDownList.value.unshift({
         label: '后台管理',

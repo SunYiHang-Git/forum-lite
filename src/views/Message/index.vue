@@ -2,7 +2,7 @@
 import { RPAGetNotReadLiteAPI, RPAInformationLiteAPI, RPASetReadMessageLiteAPI } from '@/api/message'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import MessageCard from '@/views/Message/components/MessageCard.vue'
-import { KMessageBox } from '@ksware/ksw-ux'
+import { KMessageBox, type TabPaneName } from '@ksware/ksw-ux'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import { useMessage } from '@/store/modules/useMessage'
 
@@ -98,7 +98,7 @@ onMounted(() => {
   getFormaInfoList()
 })
 /** tab 切换事件 */
-const handleClick = (name: string) => {
+const handleClick = (name: TabPaneName) => {
   switch (name) {
     case 'all':
       tabType.value = 0

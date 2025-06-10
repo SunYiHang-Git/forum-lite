@@ -3,6 +3,8 @@ import router from './router/router'
 import { getUrlParamByName, removeTokenFromUrl } from '@/utils/auth'
 import { isAdmin } from './utils/check'
 import { KMessage } from '@ksware/ksw-ux'
+import { useUser } from './store/modules/user'
+import { useRouterInfo } from './store/modules/useRouterInfo'
 
 const permNameList = ['/admin']
 /** 从那个页面来 */
@@ -11,10 +13,12 @@ router.beforeEach((to, from, next) => {
   const urlToken = getUrlParamByName('Token')
   /** url 携带 token */
   if (urlToken) {
-    setToken(urlToken)
     const url = location.href.replace(/token=[a-z0-9]{32}/i, '')
     history.replaceState({}, '', url)
+    const { setUserInfo } = useUser()
     const newPath = removeTokenFromUrl(to.fullPath)
+    setToken(urlToken)
+    setUserInfo({ loginStatus: true, token: urlToken })
     next(newPath)
     return
   }

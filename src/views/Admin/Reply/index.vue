@@ -17,7 +17,7 @@ const form = reactive<IFrom>({
   UserName: '',
   CreateTime: '',
 })
-const column = ref([
+const column = ref<any>([
   {
     field: 'title',
     title: '帖子标题',
