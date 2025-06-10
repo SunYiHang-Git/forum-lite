@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { convertMarkdownToHtml } from '@/utils/format'
+import { convertMarkdownToHtml, extractImagesFromHtml } from '@/utils/format'
+import { getCurrentInstance } from 'vue'
+const { proxy } = getCurrentInstance() as any
 
 const { item, isAuthor } = defineProps<{
   item: any
@@ -12,6 +14,23 @@ const emits = defineEmits<{
 }>()
 const replyShowDialog = (item: any) => {
   emits('showDialog', item)
+}
+/** 大屏预览图片 */
+const handleClickImg = (htmlStr: string, e: any) => {
+  if (!e) return
+  if (!htmlStr) return
+  const target = e.target.localName
+  if (target === 'img') {
+    const html = convertMarkdownToHtml(htmlStr)
+    const arr = extractImagesFromHtml(html)
+    const currentLargeImage = e.target.currentSrc
+    const index = arr.findIndex((item) => item.src === currentLargeImage)
+    proxy.preview({
+      images: arr,
+      key: 'src',
+      index: index,
+    })
+  }
 }
 </script>
 
@@ -37,7 +56,11 @@ const replyShowDialog = (item: any) => {
         </div>
         <div class="reply-time">{{ item.time }}</div>
       </div>
-      <div class="reply-text-box" :innerHTML="convertMarkdownToHtml(item.content)"></div>
+      <div
+        class="reply-text-box"
+        :innerHTML="convertMarkdownToHtml(item.content)"
+        @click="handleClickImg(item.content, $event)"
+      ></div>
       <div class="reply-to-article" @click="replyShowDialog(item)">
         <IconMessageOne />
         回复
@@ -65,7 +88,11 @@ const replyShowDialog = (item: any) => {
           </div>
           <div class="reply-time">{{ child.time }}</div>
         </div>
-        <div class="reply-text-box" :innerHTML="child.content"></div>
+        <div
+          class="reply-text-box"
+          :innerHTML="convertMarkdownToHtml(child.content)"
+          @click="handleClickImg(child.content, $event)"
+        ></div>
         <div class="reply-to-article" @click="replyShowDialog(child)">
           <IconMessageOne />
           回复

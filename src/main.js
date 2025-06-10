@@ -13,6 +13,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import { createApp } from 'vue'
 import VXETable from 'vxe-table'
 import '@/component/Vditor/vditor.less'
+import preview from 'vue3-image-preview'
 
 import AppContainer from '@/component/AppContainer.vue'
 import FontIcon from '@/component/icon/FontIcon.vue'
@@ -34,4 +35,5 @@ app.component('SvgIcon', SvgIcon)
 app.component('FontIcon', FontIcon)
 app.component('AppContainer', AppContainer)
 app.use(i18n)
+app.use(preview)
 app.mount('#app')

@@ -18,6 +18,12 @@ body {
   background-color: var(--k-bg-1);
   color: var(--k-text-color);
   border-color: var(--k-border-color);
+  /** 图片大屏预览*/
+  .img-preview {
+    img.image-view {
+      max-width: 70% !important;
+    }
+  }
 }
 
 main {

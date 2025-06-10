@@ -164,6 +164,47 @@ export function convertMarkdownToHtml(markdown: any): any {
   const cleanHtml = DOMPurify.sanitize(html)
   return cleanHtml
 }
+
+/**
+ * 从 HTML 字符串中提取所有 <img> 标签的信息。
+ *
+ * @param {string} html - 要解析的 HTML 字符串
+ * @returns {{ src: string; alt?: string; title?: string }[]} 提取出的图片信息数组
+ */
+export function extractImagesFromHtml(html: string): Array<{
+  src: string
+  alt?: string
+  title?: string
+}> {
+  if (!html || typeof html !== 'string') return []
+
+  const imgTags = []
+  const imgRegex = /<img\b[^>]*>/gi
+
+  let match
+  while ((match = imgRegex.exec(html)) !== null) {
+    const imgTag = match[0]
+
+    // 提取 src 属性
+    const srcMatch = /src\s*=\s*(['"])(.*?)\1/i.exec(imgTag)
+    const src = srcMatch ? srcMatch[2] : ''
+
+    // 提取 alt 属性
+    const altMatch = /alt\s*=\s*(['"])(.*?)\1/i.exec(imgTag)
+    const alt = altMatch ? altMatch[2] : ''
+
+    // 提取 title 属性（可选）
+    const titleMatch = /title\s*=\s*(['"])(.*?)\1/i.exec(imgTag)
+    const title = titleMatch ? titleMatch[2] : ''
+
+    if (src) {
+      imgTags.push({ src, alt, title })
+    }
+  }
+
+  return imgTags
+}
+
 // 创建 TurndownService 实例
 const turndownService = new TurndownService()
 export function htmlToMarkdown(html: string) {

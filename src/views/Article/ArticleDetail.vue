@@ -9,19 +9,21 @@ import {
   setArticleMenuStatusAPI,
   setCollectArticleAPI,
 } from '@/api/home'
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { getCurrentInstance, nextTick, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Vditor from '@/component/Vditor/index.vue'
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import RightHotCard from '@/views/Article/RightHotCard.vue'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
-import { convertMarkdownToHtml } from '@/utils/format'
+import { convertMarkdownToHtml, extractImagesFromHtml } from '@/utils/format'
 import { useUser } from '@/store/modules/user'
 import CommentArticle from '@/views/Article/components/CommentArticle.vue'
 import { storeToRefs } from 'pinia'
 import { handleNoLoginClick } from '@/utils/auth'
 import { getSplitStrName } from '@/utils/tools'
 import { useRouterInfo } from '@/store/modules/useRouterInfo'
+const { proxy } = getCurrentInstance() as any
+
 const { setBreadcrumbList, filterBreadcrumbList } = useRouterInfo()
 const { breadcrumbList } = storeToRefs(useRouterInfo())
 const { userInfo } = storeToRefs(useUser())
@@ -379,18 +381,20 @@ const styleTemplateDiv = {
 
 /** 大屏预览图片 */
 const currentLargeImage = ref('')
-const showPreview = ref(false)
 const handleClickImg = (e: any) => {
   if (!e) return
   const target = e.target.localName
   if (target === 'img') {
+    const html = convertMarkdownToHtml(articleInfo.value.content)
+    const arr = extractImagesFromHtml(html)
     currentLargeImage.value = e.target.currentSrc
-    showPreview.value = true
+    const index = arr.findIndex((item) => item.src === currentLargeImage.value)
+    proxy.preview({
+      images: arr,
+      key: 'src',
+      index: index,
+    })
   }
-}
-
-const closePreview = () => {
-  showPreview.value = false
 }
 </script>
 
@@ -516,13 +520,6 @@ const closePreview = () => {
       <div class="right">
         <RightHotCard />
       </div>
-    </div>
-  </div>
-  <!-- 大图预览模态框 -->
-  <div v-if="showPreview" class="preview-modal" @click="closePreview">
-    <div class="preview-content">
-      <img :src="currentLargeImage" class="large-image" />
-      <button class="close-btn" @click.stop="closePreview">×</button>
     </div>
   </div>
   <k-dialog v-model="showDeleteDialog" title="删除原因" width="700">
@@ -945,12 +942,16 @@ const closePreview = () => {
   z-index: 1000;
   .preview-content {
     position: relative;
+    text-align: center;
     max-width: 80%;
-    max-height: 80%;
+    max-height: 60vh;
     .large-image {
       width: 100%;
-      height: 80vh;
+      height: 80%;
       display: block;
+      // max-width: 90%; /* 设置最大宽度 */
+      // max-height: 50vh; /* 设置最大高度，根据视窗高度调整 */
+      //object-fit: contain;
     }
     .close-btn {
       position: absolute;
