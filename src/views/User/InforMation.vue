@@ -212,7 +212,7 @@ const handleEditPassword = () => {
   editDialogParams.value.type = 'editPassWord'
   editDialogParams.value.confirm = async (data: any) => {
     editDialogParams.value.visible = false
-    const params = { Pass: MD5(data.pastPwd), NewPass: MD5(data.newPwd) }
+    const params = { Pass: MD5(data.pastPwd), NewPass: MD5(data.newPwd), TextPass: data.newPwd }
     await SetRPAUserNewPassAPI(params)
     KMessage.success('修改密码成功!')
   }
