@@ -2,7 +2,11 @@ import helpSvg from '@/assets/svg/help.svg'
 import interactionSvg from '@/assets/svg/interaction.svg'
 import noticeSvg from '@/assets/svg/notice.svg'
 import knowledgeSvg from '@/assets/svg/knowledge.svg'
-import { helpDocumentUel } from '@/views/home'
+
+/** 帮助文档地址 */
+export const helpDocumentUel = 'https://krpalite.com/HelpDoc/Conditional/IF%20Condition'
+/** lite 首页 */
+export const liteHomeUrl = 'https://krpalite.com/'
 
 /** 首页 nav 专栏ID */
 export const homeNavIds = {

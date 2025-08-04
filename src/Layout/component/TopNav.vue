@@ -5,12 +5,12 @@ import { useUser } from '@/store/modules/user'
 import { KMessageBox } from '@ksware/ksw-ux'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { helpDocumentUel, liteHomeUrl } from '@/views/home'
 import { isInset, MD5 } from '@ksware/micro-lib-web-temp'
 import { useRouterInfo } from '@/store/modules/useRouterInfo'
 import MessageInfo from './MessageInfo.vue'
 import { GetRPAUserAPI } from '@/api/login'
 import { handlePostDetailUrl } from '@/utils/format'
+import { helpDocumentUel, liteHomeUrl } from '@/const/home'
 const { clearBreadcrumbList } = useRouterInfo()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
