@@ -23,9 +23,10 @@ import i18n from '@/i18n'
 import '@/permission.ts'
 import App from './App.vue'
 import { setCustomUrlContextRoot } from '@ksware/micro-lib-web-temp'
+import { distFileName } from './const/home'
 const env = import.meta.env
 if (!env.DEV) {
-  setCustomUrlContextRoot('krpalite-forum')
+  setCustomUrlContextRoot(distFileName)
 }
 const app = createApp(App)
 app.directive('ClickOutside', ClickOutside)
