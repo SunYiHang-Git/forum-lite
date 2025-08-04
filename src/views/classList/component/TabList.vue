@@ -71,7 +71,7 @@ const filterChangeBtn = (name: string) => {
   getInteractionListData()
 }
 
-function handleClick(tabName: string) {
+function handleClick(tabName: any) {
   if (tabName === 'all') {
     sonClassId.value = ''
   } else {

@@ -415,7 +415,7 @@ const handleClickImg = (e: any) => {
                 <IconMessageOne :size="26" />
               </k-badge>
             </div>
-            <k-dropdown v-if="dropDownItemList.length" placement="left-start" trigger="click" @command="handleCommand">
+            <k-dropdown v-if="dropDownItemList.length" trigger="click" @command="handleCommand">
               <template #title>
                 <div class="more-box">
                   <IconMore

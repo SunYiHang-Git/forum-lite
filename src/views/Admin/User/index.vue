@@ -62,7 +62,7 @@ const paramsValue = computed(() => {
   return params
 })
 
-const column = ref([
+const column = ref<any>([
   {
     type: 'checkbox',
     width: '50',

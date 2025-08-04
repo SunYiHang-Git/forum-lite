@@ -34,7 +34,7 @@ const selectOptions = [
 
 const tableData = ref<any[]>([])
 
-const column = ref([
+const column = ref<any>([
   {
     field: 'id',
     title: 'UID',

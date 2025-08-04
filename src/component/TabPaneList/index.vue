@@ -31,7 +31,7 @@ const currentPage = ref(1)
 
 const activeName = ref(props.active)
 
-function handleClick(tabName: string) {
+function handleClick(tabName: any) {
   emits('tabClick', tabName)
   currentPage.value = 1
 }

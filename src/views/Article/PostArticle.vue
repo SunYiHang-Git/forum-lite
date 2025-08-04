@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { KMessage, KMessageBox } from '@ksware/ksw-ux'
+import { KMessage, KMessageBox, type UploadFile } from '@ksware/ksw-ux'
 import type { FormInstance, FormRules, InputInstance, UploadInstance, UploadRawFile } from 'element-plus'
 import { computed, nextTick, reactive, ref } from 'vue'
 import Vditor from '@/component/Vditor/index.vue'
@@ -148,7 +148,7 @@ const httpRequestFile = async ({ file }: { file: UploadRawFile }) => {
   imageUrl.value = url.split('\\').join('/')
   ruleForm.cover = imageUrl.value
 }
-const handleRemove = (_: UploadRawFile, uploadFiles: any[]) => {
+const handleRemove = (_: UploadFile, uploadFiles: any[]) => {
   if (uploadFiles.length === 0) {
     appUploadFile.value = null
     active.value = 0
@@ -306,6 +306,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
                 <k-upload
                   v-if="!imageUrl"
                   ref="upload"
+                  action="#"
                   class="upload-demo"
                   drag
                   :accept="'.jpg,.jpeg,.png'"

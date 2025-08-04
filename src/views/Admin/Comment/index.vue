@@ -28,7 +28,7 @@ const pageSize = ref(20)
 const pageTotal = ref(0)
 
 const tableData = ref<any[]>([])
-const column = ref([
+const column = ref<any>([
   {
     field: 'user',
     title: '用户姓名',

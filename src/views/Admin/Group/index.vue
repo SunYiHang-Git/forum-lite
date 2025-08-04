@@ -24,7 +24,7 @@ const advancedFilterConfig = ref({
   ignoreCase: true,
 })
 
-const column = ref([
+const column = ref<any>([
   {
     type: 'radio',
     width: '50',

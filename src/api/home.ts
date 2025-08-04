@@ -386,7 +386,7 @@ function handleInteractionData(table: any) {
       isTop: table.s('IsTop'),
       title: table.s('Title'),
       hot: table.s('Hot'),
-      collectNum: table.s('CollectNum'),
+      // collectNum: table.s('CollectNum'),
       state: table.s('State'),
       tag: tags,
       abstract: table.s('Abstract'),

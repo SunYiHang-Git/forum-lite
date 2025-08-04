@@ -11,7 +11,7 @@ const dialogVisible = computed(() => params.visible)
 
 const treeTableRef = ref<any>()
 
-const column = ref([
+const column = ref<any>([
   {
     type: 'checkbox',
     width: '50',

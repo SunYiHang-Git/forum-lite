@@ -47,7 +47,7 @@ export const NavCardList = [
 ]
 
 /** 项目打包后的文件名称 */
-export const distFileName = 'krpalite'
+export const distFileName = 'krpalite-forum'
 
 const env = import.meta.env
 /** 跳转帖子详情页路由 */
