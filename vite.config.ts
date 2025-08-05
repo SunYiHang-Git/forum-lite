@@ -73,16 +73,16 @@ export default defineConfig(({ mode }) => {
             }
           },
           entryFileNames: '[name].[hash].js',
-          chunkFileNames: 'js/chunk-[name].[hash].js',
-          assetFileNames: '[ext]/[name].[ext]',
-          // assetFileNames: '[ext]/[name].[hash].[ext]',
+          // chunkFileNames: 'js/chunk-[name].[hash].js',
+          // assetFileNames: '[ext]/[name].[ext]',
+          assetFileNames: '[ext]/[name].[hash].[ext]',
           // 拆分js到模块文件夹
-          // chunkFileNames: (chunkInfo) => {
-          //   const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/') : []
-          //   const fileName = facadeModuleId[facadeModuleId.length - 2] || '[name]'
-          //   return `js/${fileName}/[name].js`
-          //   // return `js/${fileName}/[name].[hash].js`
-          // },
+          chunkFileNames: (chunkInfo) => {
+            const facadeModuleId = chunkInfo.facadeModuleId ? chunkInfo.facadeModuleId.split('/') : []
+            const fileName = facadeModuleId[facadeModuleId.length - 2] || '[name]'
+            return `js/${fileName}/[name].js`
+            // return `js/${fileName}/[name].[hash].js`
+          },
         },
       },
       outDir: path.resolve(__dirname, `${outDirFolder}/${distFileName}`),
