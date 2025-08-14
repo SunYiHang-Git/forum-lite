@@ -49,7 +49,7 @@ export function matchKeywords(input: string): { matched: boolean; matches: strin
   // 定义匹配模式的正则表达式数组
   const patterns = [
     /(客服|客户服务|在线客服)/i,
-    /(技术支持|技术客服管理员|超级管理员)/i,
+    /(技术支持|技术客服|超级管理员|管理员)/i,
     /(版主|超级版主|分区版主|官方|官网|认证)/i,
     /(审核员|内容审核)/i,
     /(巡查员|社区巡查)/i,

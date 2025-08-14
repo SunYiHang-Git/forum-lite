@@ -1,17 +1,22 @@
 <script setup lang="ts">
+import { MailText } from '@/const/home'
+import { useCountdown } from '@/hooks/useCountdown'
 import { useCI18n } from '@/i18n'
 import { matchKeywords } from '@/utils/check'
 import { generateRandomNumber, generateUniqueNumber } from '@/utils/tools'
 import { KMessage } from '@ksware/ksw-ux'
 import { callServerFunc, MD5 } from '@ksware/micro-lib-web-temp'
 import type { FormInstance, FormRules } from 'element-plus'
-import { computed, reactive, ref } from 'vue'
+import { computed, onUnmounted, reactive, ref } from 'vue'
 const { ct, t } = useCI18n()
 const emits = defineEmits<{
   (e: 'goPage', page: 'login'): void
 }>()
+
+const { isCounting, seconds, startCountdown, clearLocalTempCache } = useCountdown(60, 'register-forum')
 interface RuleForm {
   phone: string
+  eMail: string
   password: string
   code: string
   username: string
@@ -24,11 +29,14 @@ const isDev = env.DEV
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
   phone: '',
+  eMail: '',
   password: '',
   code: '',
   username: '',
 })
+
 // 定义手机号的正则表达式
+const eMailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 const phonePattern = /^1[3-9]\d{9}$/
 const rules = reactive<FormRules<RuleForm>>({
   phone: [
@@ -36,6 +44,14 @@ const rules = reactive<FormRules<RuleForm>>({
     {
       pattern: phonePattern,
       message: t('common.checkTip', { cnt: ct('login.validity', 'login.phone') }),
+      trigger: 'blur',
+    },
+  ],
+  eMail: [
+    { required: true, message: ct('login.eMail', 'common.inputNoNull'), trigger: 'blur' },
+    {
+      pattern: eMailPattern,
+      message: t('common.checkTip', { cnt: ct('login.validity', 'login.eMail') }),
       trigger: 'blur',
     },
   ],
@@ -67,35 +83,30 @@ const rules = reactive<FormRules<RuleForm>>({
 })
 
 const phoneCoseTime = ref<number>(0)
-/** 获取手机号验证码 */
+/** 获取邮箱验证码 */
 const getPhoneCode = async () => {
+  if (!ruleForm.eMail) return KMessage.warning(ct('login.eMail', 'common.inputNoNull'))
+  if (!eMailPattern.test(ruleForm.eMail))
+    return KMessage.warning(t('common.checkTip', { cnt: ct('login.validity', 'login.eMail') }))
   if (!ruleForm.phone) return KMessage.warning(ct('login.phone', 'common.inputNoNull'))
   if (!phonePattern.test(ruleForm.phone))
     return KMessage.warning(t('common.checkTip', { cnt: ct('login.validity', 'login.phone') }))
-  let timer: any = 0
-  const data = { PhoneTo: ruleForm.phone, SendCodeType: 0 }
+  const data = { PhoneTo: ruleForm.phone, MailTo: ruleForm.eMail, SendCodeType: 0, MailText, IsSend: true }
   try {
-    const res: any = await callServerFunc('TRPADM', 'SendPhoneCode', data)
+    const res: any = await callServerFunc('TRPADM', 'SendSecurityCode', data)
+    startCountdown()
     if (isDev) {
       const { sPhoneCode } = res
       ruleForm.code = sPhoneCode
     }
-    phoneCoseTime.value = 60
-    timer = setInterval(() => {
-      if (phoneCoseTime.value > 0) {
-        phoneCoseTime.value--
-      } else {
-        clearInterval(timer) // 当倒计时结束时，清除定时器
-      }
-    }, 1000)
   } catch (error) {
-    clearInterval(timer)
+    clearLocalTempCache()
   }
 }
 /** 发送验证码文字 */
 const sendCodeBtnText = computed(() => {
-  if (phoneCoseTime.value > 0) {
-    return ct('login.gain', 'login.verificationCode') + phoneCoseTime.value
+  if (seconds.value > 0) {
+    return `${t('login.retrieve')}（${seconds.value})`
   }
   return ct('login.gain', 'login.verificationCode')
 })
@@ -127,8 +138,9 @@ const submitForm = async () => {
     await ruleFormRef.value.validate()
     const data = {
       Phone: ruleForm.phone,
-      UserID: ruleForm.phone,
-      PhoneCode: ruleForm.code,
+      UserID: ruleForm.eMail,
+      eMail: ruleForm.eMail,
+      EmailCode: ruleForm.code,
       UserName: ruleForm.username,
       Pass: MD5(ruleForm.password),
       IsLite: true,
@@ -159,12 +171,18 @@ const submitForm = async () => {
     } else {
       KMessage.error(error.sError)
     }
+  } finally {
+    clearLocalTempCache()
   }
 }
 
 const goLogin = () => {
   emits('goPage', 'login')
 }
+
+onUnmounted(() => {
+  clearLocalTempCache()
+})
 </script>
 
 <template>
@@ -192,6 +210,13 @@ const goLogin = () => {
             prefix-icon="IconDeviceMobile"
           />
         </k-form-item>
+        <k-form-item prop="eMail">
+          <k-input
+            v-model="ruleForm.eMail"
+            :placeholder="$t('common.checkTip', { cnt: $t('login.eMail') })"
+            prefix-icon="IconDeviceMobile"
+          />
+        </k-form-item>
         <k-form-item prop="password">
           <k-input
             v-model="ruleForm.password"
@@ -208,7 +233,7 @@ const goLogin = () => {
               prefix-icon="IconShield"
               style="width: 50%"
             />
-            <k-button :disabled="phoneCoseTime !== 0" @click="getPhoneCode" style="flex: 1">
+            <k-button :disabled="isCounting" @click="getPhoneCode" style="flex: 1">
               {{ sendCodeBtnText }}
             </k-button>
           </k-row>

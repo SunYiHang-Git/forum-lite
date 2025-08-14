@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { KMessage } from '@ksware/ksw-ux'
 import { callServerFunc, MD5 } from '@ksware/micro-lib-web-temp'
-import { computed, nextTick, reactive, ref } from 'vue'
+import { computed, nextTick, onUnmounted, reactive, ref } from 'vue'
 import { useCI18n } from '@/i18n'
 import type { FormInstance, FormRules } from 'element-plus'
+import { useCountdown } from '@/hooks/useCountdown'
+import { MailText } from '@/const/home'
 const { ct, t } = useCI18n()
 interface RuleForm {
-  phone: string
+  eMail: string
   password: string
   code: string
 }
@@ -16,57 +18,48 @@ const isDev = env.DEV
 const emits = defineEmits<{
   (e: 'goPage', page: 'login'): void
 }>()
-
+const { isCounting, seconds, startCountdown, clearLocalTempCache } = useCountdown(60, 'forget-forum')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<RuleForm>({
-  phone: '',
+  eMail: '',
   password: '',
   code: '',
 })
-// 定义手机号的正则表达式
-const phonePattern = /^1[3-9]\d{9}$/
+// 定义邮箱/手机号的正则表达式
+const phonePattern = /^(1[3-9]\d{9}|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/
 const rules = reactive<FormRules<RuleForm>>({
-  phone: [
-    { required: true, message: ct('login.phone', 'common.inputNoNull'), trigger: 'blur' },
+  eMail: [
+    { required: true, message: t('login.eMail') + '/' + t('login.phone') + t('common.inputNoNull'), trigger: 'blur' },
     {
       pattern: phonePattern,
-      message: t('common.checkTip', { cnt: ct('login.validity', 'login.phone') }),
+      message: t('common.checkTip', { cnt: ct('login.validity', 'login.eMail') }) + '/' + t('login.phone'),
       trigger: 'blur',
     },
   ],
   password: [{ required: true, message: ct('common.pwd', 'common.inputNoNull'), trigger: 'blur' }],
   code: [{ required: true, message: ct('login.verificationCode', 'common.inputNoNull'), trigger: 'blur' }],
 })
-const phoneCoseTime = ref<number>(0)
 /** 获取手机号验证码 */
 const getPhoneCode = async () => {
-  if (!ruleForm.phone) return KMessage.warning(ct('login.phone', 'common.inputNoNull'))
-  if (!phonePattern.test(ruleForm.phone))
-    return KMessage.warning(t('common.checkTip', { cnt: ct('login.validity', 'login.phone') }))
-  let timer: any = 0
-  const data = { PhoneTo: ruleForm.phone, SendCodeType: 1 }
+  if (!ruleForm.eMail) return KMessage.warning(ct('login.eMail', 'common.inputNoNull'))
+  if (!phonePattern.test(ruleForm.eMail))
+    return KMessage.warning(t('common.checkTip', { cnt: ct('login.validity', 'login.eMail') + '/' + t('login.eMail') }))
+  const data = { PhoneTo: ruleForm.eMail, MailTo: ruleForm.eMail, SendCodeType: 1, MailText, IsSend: true }
   try {
-    const res: any = await callServerFunc('TRPADM', 'SendPhoneCode', data)
+    const res: any = await callServerFunc('TRPADM', 'SendSecurityCode', data)
+    startCountdown()
     if (isDev) {
       const { sPhoneCode } = res
       ruleForm.code = sPhoneCode
     }
-    phoneCoseTime.value = 60
-    timer = setInterval(() => {
-      if (phoneCoseTime.value > 0) {
-        phoneCoseTime.value--
-      } else {
-        clearInterval(timer) // 当倒计时结束时，清除定时器
-      }
-    }, 1000)
   } catch (error) {
-    clearInterval(timer)
+    console.error(error)
   }
 }
 /** 发送验证码文字 */
 const sendCodeBtnText = computed(() => {
-  if (phoneCoseTime.value > 0) {
-    return ct('login.gain', 'login.verificationCode') + phoneCoseTime.value
+  if (seconds.value > 0) {
+    return `${t('login.retrieve')}（${seconds.value})`
   }
   return ct('login.gain', 'login.verificationCode')
 })
@@ -80,24 +73,34 @@ const goLogin = () => {
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate()
-  const data = {
-    MailTo: ruleForm.phone,
-    MailCode: ruleForm.code,
-    Pass: MD5(ruleForm.password),
-    TextPass: ruleForm.password,
+  try {
+    const data = {
+      MailTo: ruleForm.eMail,
+      MailCode: ruleForm.code,
+      Pass: MD5(ruleForm.password),
+      TextPass: ruleForm.password,
+    }
+    await callServerFunc('TRPADM', 'RPAUserForget', data)
+    KMessage.success(ct('login.reset', 'common.pwd', 'login.success', { pt: true }))
+    await nextTick()
+    goLogin()
+  } catch (error) {
+    console.error(error)
+  } finally {
+    clearLocalTempCache()
   }
-  await callServerFunc('TRPADM', 'RPAUserForget', data)
-  KMessage.success(ct('login.reset', 'common.pwd', 'login.success', { pt: true }))
-  await nextTick()
-  goLogin()
 }
 
 /** 是否禁用确定按钮 */
 const isDisabledSubmitBtn = computed(() => {
-  return !ruleForm.phone || !ruleForm.password || !ruleForm.code
+  return !ruleForm.eMail || !ruleForm.password || !ruleForm.code
 })
 /** 是否展示密码 */
 const isShowPwd = ref<boolean>(false)
+
+onUnmounted(() => {
+  clearLocalTempCache()
+})
 </script>
 
 <template>
@@ -118,10 +121,10 @@ const isShowPwd = ref<boolean>(false)
         class="demo-ruleForm"
         status-icon
       >
-        <k-form-item prop="phone">
+        <k-form-item prop="eMail">
           <k-input
-            v-model.trim="ruleForm.phone"
-            :placeholder="$t('common.checkTip', { cnt: $t('login.phone') })"
+            v-model.trim="ruleForm.eMail"
+            :placeholder="$t('common.checkTip', { cnt: $t('login.eMail') }) + '/' + $t('login.phone')"
             prefix-icon="IconUser"
           />
         </k-form-item>
@@ -133,7 +136,7 @@ const isShowPwd = ref<boolean>(false)
               prefix-icon="IconShield"
               style="width: 50%"
             />
-            <k-button :disabled="phoneCoseTime !== 0" style="flex: 1" @click="getPhoneCode">
+            <k-button :disabled="isCounting" style="flex: 1" @click="getPhoneCode">
               {{ sendCodeBtnText }}
             </k-button>
           </k-row>

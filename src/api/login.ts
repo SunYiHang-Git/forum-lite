@@ -60,10 +60,10 @@ export const GetRPAUserAPI = async (params = {}) => {
 /** 账号登录登录 */
 export const loginByAccountAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAUserLogin', params)
-  const { ID, IsLite, LncDate, LoginID, PassWord, Token, User, UserID, UserName, IsForumLogin } = data
+  const { ID, IsLite, LncDate, LoginID, PassWord, Token, User, UserID, UserName, IsForumLogin, Mobile } = data
   setToken(Token)
   const userInfoRes: any = await GetRPAUserAPI()
-  const { IsAdmin, Phone, City, Company, DeveloperState, FullName, IsDeveloper, Sex, Signature, UserIcon } = userInfoRes
+  const { isAdmin, city, company, developerState, fullName, isDeveloper, sex, signature, avatar } = userInfoRes
   /** 拆分 userName 的 # 后缀 */
   const userName = getSplitStrName(UserName)
   const _suffix = getSplitStrName(UserName, '#', 1)
@@ -79,30 +79,29 @@ export const loginByAccountAPI = async (params: any) => {
     userId: UserID,
     userName: userName,
     userName_suffix: _suffix ? '#' + _suffix : _suffix,
-    role: IsAdmin,
-    isAdmin: IsAdmin === 1,
+    role: isAdmin,
+    isAdmin: isAdmin === 1,
     loginStatus: true,
-    phone: Phone,
-    city: City,
-    company: Company,
-    developerState: DeveloperState,
-    isDeveloper: IsDeveloper,
-    sex: Sex,
-    signature: Signature,
-    avatar: fileHostUrl + UserIcon,
-    fullName: FullName,
+    phone: Mobile,
+    city: city,
+    company: company,
+    developerState: developerState,
+    isDeveloper: isDeveloper,
+    sex: sex,
+    signature: signature,
+    avatar: avatar,
+    fullName: fullName,
   }
   return userInfoObj
 }
 
 /** 验证码登录 */
-export const RPALitePhoneCodeLoginAPI = async (params: any) => {
-  const { data }: any = await callServerFunc('THttpDM', 'RPALitePhoneCodeLogin', params)
-  const { ID, IsLite, LncDate, LoginID, RPALite: PassWord, Token, user, UserName, Phone } = data
+export const RPALiteEMailCodeLoginAPI = async (params: any) => {
+  const { data }: any = await callServerFunc('THttpDM', 'RPALiteCodeLogin', params)
+  const { ID, IsLite, LncDate, LoginID, RPALite: PassWord, Token, user, UserName, Mobile } = data
   setToken(Token)
   const userInfoRes: any = await GetRPAUserAPI()
-  const { IsAdmin, City, Company, DeveloperState, UserID, FullName, IsDeveloper, Sex, Signature, UserIcon } =
-    userInfoRes
+  const { isAdmin, city, company, developerState, userId, fullName, isDeveloper, sex, signature, avatar } = userInfoRes
   /** 拆分 userName 的 # 后缀 */
   const userName = getSplitStrName(UserName)
   const _suffix = getSplitStrName(UserName, '#', 1)
@@ -114,21 +113,21 @@ export const RPALitePhoneCodeLoginAPI = async (params: any) => {
     passWord: PassWord,
     token: Token,
     user: user,
-    userId: UserID,
+    userId: userId,
     userName: userName,
     userName_suffix: _suffix ? '#' + _suffix : _suffix,
-    role: IsAdmin,
-    isAdmin: IsAdmin === 1,
+    role: isAdmin,
+    isAdmin: isAdmin === 1,
     loginStatus: true,
-    phone: Phone,
-    city: City,
-    company: Company,
-    developerState: DeveloperState,
-    isDeveloper: IsDeveloper,
-    sex: Sex,
-    signature: Signature,
-    avatar: fileHostUrl + UserIcon,
-    fullName: FullName,
+    phone: Mobile,
+    city: city,
+    company: company,
+    developerState: developerState,
+    isDeveloper: isDeveloper,
+    sex: sex,
+    signature: signature,
+    avatar: avatar,
+    fullName: fullName,
   }
   return userInfoObj
 }

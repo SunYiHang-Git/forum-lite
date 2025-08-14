@@ -61,3 +61,24 @@ export const postDetailUrl = env.DEV ? window.location.origin + '/' : `/${distFi
 // export const adminManagementUrl =
 //   (env.DEV ? 'http://192.168.104.81:8080/' : 'http://www.rpa-china.cn:12580/forum/index.html') +
 //   `#/admin/reply?token=${getToken()}&isLite=${true}`
+
+export const MailText = `
+      <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.5">
+          您的验证码是:
+          <div
+            style="
+              width: fit-content;
+              font-size: 20px;
+              letter-spacing: 4px;
+              color: #e63946;
+              background-color: #f8f9fa;
+              padding: 8px 12px;
+              border: 1px solid #dee2e6;
+              border-radius: 6px;
+              margin-left: 4px;
+            "
+          >
+           {$MailCode$}
+          </div>
+        </div>
+    `
