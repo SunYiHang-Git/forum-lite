@@ -12,10 +12,20 @@ export const CheckPhoneCodeAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'CheckPhoneCode', params)
   return data
 }
+/** 通过邮箱号验证身份 */
+export const CheckEMailCodeAPI = async (params: any) => {
+  const { data }: any = await callServerFunc('TRPADM', 'CheckEmailCode', params)
+  return data
+}
 
 /** 获取短信验证码 */
 export const SendPhoneCodeAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'SendPhoneCode', params)
+  return data
+}
+/** 获取邮箱验证码 */
+export const SendEMailCodeAPI = async (params: any) => {
+  const { data }: any = await callServerFunc('TRPADM', 'SendSecurityCode', params)
   return data
 }
 

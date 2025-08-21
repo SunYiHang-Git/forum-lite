@@ -73,8 +73,7 @@ async function layout() {
   exitLogin()
   clearBreadcrumbList()
   stopTokenActiveTime()
-  // await nextTick()
-  // router.replace('/login')
+  router.replace('/')
 }
 function handleCommand(name: string) {
   switch (name) {

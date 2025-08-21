@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { CheckPhoneCodeAPI, SendPhoneCodeAPI } from '@/api/user'
-import { checkMobileFormat } from '@/utils/check'
+import { SendEMailCodeAPI } from '@/api/user'
+import { MailText } from '@/const/home'
+import { isEmailStrict } from '@/utils/check'
 import { KMessage } from '@ksware/ksw-ux'
 import { computed, onBeforeUnmount, ref } from 'vue'
 const { params } = defineProps<{
@@ -11,8 +12,8 @@ const env = import.meta.env
 /** 身份验证 验证码 */
 const authenticationValue = ref('')
 
-/** 手机号 */
-const mobile = ref('')
+/** 邮箱号 */
+const emailValue = ref('')
 
 /** 旧密码 */
 const pastPwd = ref('')
@@ -46,9 +47,15 @@ function clearTimer() {
   isDisabledCode.value = false
 }
 /** 获取验证码---验证码 */
-const getPhoneCode = async (phone: string, sendCodeType: number) => {
+const getEMailCodeFn = async (eMail: string, sendCodeType: number) => {
   try {
-    const data = await SendPhoneCodeAPI({ PhoneTo: phone, SendCodeType: sendCodeType })
+    const data = await SendEMailCodeAPI({
+      MailTo: eMail,
+      PhoneTo: eMail,
+      SendCodeType: sendCodeType,
+      MailText,
+      IsSend: true,
+    })
     const { sPhoneCode } = data
     countdown.value = 60
     isDisabledCode.value = true
@@ -66,12 +73,12 @@ const getPhoneCode = async (phone: string, sendCodeType: number) => {
 }
 /** 验证身份 */
 const checkIdentify = async () => {
-  const code = await getPhoneCode(params.phone, 2)
+  const code = await getEMailCodeFn(params.email, 2)
   authenticationValue.value = code
 }
 /** 修改密码---验证码 */
-const editPhone = async () => {
-  const code = await getPhoneCode(mobile.value, 0)
+const editEMail = async () => {
+  const code = await getEMailCodeFn(emailValue.value, 0)
   authenticationValue.value = code
 }
 /** 取消 */
@@ -89,8 +96,8 @@ const checkAuthenticationValue = () => {
 }
 
 // 手机号检查
-const checkMobile = () => {
-  if (!checkMobileFormat(mobile.value)) {
+const checkEMail = () => {
+  if (!isEmailStrict(emailValue.value)) {
     return false
   }
   return true
@@ -112,9 +119,9 @@ const onSubmit = () => {
       params.confirm?.(authenticationValue.value)
       break
 
-    case 'editPhone':
-      if (!checkMobile() || !checkAuthenticationValue()) return
-      params.confirm?.({ phone: mobile.value, code: authenticationValue.value })
+    case 'editEMail':
+      if (!checkEMail() || !checkAuthenticationValue()) return
+      params.confirm?.({ eMail: emailValue.value, code: authenticationValue.value })
       break
 
     case 'editPassWord':
@@ -164,14 +171,14 @@ onBeforeUnmount(() => {
         <k-input v-model="authenticationValue" size="lg" />
         <k-button :disabled="isDisabledCode" size="lg" @click="checkIdentify">{{ codeMsg }}</k-button>
       </div>
-      <!-- 修改手机号 -->
-      <div v-if="params.type === 'editPhone'" class="edit-phone-box">
+      <!-- 修改邮箱号 -->
+      <div v-if="params.type === 'editEMail'" class="edit-phone-box">
         <div class="phone">
-          <k-input v-model="mobile" placeholder="请输入手机号" size="lg" />
+          <k-input v-model="emailValue" placeholder="请输入邮箱号" size="lg" />
         </div>
         <div class="code-box">
-          <k-input v-model="authenticationValue" placeholder="请输入短信验证码" size="lg" />
-          <k-button :disabled="isDisabledCode" size="lg" @click="editPhone">
+          <k-input v-model="authenticationValue" placeholder="请输入验证码" size="lg" />
+          <k-button :disabled="isDisabledCode" size="lg" @click="editEMail">
             {{ codeMsg }}
           </k-button>
         </div>

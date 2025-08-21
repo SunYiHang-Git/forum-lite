@@ -20,6 +20,20 @@ export const checkMobileFormat = (phone: string) => {
   return true
 }
 
+export function isEmailStrict(email: string) {
+  if (!email || typeof email !== 'string') return false
+
+  const trimmed = email.trim()
+
+  // 长度检查（邮箱总长度通常不超过 254）
+  if (trimmed.length > 254) return false
+
+  // 更严格的正则（防止连续点号、开头结尾不能是特殊符号等）
+  const strictRegex = /^[a-zA-Z0-9]([a-zA-Z0-9._-])*[a-zA-Z0-9]@[a-zA-Z0-9]([a-zA-Z0-9-])*[a-zA-Z0-9]\.[a-zA-Z]{2,}$/
+
+  return strictRegex.test(trimmed)
+}
+
 /**
  * 将手机号转换为特定格式，例如：189******50
  *

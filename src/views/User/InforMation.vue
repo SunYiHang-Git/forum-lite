@@ -7,7 +7,13 @@ import { storeToRefs } from 'pinia'
 import { formatMobile, matchKeywords } from '@/utils/check'
 // import UploadAvatar from '@/views/User/components/UploadFile/index.vue'
 import UploadAvatar from '@/views/User/components/UploadAvatar/index.vue'
-import { CheckPhoneCodeAPI, RPAApplyDeveloperAPI, SetRPAUserInfoAPI, SetRPAUserNewPassAPI } from '@/api/user'
+import {
+  CheckEMailCodeAPI,
+  CheckPhoneCodeAPI,
+  RPAApplyDeveloperAPI,
+  SetRPAUserInfoAPI,
+  SetRPAUserNewPassAPI,
+} from '@/api/user'
 import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import { MD5 } from '@ksware/micro-lib-web-temp'
 import { cityList } from '@/utils/city'
@@ -42,6 +48,8 @@ if (Array.isArray(city)) {
 } else if (typeof city === 'string') {
   cityArr = city.split('/')
 }
+
+console.log('userInfo.value--->', userInfo.value)
 /**
  * IsDeveloper 是否申请为开发者 DeveloperState 管理员是否审核，RPAApplyDeveloper 这个接口，将用户 修改为处于 申请 开发者的状态，此时 IsDeveloper = 1
  * DeveloperState = 0，此时处于 待审核状态，当 DeveloperState = 1 ，IsDeveloper = 1 的时候，表示 当前用户申请开发的审核，已经通过，当前用户已经处于 开发者的状态
@@ -185,19 +193,54 @@ const editPhone = async () => {
     KMessage.success('修改手机号成功!')
   }
 }
+/** 修改邮箱号 */
+const editEMail = async () => {
+  editDialogParams.value.visible = true
+  editDialogParams.value.title = '修改邮箱号'
+  editDialogParams.value.desc = `当前登录邮箱号：${userInfo.value.eMail}。你正在修改登录邮箱号，请输入新邮箱号完成修改`
+  editDialogParams.value.type = 'editEMail'
+  editDialogParams.value.confirm = async (data: any) => {
+    editDialogParams.value.visible = false
+    const { userName, oldUserName, fullName, company, sex, city, signature } = ruleForm
+    const params = {
+      UserName: oldUserName + userName_suffix,
+      NewName: userName + userName_suffix,
+      ChangeName: oldUserName !== userName,
+      FullName: fullName,
+      Sex: sex,
+      Company: company,
+      City: city.join('/'),
+      Signature: signature,
+      eMail: data.eMail,
+      EmailCode: data.code,
+    }
+    const userInfoObj = {
+      userName,
+      fullName,
+      company,
+      sex,
+      city: city.join('/'),
+      signature,
+      eMail: data.eMail,
+    }
+    await SetRPAUserInfoAPI(params, { isShowErrorMsg: true })
+    setUserInfo(userInfoObj)
+    KMessage.success('修改邮箱成功!')
+  }
+}
 
 /** 修改手机号--身份确认 */
 const handleEditPhone = () => {
   try {
     editDialogParams.value.visible = true
-    editDialogParams.value.phone = phone
+    editDialogParams.value.email = userInfo.value.eMail
     editDialogParams.value.title = '身份验证'
-    editDialogParams.value.desc = `请输入发送至 ${formatMobile(phone)} 的验证码。`
+    editDialogParams.value.desc = `请输入发送至 ${userInfo.value.eMail} 的验证码。`
     editDialogParams.value.type = 'authentication'
     editDialogParams.value.confirm = async (code: any) => {
-      const params = { Phone: phone, PhoneCode: code }
-      await CheckPhoneCodeAPI(params)
-      editPhone()
+      const params = { MailTo: userInfo.value.eMail, EmailCode: code }
+      const xxx = await CheckEMailCodeAPI(params)
+      editEMail()
     }
   } catch (error) {
     console.error(error)
@@ -308,8 +351,14 @@ const props = {
         </div>
         <div class="row-account">
           <div class="row-name">手机号码</div>
-          <div class="row-value">
+          <div class="row-value" v-if="userInfo.phone">
             <span>{{ userInfo.phone }}</span>
+          </div>
+        </div>
+        <div class="row-account">
+          <div class="row-name">邮箱号码</div>
+          <div class="row-value" v-if="userInfo.eMail">
+            <span>{{ userInfo.eMail }}</span>
             <k-button text @click="handleEditPhone">修改</k-button>
           </div>
         </div>
