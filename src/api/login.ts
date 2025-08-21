@@ -28,6 +28,7 @@ export const GetRPAUserAPI = async (params = {}) => {
     Token,
     UserID,
     UserName,
+    eMail,
   } = data
   setToken(Token)
   /** 拆分 userName 的 # 后缀 */
@@ -53,6 +54,7 @@ export const GetRPAUserAPI = async (params = {}) => {
     signature: Signature,
     avatar: fileHostUrl + UserIcon,
     fullName: FullName,
+    eMail,
   }
   return userInfoObj
 }
@@ -60,7 +62,7 @@ export const GetRPAUserAPI = async (params = {}) => {
 /** 账号登录登录 */
 export const loginByAccountAPI = async (params: any) => {
   const { data }: any = await callServerFunc('TRPADM', 'RPAUserLogin', params)
-  const { ID, IsLite, LncDate, LoginID, PassWord, Token, User, UserID, UserName, IsForumLogin, Mobile } = data
+  const { ID, IsLite, LncDate, LoginID, PassWord, Token, User, UserID, UserName, IsForumLogin, Mobile, eMail } = data
   setToken(Token)
   const userInfoRes: any = await GetRPAUserAPI()
   const { isAdmin, city, company, developerState, fullName, isDeveloper, sex, signature, avatar } = userInfoRes
@@ -83,6 +85,7 @@ export const loginByAccountAPI = async (params: any) => {
     isAdmin: isAdmin === 1,
     loginStatus: true,
     phone: Mobile,
+    eMail,
     city: city,
     company: company,
     developerState: developerState,
@@ -101,7 +104,8 @@ export const RPALiteEMailCodeLoginAPI = async (params: any) => {
   const { ID, IsLite, LncDate, LoginID, RPALite: PassWord, Token, user, UserName, Mobile } = data
   setToken(Token)
   const userInfoRes: any = await GetRPAUserAPI()
-  const { isAdmin, city, company, developerState, userId, fullName, isDeveloper, sex, signature, avatar } = userInfoRes
+  const { isAdmin, city, company, developerState, userId, fullName, isDeveloper, sex, signature, avatar, eMail } =
+    userInfoRes
   /** 拆分 userName 的 # 后缀 */
   const userName = getSplitStrName(UserName)
   const _suffix = getSplitStrName(UserName, '#', 1)
@@ -120,6 +124,7 @@ export const RPALiteEMailCodeLoginAPI = async (params: any) => {
     isAdmin: isAdmin === 1,
     loginStatus: true,
     phone: Mobile,
+    eMail,
     city: city,
     company: company,
     developerState: developerState,

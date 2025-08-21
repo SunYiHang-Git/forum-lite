@@ -58,7 +58,11 @@ const rules = reactive<FormRules<RuleForm>>({
   password: [{ required: true, message: ct('common.pwd', 'common.inputNoNull'), trigger: 'blur' }],
   code: [
     { required: true, message: ct('login.verificationCode', 'common.inputNoNull'), trigger: 'blur' },
-    { pattern: /^\d{6}$/, message: ct('common.checkTip', 'login.validity', 'login.verificationCode'), trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z0-9]{6}$/,
+      message: ct('common.checkTip', 'login.validity', 'login.verificationCode'),
+      trigger: 'blur',
+    },
   ],
   username: [
     { required: true, message: ct('login.username', 'common.inputNoNull'), trigger: 'blur' },

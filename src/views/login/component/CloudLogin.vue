@@ -1,4 +1,4 @@
-<script set,p lang="ts">
+<script setup lang="ts">
 import { maturityDays } from '@/utils/format'
 import { callServerFunc, MD5, setToken } from '@ksware/micro-lib-web-temp'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -20,6 +20,7 @@ interface RuleForm {
   eMail: string
   account: string
   password: string
+  code: string
 }
 const { isCounting, seconds, startCountdown, clearLocalTempCache } = useCountdown(60, 'cloudLogin-forum')
 // 定义邮箱的正则表达式
@@ -34,6 +35,7 @@ const ruleForm = reactive<RuleForm>({
   eMail: '',
   account: '',
   password: '',
+  code: '',
 })
 const rules = reactive<FormRules<RuleForm>>({
   account: [{ required: true, message: '此为必填项', trigger: 'blur' }],
@@ -46,10 +48,15 @@ const rules = reactive<FormRules<RuleForm>>({
       trigger: 'blur',
     },
   ],
+  code: [
+    { required: true, message: ct('login.verificationCode', 'common.inputNoNull'), trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z0-9]{6}$/,
+      message: ct('common.checkTip', 'login.validity', 'login.verificationCode'),
+      trigger: 'blur',
+    },
+  ],
 })
-
-/** 验证码 */
-const verificationCode = ref('')
 
 /** 是否验证码登录 */
 const isCodeLogin = ref(false)
@@ -79,16 +86,17 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (!ruleForm.eMail) return KMessage.warning('请输入邮箱')
     if (!eMailPattern.test(ruleForm.eMail)) return KMessage.warning('请输入有效的邮箱')
     const codeReg = /^[a-zA-Z0-9]{6}$/
-    if (!codeReg.test(verificationCode.value)) {
+    if (!codeReg.test(ruleForm.code)) {
       KMessage.warning('请输入有效验证码')
       return
     }
-    const par = { MailTo: ruleForm.eMail, EmailCode: verificationCode.value, IsLite: true }
+    const par = { MailTo: ruleForm.eMail, EmailCode: ruleForm.code, IsLite: true }
     res = await RPALiteEMailCodeLoginAPI(par)
   }
   const userInfoObj = {
     ...res,
     rememberInfo: isRememberStatus.value,
+    isAlreadyLogin: true,
   }
   setUserInfo(userInfoObj)
   addTokenActiveTime()
@@ -121,7 +129,7 @@ const handleGetCode = async () => {
     startCountdown()
     if (import.meta.env.DEV) {
       const { sPhoneCode } = res.data
-      verificationCode.value = sPhoneCode
+      ruleForm.code = sPhoneCode
     }
   } catch (error) {
     console.error(error)
@@ -155,10 +163,10 @@ onUnmounted(() => {
         <k-form-item v-if="!isCodeLogin" prop="password">
           <k-input v-model="ruleForm.password" placeholder="请输入密码" type="password" prefix-icon="IconLock" />
         </k-form-item>
-        <k-form-item v-if="isCodeLogin">
+        <k-form-item v-if="isCodeLogin" prop="code">
           <k-row class="item-box">
             <k-input
-              v-model="verificationCode"
+              v-model="ruleForm.code"
               :placeholder="$t('common.checkTip', { cnt: $t('login.verificationCode') })"
               prefix-icon="IconShield"
               style="flex: 1"

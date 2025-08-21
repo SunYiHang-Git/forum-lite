@@ -405,16 +405,35 @@ function handleInteractionData(table: any) {
   return rows
 }
 
+let tokenActiveTimer: number | null = null
+let tokenActiveError = false
+/** 主动停止保活（用于登出） */
+export const stopTokenActiveTime = () => {
+  if (tokenActiveTimer) {
+    clearTimeout(tokenActiveTimer)
+    tokenActiveTimer = null
+    tokenActiveError = true
+  }
+}
 /** token 保活 */
 export const addTokenActiveTime = () => {
-  callServerFunc('TSystemDM', 'GetBackupServer', {}, { isShowLoading: false, isShowErrorMsg: false })
-    .catch(() => {})
-    .finally(() => {
-      setTimeout(
-        () => {
-          addTokenActiveTime()
-        },
-        1000 * 60 * 10,
-      )
-    })
+  if (tokenActiveTimer) {
+    clearTimeout(tokenActiveTimer)
+    tokenActiveTimer = null
+  }
+  tokenActiveError = false
+  const sendKeepAlive = () => {
+    if (tokenActiveError) return
+    callServerFunc('TSystemDM', 'GetBackupServer', {}, { isShowLoading: false, isShowErrorMsg: false })
+      .catch((err) => {
+        console.warn('保活请求失败:', err)
+        stopTokenActiveTime()
+      })
+      .finally(() => {
+        if (!tokenActiveError) {
+          tokenActiveTimer = setTimeout(sendKeepAlive, 1000 * 60 * 20)
+        }
+      })
+  }
+  sendKeepAlive()
 }

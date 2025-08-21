@@ -37,7 +37,14 @@ const rules = reactive<FormRules<RuleForm>>({
     },
   ],
   password: [{ required: true, message: ct('common.pwd', 'common.inputNoNull'), trigger: 'blur' }],
-  code: [{ required: true, message: ct('login.verificationCode', 'common.inputNoNull'), trigger: 'blur' }],
+  code: [
+    { required: true, message: ct('login.verificationCode', 'common.inputNoNull'), trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z0-9]{6}$/,
+      message: ct('common.checkTip', 'login.validity', 'login.verificationCode'),
+      trigger: 'blur',
+    },
+  ],
 })
 /** 获取手机号验证码 */
 const getPhoneCode = async () => {

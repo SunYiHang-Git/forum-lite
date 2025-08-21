@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import logoSvg from '@/assets/svg/logo.svg'
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useUser } from '@/store/modules/user'
-import { KMessageBox } from '@ksware/ksw-ux'
+import { KMessage, KMessageBox } from '@ksware/ksw-ux'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { isInset, MD5 } from '@ksware/micro-lib-web-temp'
+import { callServerFunc, isInset, MD5 } from '@ksware/micro-lib-web-temp'
 import { useRouterInfo } from '@/store/modules/useRouterInfo'
 import MessageInfo from './MessageInfo.vue'
 import { GetRPAUserAPI } from '@/api/login'
 import { handlePostDetailUrl } from '@/utils/format'
-import { helpDocumentUel, liteHomeUrl } from '@/const/home'
+import { helpDocumentUel, liteHomeUrl, MailText } from '@/const/home'
+import { useCountdown } from '@/hooks/useCountdown'
+import { stopTokenActiveTime } from '@/api/home'
 const { clearBreadcrumbList } = useRouterInfo()
 const { userInfo } = storeToRefs(useUser())
 const router = useRouter()
@@ -19,6 +21,8 @@ interface IMenu {
   name: string
   src?: string
 }
+
+const { isCounting, seconds, startCountdown, clearLocalTempCache } = useCountdown(60, 'checkEMail-forum')
 const menuList = ref([
   {
     name: 'community',
@@ -68,6 +72,7 @@ async function layout() {
   const { exitLogin } = useUser()
   exitLogin()
   clearBreadcrumbList()
+  stopTokenActiveTime()
   // await nextTick()
   // router.replace('/login')
 }
@@ -128,7 +133,95 @@ const getUserInfo = async () => {
     clearBreadcrumbList()
   }
 }
-getUserInfo()
+
+/** 是否有邮箱 */
+const isNoHasEMail = ref(false)
+
+const eMailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+/** 输入邮箱号 */
+const eMailValue = ref('')
+/** 验证码 */
+const eMailCode = ref('')
+
+const eMail_Local_Key = 'lite-no-eMail_local'
+
+/** 验证码文字 */
+const codeMsg = computed(() => {
+  if (seconds.value > 0) {
+    return `重新获取（${seconds.value})`
+  }
+  return '获取验证码'
+})
+
+/** 检测是否有邮箱 */
+function checkEMail() {
+  const { isAlreadyLogin, eMail: isHas, isEnterpriseLogin } = userInfo.value
+  if (!isAlreadyLogin || isHas || isEnterpriseLogin) return
+  const localStr = sessionStorage.getItem(eMail_Local_Key)
+  if (localStr) return
+  isNoHasEMail.value = !isHas
+}
+
+function close() {
+  isNoHasEMail.value = false
+}
+
+/** 获取验证码---用于绑定邮箱 */
+async function handleGetCode() {
+  try {
+    if (!eMailValue.value) return KMessage.warning('邮箱号不能为空')
+    if (!eMailPattern.test(eMailValue.value)) return KMessage.warning('请输入有效的邮箱号')
+    const data = { PhoneTo: eMailValue.value, MailTo: eMailValue.value, SendCodeType: 3, MailText, IsSend: true }
+    const res: any = await callServerFunc('TRPADM', 'SendSecurityCode', data)
+    startCountdown()
+  } catch (error) {
+    console.error(error)
+    if (typeof error === 'string') {
+      KMessage.error(error)
+    }
+    clearLocalTempCache()
+  }
+}
+
+/** 跳过 */
+function ignore() {
+  sessionStorage.setItem(eMail_Local_Key, 'ignore')
+  close()
+}
+
+/** 确定绑定邮箱 */
+async function submit() {
+  if (!eMailValue.value) return KMessage.warning('邮箱号不能为空')
+  if (!eMailPattern.test(eMailValue.value)) return KMessage.warning('请输入有效的邮箱号')
+  const codeReg = /^[a-zA-Z0-9]{6}$/
+  if (!codeReg.test(eMailCode.value)) {
+    KMessage.warning('请输入有效的验证码')
+    return
+  }
+  try {
+    const { phone, token } = userInfo.value
+    const data = {
+      PhoneTo: phone || eMailValue.value,
+      eMail: eMailValue.value,
+      EMailCode: eMailCode.value,
+      Token: token,
+    }
+    const res = await callServerFunc('TRPADM', 'SetRpaUserEmailAndPhone', data)
+    const { setUserInfo } = useUser()
+    setUserInfo({ eMail: eMailValue.value })
+    isNoHasEMail.value = false
+    KMessage.success('绑定邮箱成功!')
+  } catch (error) {
+    clearLocalTempCache()
+    eMailCode.value = ''
+  }
+}
+
+onMounted(async () => {
+  await getUserInfo()
+  checkEMail()
+})
 </script>
 
 <template>
@@ -183,6 +276,31 @@ getUserInfo()
         </template>
       </k-dropdown>
     </div>
+    <!--  -->
+    <k-dialog v-model="isNoHasEMail" width="480" :show-close="false">
+      <template #header="">
+        <div class="my-header">
+          绑定邮箱
+          <div class="header-icon" @click="close">
+            <IconClose :size="20" />
+          </div>
+        </div>
+      </template>
+      <div class="dialog-main-box">
+        <div class="tip">为了您的账号安全,请绑定邮箱</div>
+        <div class="item-input-box">
+          <k-input v-model="eMailValue" placeholder="请输入邮箱" prefix-icon="IconMail" />
+        </div>
+        <div class="item-input-box item-code">
+          <k-input v-model="eMailCode" placeholder="请输入验证码" prefix-icon="IconShield" style="flex: 1" />
+          <k-button :disabled="isCounting" @click="handleGetCode" style="width: 120px">{{ codeMsg }}</k-button>
+        </div>
+        <div class="item-input-box item-button">
+          <k-button @click="ignore">跳过</k-button>
+          <k-button main @click="submit">确定</k-button>
+        </div>
+      </div>
+    </k-dialog>
   </div>
 </template>
 
@@ -299,6 +417,44 @@ getUserInfo()
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+    }
+  }
+  .my-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 11px 4px 4px 4px;
+    height: 24px;
+    opacity: 1;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 150%;
+    letter-spacing: 0em;
+    color: #171717;
+    .header-icon {
+      display: flex;
+      align-items: center;
+      height: 100%;
+    }
+  }
+  .dialog-main-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0 4px;
+    .item-input-box {
+      width: 100%;
+      height: 32px;
+    }
+    .item-code {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .item-button {
+      display: flex;
+      justify-content: end;
     }
   }
 }

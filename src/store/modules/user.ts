@@ -34,6 +34,8 @@ export interface IUserInfo {
   rememberInfo: boolean
   /** 手机号 */
   phone: string
+  /** 邮箱 */
+  eMail: string
   /** 城市 */
   city: string
   /** 公司 */
@@ -50,6 +52,10 @@ export interface IUserInfo {
   sex: 0 | 1 | 2
   /** 头像 */
   avatar: string
+  /** 是否已经登录 */
+  isAlreadyLogin: false
+  /** 是否企业登录 */
+  isEnterpriseLogin: boolean
 }
 /** userStore存储键 */
 export const USER_KEY = 'userInfo_Store'
@@ -74,6 +80,7 @@ export const useUser = defineStore(
       loginStatus: false,
       rememberInfo: false,
       phone: '',
+      eMail: '',
       city: '',
       company: '',
       developerState: 0,
@@ -82,6 +89,8 @@ export const useUser = defineStore(
       signature: '',
       avatar: '',
       fullName: '',
+      isAlreadyLogin: false,
+      isEnterpriseLogin: false,
     })
 
     /** 设置用户信息 */
@@ -108,6 +117,7 @@ export const useUser = defineStore(
         loginStatus: false,
         rememberInfo: false,
         phone: '',
+        eMail: '',
         city: '',
         company: '',
         developerState: 0,
@@ -116,6 +126,8 @@ export const useUser = defineStore(
         signature: '',
         avatar: '',
         fullName: '',
+        isAlreadyLogin: false,
+        isEnterpriseLogin: false,
       }
     }
     /** 判断是否是管理员 */

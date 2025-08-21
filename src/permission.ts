@@ -1,10 +1,11 @@
 import { setToken } from '@ksware/micro-lib-web-temp'
 import router from './router/router'
-import { getUrlParamByName, removeTokenFromUrl } from '@/utils/auth'
+import { getUrlParamByName, removeToFullPathParams } from '@/utils/auth'
 import { isAdmin } from './utils/check'
 import { KMessage } from '@ksware/ksw-ux'
 import { useUser } from './store/modules/user'
-import { useRouterInfo } from './store/modules/useRouterInfo'
+import { addTokenActiveTime } from './api/home'
+import { removeUrlParams } from './utils/tools'
 
 const permNameList = ['/admin']
 /** 从那个页面来 */
@@ -13,13 +14,16 @@ router.beforeEach((to, from, next) => {
   const urlToken = getUrlParamByName('Token')
   /** url 携带 token */
   if (urlToken) {
-    const url = location.href.replace(/token=[a-z0-9]{32}/i, '')
+    const isLite = getUrlParamByName('isLite')
+    const isEnterpriseLogin = getUrlParamByName('isEnterpriseLogin')
+    const url = removeUrlParams(location.href, 'token', 'isLite', 'isEnterpriseLogin')
     history.replaceState({}, '', url)
     const { setUserInfo } = useUser()
-    const newPath = removeTokenFromUrl(to.fullPath)
+    const newPath = removeToFullPathParams(to.fullPath, 'token', 'isLite', 'isEnterpriseLogin')
     setToken(urlToken)
-    setUserInfo({ loginStatus: true, token: urlToken })
+    setUserInfo({ loginStatus: true, token: urlToken, isLite: !!isLite, isEnterpriseLogin: !!isEnterpriseLogin })
     next(newPath)
+    addTokenActiveTime()
     return
   }
   /** 没有 token */

@@ -94,3 +94,87 @@ export const openNewUrl = (url: string) => {
 export const openPostDetail = (id: string) => {
   openNewUrl(`#/detail/${id}`)
 }
+
+/**
+ * 从 URL 中移除指定的查询参数（支持标准查询和哈希内的查询，参数名不区分大小写）
+ *
+ * @param url - 原始 URL 字符串
+ * @param paramsToRemove - 要移除的查询参数名（可变参数）
+ * @returns 处理后的 URL 字符串；若 URL 无效则返回原字符串
+ */
+export function removeUrlParams(url: string, ...paramsToRemove: string[]): string {
+  if (!url || typeof url !== 'string') {
+    console.warn('[removeUrlParams] 无效的 URL 输入:', url)
+    return url
+  }
+
+  if (paramsToRemove.length === 0) {
+    return url
+  }
+
+  // 提取并标准化要删除的参数名（转小写用于比较，保留原始值用于日志）
+  const validParams = paramsToRemove
+    .map((param) => (typeof param === 'string' ? param.trim() : ''))
+    .filter((param) => param !== '')
+    .map((param) => param.toLowerCase()) // 统一转为小写用于不区分大小写的匹配
+
+  if (validParams.length === 0) {
+    console.warn('[removeUrlParams] 未提供有效的参数名')
+    return url
+  }
+
+  try {
+    const hashIndex = url.indexOf('#')
+    // 情况1：没有 hash，是标准 URL
+    if (hashIndex === -1) {
+      const urlObj = new URL(url)
+      // 获取所有 searchParams 的键
+      const keysToRemove: string[] = []
+      for (const key of urlObj.searchParams.keys()) {
+        if (validParams.includes(key.toLowerCase())) {
+          keysToRemove.push(key) // 收集原始键名
+        }
+      }
+      // 删除匹配的参数（使用原始键名）
+      keysToRemove.forEach((key) => {
+        urlObj.searchParams.delete(key)
+      })
+      return urlObj.toString()
+    }
+
+    // 情况2：有 hash，需要解析 hash 中的 query
+    const baseUrl = url.slice(0, hashIndex)
+    const hash = url.slice(hashIndex) // 包括 '#'
+
+    const questionIndex = hash.indexOf('?')
+    if (questionIndex === -1) {
+      return url
+    }
+
+    const hashPath = hash.slice(0, questionIndex) // 如 "#/home"
+    const queryString = hash.slice(questionIndex) // 如 "?token=...&isLite=..."
+
+    // 使用 URLSearchParams 处理查询字符串
+    const searchParams = new URLSearchParams(queryString)
+
+    // 收集需要删除的原始键名
+    const keysToRemove: string[] = []
+    for (const key of searchParams.keys()) {
+      if (validParams.includes(key.toLowerCase())) {
+        keysToRemove.push(key)
+      }
+    }
+
+    keysToRemove.forEach((key) => {
+      searchParams.delete(key)
+    })
+
+    const newQueryString = searchParams.toString()
+    const newHash = hashPath + (newQueryString ? `?${newQueryString}` : '')
+    return baseUrl + newHash
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error)
+    console.warn('[removeUrlParams] URL 解析失败:', errorMsg, { url, paramsToRemove })
+    return url
+  }
+}

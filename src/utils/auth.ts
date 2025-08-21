@@ -116,18 +116,65 @@ export function getUrlParamByName(name: string | boolean = '') {
 }
 
 /**
- * 去掉 token=xxx
+ * 从路由 fullPath 中移除指定的查询参数（支持多个，不区分大小写） 正确处理 ? 和 & 的转换，避免生成 /home&param=value 的错误格式
  *
- * @param url to.fullPath
- * @returns
+ * @example removeUrlParams('/home?token=abc&isLite=true', 'token') // 返回: '/home?isLite=true'
+ *
+ * removeUrlParams('/home?TOKEN=abc&IsLite=true', 'token', 'isLite') // 返回: '/home'
+ *
+ * @param fullPath - 路由的 fullPath（如 '/home?token=abc&isLite=true'）
+ * @param paramsToRemove - 要移除的参数名（可变参数，如 'token', 'isLite'）
+ * @returns 清理后的 fullPath
  */
-export function removeTokenFromUrl(url: string) {
-  // 使用正则表达式删除 token 参数：
-  // 匹配格式如：
-  // - &token=xxxxx
-  // - ?token=xxxxx
-  // - token=xxxxx& 或 token=xxxxx# 或 token=xxxxx（单独在末尾）
-  return url.replace(/[?&]token=[0-9A-Fa-f]{32,}[^&#]*/g, '').replace(/([&?])$/, '')
+export function removeToFullPathParams(fullPath: string, ...paramsToRemove: string[]): string {
+  if (!fullPath || typeof fullPath !== 'string') {
+    return fullPath || ''
+  }
+
+  if (paramsToRemove.length === 0) {
+    return fullPath
+  }
+
+  // 标准化要删除的参数名（转小写用于不区分大小写的匹配）
+  const paramsToRemoveLower = paramsToRemove
+    .map((param) => (typeof param === 'string' ? param.trim().toLowerCase() : ''))
+    .filter((param) => param !== '')
+
+  if (paramsToRemoveLower.length === 0) {
+    console.warn('[removeUrlParams] 未提供有效的参数名')
+    return fullPath
+  }
+
+  try {
+    // 1. 拆分路径和查询字符串
+    const [path, queryString] = fullPath.split('?', 2)
+    const query = queryString || ''
+
+    // 2. 使用 URLSearchParams 解析查询字符串
+    const params = new URLSearchParams(query)
+
+    // 3. 收集所有需要删除的原始键名（不区分大小写）
+    const keysToRemove: string[] = []
+    for (const key of params.keys()) {
+      if (paramsToRemoveLower.includes(key.toLowerCase())) {
+        keysToRemove.push(key)
+      }
+    }
+
+    // 4. 执行删除
+    keysToRemove.forEach((key) => {
+      params.delete(key)
+    })
+
+    // 5. 重新组合
+    const search = params.toString()
+    // 只有当有剩余查询参数时，才加 ?
+    return search ? `${path}?${search}` : path
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error)
+    console.warn('[removeUrlParams] 解析 fullPath 失败:', errorMsg, { fullPath, paramsToRemove })
+    return fullPath
+  }
 }
 
 /** 处理未登录时,不可触发后续方法 */
