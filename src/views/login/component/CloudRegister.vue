@@ -120,7 +120,7 @@ const retryCount = ref(0)
 
 /** 重新注册--用户昵称冲突 */
 async function againRegister(data: any) {
-  if (retryCount.value < 3) {
+  if (retryCount.value < 9) {
     try {
       retryCount.value++
       await callServerFunc('TRPADM', 'RPAUserRegister', data, { isShowErrorMsg: false })
@@ -161,8 +161,9 @@ const submitForm = async () => {
     if (error.sError.includes('当前昵称已被注册')) {
       const data = {
         Phone: ruleForm.phone,
-        UserID: ruleForm.phone,
-        PhoneCode: ruleForm.code,
+        UserID: ruleForm.eMail,
+        eMail: ruleForm.eMail,
+        EmailCode: ruleForm.code,
         UserName: ruleForm.username + '#' + generateUniqueNumber(),
         Pass: MD5(ruleForm.password),
         TextPass: ruleForm.password,
