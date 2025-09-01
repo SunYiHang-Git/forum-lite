@@ -76,8 +76,9 @@ const checkIdentify = async () => {
   const code = await getEMailCodeFn(params.email, 2)
   authenticationValue.value = code
 }
-/** 修改密码---验证码 */
+/** 修改邮箱---验证码 */
 const editEMail = async () => {
+  if (!checkEMail()) return
   const code = await getEMailCodeFn(emailValue.value, 0)
   authenticationValue.value = code
 }
@@ -95,9 +96,10 @@ const checkAuthenticationValue = () => {
   return true
 }
 
-// 手机号检查
+// 邮箱号检查
 const checkEMail = () => {
   if (!isEmailStrict(emailValue.value)) {
+    KMessage.error('请输入有效的邮箱号!')
     return false
   }
   return true
@@ -155,7 +157,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <k-dialog v-model="dialogVisible" width="600" class="info-dialog" :show-close="false">
+  <k-dialog
+    v-model="dialogVisible"
+    width="600"
+    class="info-dialog"
+    :close-on-click-modal="false"
+    :show-close="false"
+    @close="handleClose"
+  >
     <template #header>
       <div class="my-header">
         <div class="dialog-title">{{ params.title }}</div>

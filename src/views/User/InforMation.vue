@@ -200,7 +200,6 @@ const editEMail = async () => {
   editDialogParams.value.desc = `当前登录邮箱号：${userInfo.value.eMail}。你正在修改登录邮箱号，请输入新邮箱号完成修改`
   editDialogParams.value.type = 'editEMail'
   editDialogParams.value.confirm = async (data: any) => {
-    editDialogParams.value.visible = false
     const { userName, oldUserName, fullName, company, sex, city, signature } = ruleForm
     const params = {
       UserName: oldUserName + userName_suffix,
@@ -226,6 +225,7 @@ const editEMail = async () => {
     await SetRPAUserInfoAPI(params, { isShowErrorMsg: true })
     setUserInfo(userInfoObj)
     KMessage.success('修改邮箱成功!')
+    editDialogParams.value.visible = false
   }
 }
 
