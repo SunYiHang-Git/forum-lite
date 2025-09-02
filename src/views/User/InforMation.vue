@@ -20,6 +20,7 @@ import { cityList } from '@/utils/city'
 import Breadcrumb from '@/component/Breadcrumb/index.vue'
 import { useCI18n } from '@/i18n'
 import { generateUniqueNumber } from '@/utils/tools'
+import { GetRPAUserAPI } from '@/api/login'
 const { userInfo } = storeToRefs(useUser())
 const { setUserInfo } = useUser()
 const { t } = useCI18n()
@@ -213,17 +214,9 @@ const editEMail = async () => {
       eMail: data.eMail,
       EmailCode: data.code,
     }
-    const userInfoObj = {
-      userName,
-      fullName,
-      company,
-      sex,
-      city: city.join('/'),
-      signature,
-      eMail: data.eMail,
-    }
     await SetRPAUserInfoAPI(params, { isShowErrorMsg: true })
-    setUserInfo(userInfoObj)
+    const obj = await GetRPAUserAPI({ isShowErrorMsg: false })
+    setUserInfo(obj)
     KMessage.success('修改邮箱成功!')
     editDialogParams.value.visible = false
   }
