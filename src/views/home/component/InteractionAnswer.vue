@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import RPA_LOGO from '@/assets/images/K-RPA-logo.png'
+import _RPA_LOGO from '@/assets/images/K-RPA-logo.png'
 import { openPostDetail } from '@/utils/tools'
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -12,6 +12,8 @@ const { hotDataList, newDataList, isFetchData } = defineProps<{
   /** 是否已经请求过了 */
   isFetchData?: boolean
 }>()
+
+const RPA_LOGO = _RPA_LOGO
 
 function lookMore() {
   router.push('/class/interaction')
@@ -132,7 +134,7 @@ function lookMore() {
     top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 100vw;
+    width: 99vw;
     min-width: 1280px;
     height: 568px;
     background-color: #f3f3f3;

@@ -2,7 +2,7 @@
 import Footer from '@/views/home/Footer/index.vue'
 import { onMounted, ref } from 'vue'
 import { GetRPAUserAPI } from '@/api/login'
-import Banner from '@/views/home/component/Banner.vue'
+import Banner from '@/views/home/component/banner.vue'
 import UserCard from '@/views/home/component/UserCard.vue'
 import NavCard from '@/views/home/component/NavCard.vue'
 import OfficialAnnouncement from '@/views/home/component/OfficialAnnouncement.vue'
@@ -186,7 +186,7 @@ getDataList()
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
-        width: 100vw;
+        width: 99vw;
         min-width: 1280px;
         height: 426px;
       }
